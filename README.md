@@ -1,8 +1,10 @@
 # sitega
 folder src contains four files with sitega source codes, c++ language
+
 monte0dg.cpp prepare parameter file to train a model (andy02.cpp) or perform the bootsrap cross validation test (andy0bsn2.cpp)
 command line arguments:
--1int reg -2file seq  -3file out
+1int reg -2file seq  -3file out
+
 1int reg = length of region (default value 6)
 2file seq = peaks (fasta file) 
 3file out = output file = parameter file from monte0dg.cpp
@@ -32,6 +34,7 @@ command line arguments:
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 command line arguments:
 1file.seq  2sitename 3file_train 4thr 5cmpl 6file.ipr 7seq_head 8print_pos 9site_desc 10bit
+
 1file.seq = test file
 2sitename = file with sitega model
 3file_train = faculatative file (default value train.fa)
