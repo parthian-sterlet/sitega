@@ -21,7 +21,7 @@ andy02.cpp  trains a model with a given train ChIP-seq dataset (peaks)
 andy0bsn2.cpp performs the bootsrap cross validation test to estimate the performance of a model with a given train ChIP-seq dataset
 ## Module 4: Set threshold for a model
 sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cpp) based on score distribution for a background dataset
-## Module 5: Scan sequences with a model
+## Module 5: Scan test sequences with a model
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 
 ## Interaction of modules
@@ -99,11 +99,11 @@ andy02.cpp gradually constructs several sitega models, with the numbers of local
 
 andy0bsn2.cpp may several tomes gradually construct several sitega models (parameter 7th num_iterations), but each time use only a part of dataset for training, the rest part of dataset is used to estimate FPR). Results represent the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. The stored in [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt)
 
+## Set threshold for a model
+
+sitega_thr_dist_mat.cpp computes the distribition of sitega scores, output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) (3rd parameter of command line) represents two columns with thresholds and respective FPRs
+
 ## Scan test sequences with a model
 
 andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file respect to 6th parameter of command line, the format of [profile file](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile)
 I.e. after the header of each peak with first '>' symbol from zero to several lines respect to separate hits, for each hit a start position, score, strand and whole sequence are printed
-
-## Set threshold for a model
-
-sitega_thr_dist_mat.cpp computes the distribition of sitega scores, output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) (3rd parameter of command line) represents two columns with thresholds and respective FPRs
