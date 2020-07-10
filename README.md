@@ -128,7 +128,7 @@ andy0bsn2.cpp may several tomes gradually construct several sitega models (param
 ## scan test sequences with a model
 
 andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file respect to 6th parameter of command line, the format of output **profile** file is following https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile
-I.e. after the header of each peak with first '>' symbol from zero to several lines respect to separate hits, for each hit are printed the start position, score, strand and whole sequence 
+I.e. after the header of each peak with first '>' symbol from zero to several lines respect to separate hits, for each hit a start position, score, strand and whole sequence are printed
 
 ## set threshold for a model
 
