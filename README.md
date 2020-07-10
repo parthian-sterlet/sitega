@@ -12,7 +12,7 @@ Levitsky et al. Effective transcription factor binding site prediction using a c
 Current SiteGA version represented the algorithm of previous version (2007) adopted for de novo search in ChIP-seq dataset, i.e. the alignment of binding sites is not required
 
 # Source code
-Folder src contains five files with sitega source codes in c++ language, they respect to separate modeules of pipeline analysis:
+Folder src contains five files with sitega source codes in c++ language, they respect to separate modules of pipeline analysis. 
 ## preparation
 monte0dg.cpp prepare parameter file to train a model (andy02.cpp) or perform the bootsrap cross validation test (andy0bsn2.cpp)
 ## train a model
@@ -23,6 +23,12 @@ andy0bsn2.cpp performs the bootsrap cross validation test to estimate the perfor
 sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cpp) based on score distribution for a background dataset
 ## scan test seauences with a model
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
+
+Among all modules {preparation, train a model} and {preparation, estimate accuracy for a model} are tightly related, i.e. the second module each time require the result of the first module. 
+
+{set threshold for a model} {scan test seauences with a model} modules and require the sitega model which should be previosly computed by {train a model} module
+
+{set threshold for a model} only helps to select correct threshold, since scan module {test seauences with a model} takes the threshold from command line
 
 # How to run separate modules
 command line arguments below described for each module
