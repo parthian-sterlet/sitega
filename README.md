@@ -10,30 +10,29 @@ Levitsky et al. Effective transcription factor binding site prediction using a c
 Current SiteGA version represented the algorithm of previous version (2007) adopted for de novo search in ChIP-seq dataset, i.e. the alignment of binding sites is not required
 
 # Source code
-Folder src contains five files with sitega source codes, c++ language
-
+Folder src contains five files with sitega source codes in c++ language, they respect to separate modeules of pipeline analysis:
 monte0dg.cpp prepare parameter file to train a model (andy02.cpp) or perform the bootsrap cross validation test (andy0bsn2.cpp)
-command line arguments:
-1int reg -2file seq  -3file out
+andy02.cpp trains a model with a given train ChIP-seq dataset (peaks)
+andy0bsn2.cpp performs the bootsrap cross validation test to estimate the performance of a model with a given train ChIP-seq dataset
+andy1_mat.cpp scans a fasta file with DNA sequences with a given model
+sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cpp) based on score distribution for a background dataset
 
+# How to run separate modules
+command line arguments below described for each module
+
+monte0dg.cpp (preparation step to train a model):
 1int reg = length of region (default value 6)
 2file seq = peaks (fasta file) 
 3file out = output file = parameter file from monte0dg.cpp
 
-andy02.cpp trains a model with a given train ChIP-seq dataset (peaks)
-command line arguments:
-1char file_cor 2int motif_len 3int size_start 4int size_end 5int size_dif
-
+andy02.cpp (train a model):
 1char file_cor = parameter file from monte0dg.cpp
 2int motif_len = length of motif (integer value above 30 is recommended, default value 30)
 3int size_start = start value for the number of locally positioned dinucleotides (default value 10)
 4int size_end = end value for the number of locally positioned dinucleotides (default value 90)
 5int size_dif = variation value for the number of locally positioned dinucleotides (default value 10)
 
-andy0bsn2.cpp performs the bootsrap cross validation test to estimate the performance of a model with a given train ChIP-seq dataset
-command line arguments:
-1char file_cor 2int motif_len 3int size_start 4int size_end 5int size_dif 6double ratio_cnt_of_all 7int num_iterations 
-
+andy0bsn2.cpp (performace estimation by cross-validation):
 1char file_cor = parameter file from monte0dg.cpp
 2int motif_len = length of motif (integer value above 30 is recommended, default value 30)
 3int size_start = start value for the number of locally positioned dinucleotides (default value 10)
@@ -42,10 +41,7 @@ command line arguments:
 6double ratio_cnt_of_all(0=jk)  = ratio of the number of peaks to the number of control peaks (default value 10)
 7int num_iterations = bumber of iteration in bootatrap (default 1), but it is recomended to run bootstrap several times to get reliable results
 
-andy1_mat.cpp scans a fasta file with DNA sequences with a given model
-command line arguments:
-1file.seq  2sitega_matrix_file 3file_train 4thr 5cmpl 6file.ipr 7seq_head 8print_pos 9site_desc 10bit
-
+andy1_mat.cpp (scaner to apply a trained model for a test file)
 1file.seq = test file
 2sitega_matrix_file = file with sitega model
 3file_train = facultative file (default value train.fa)
@@ -57,10 +53,7 @@ command line arguments:
 9site_desc = (default value = 0)
 10bit = (default value = 300)
 
-sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cpp) based on score distribution for a background dataset
-command line arguments:
-1sitega_matrix_file 2file_profile_fasta 3file out_dist 4double pvalue_large 5double score_min 6double dpvalue
-
+sitega_thr_dist_mat.cpp (threshold selection for a scaner by false positive rate):
 1sitega_matrix_file = file with sitega model
 2file_profile_fasta = background dataset (unzip files from folder genomes, use hs* & mm* files for human & mouse, respectively)
 3file out_dist = output file, table SiteGA model threshold vs. False Positive Rate (FPR)
@@ -68,3 +61,33 @@ command line arguments:
 5double score_min = low bound for tested threshold of SiteGA model (default value 0.997)
 6double dpvalue = granulation value for FPR compaction in table (threshold vs. FPR), default value 0.0000000005 implies the absence of compaction
 
+# Interpretation of results
+
+monte0dg.cpp creates file with {mnt} extention that may used for training (andy02.cpp) or performance evaluation andy0bsn2.cpp)
+
+andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned in 3rd, 4th and 5th parameters of command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed according to FPR estimated (see file with {train.txt} extension). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in file with {mat} extention
+
+andy0bsn2.cpp may several tomes gradually construct several sitega models (parameter 7th num_iterations), but each time use only a part of dataset for training, the rest part of dataset is used to estimate FPR). Results represent the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. The stored in file with extentsion {bs1.txt}
+
+andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file  respect to 6th parameter of command line, the format of output file is following
+
+>487	GSM2827249_CREB1_hg38_4000	SEQ 488	THR 0.999190
+>488	GSM2827249_CREB1_hg38_4000	SEQ 489	THR 0.999190
+289	0.999362150000	-	ccggtgtgctcTGATTGGCCcaggctcttt
+408	0.999393233333	+	tggcacgcgctACCCCCTTTtgctttggtt
+>489	GSM2827249_CREB1_hg38_4000	SEQ 490	THR 0.999190
+65	0.999858233333	+	gatggtgatgaTGATGGTGAtgatggtgat
+118	0.999526933333	+	gatgatgatgaTGATGGTGAttgtgatgat
+217	0.999561166667	-	ccatcatcgccGTCATCATCaccatcatca
+243	0.999853133333	+	atggtgatgatGATGGTGATgtgatgatga
+
+after the header of each peak with first '>' symbol from 0 to several line respect to separate hits, for each hit are printed the start position, score, strand and sequence
+
+sitega_thr_dist_mat.cpp compute the distribition of sitega scores, output file (3rd parameter of command line) represents two columns with thresholds and respective FPRs, e.g.
+
+1.000000000000	5.12710661275e-07
+0.999998750000	1.02542132255e-06
+0.999997900000	1.53813198382e-06
+0.999996766667	2.0508426451e-06
+0.999995533333	2.56355330637e-06
+0.999994733333	3.07626396765e-06
