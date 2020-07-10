@@ -7,7 +7,7 @@ in Linux system [GCC](https://gcc.gnu.org/) compuler
 in Windiws system [Microsoft Visual C++](https://visualstudio.microsoft.com/vs/express/)
 
 # Description
-Previous SiteGA version required the alignment of binding sites (Levitsky et al. (2007) Effective transcription factor binding site prediction using a combination of optimization, a genetic algorithm and discriminant analysis to capture distant interactions. *BMC Bioinformatics* 8, 481 https://doi.org/10.1186/1471-2105-8-481)
+Previous SiteGA version required the alignment of binding sites, [SiteGA paper](https://doi.org/10.1186/1471-2105-8-481)
 
 Current SiteGA version represented the algorithm of previous version (2007) adopted for de novo search in ChIP-seq dataset, i.e. the alignment of binding sites is not required
 
