@@ -39,12 +39,12 @@ List of command line arguments for all modules are described below.
 monte0dg.cpp 
 1. int reg = length of region of one locally positioned dinucleotide (default value 6)
 2. file seq = [fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa) each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
-3. file out = output file = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
+3. file out = output [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 
 ## Train a model
 
 andy02.cpp
-1. char file_cor = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
+1. char file_cor = input [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 2. int motif_len = length of motif (default value 30)
 3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
 4. int size_end = end value for the number of LPDs (default value 90)
@@ -53,7 +53,7 @@ andy02.cpp
 ## Estimate accuracy for a model
 
 andy0bsn2.cpp
-1. char file_cor = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
+1. char file_cor = input [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 2. int motif_len = length of motif (integer value respecting to the optimal length of a traditional position weight matrix is recommended, default value 30 usually brought good results)
 3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
 4. int size_end = end value for the number of LPDs (default value 90)
@@ -64,7 +64,7 @@ andy0bsn2.cpp
 ## Set threshold for a model
 
 sitega_thr_dist_mat.cpp
-1. sitega_matrix_file = [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
+1. sitega_matrix_file = input [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
 2. file_profile_fasta = background dataset (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse data, respectively)
 3. file out_dist = output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
 4. double pvalue_large = maximal FPR (default value 0.0005)
@@ -74,8 +74,8 @@ sitega_thr_dist_mat.cpp
 ## Scan test sequences with a model
 
 andy1_mat.cpp
-1. file.seq = test file has the same format as [fasta file of peaks], non ('a', 'c', 'g' and 't') nucleotides are ignored
-2. sitega_matrix_file = [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
+1. file.seq = input test file has the same format as [fasta file of peaks], non ('a', 'c', 'g' and 't') nucleotides are ignored
+2. sitega_matrix_file = input [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
 3. file_train = facultative file (default value train.fa)
 4. thr = threshold for sitega model, it is recommended to use [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) from **set threshold for a model** module
 5. cmpl = DNA strand parameter, default value 2 
