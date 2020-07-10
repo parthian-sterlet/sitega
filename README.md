@@ -51,7 +51,7 @@ andy02.cpp
 
 ## estimate accuracy for a model
 
-andy0bsn2.cpp (performace estimation by cross-validation):
+andy0bsn2.cpp
 
 1char file_cor = parameter file from monte0dg.cpp
 
@@ -69,7 +69,7 @@ andy0bsn2.cpp (performace estimation by cross-validation):
 
 ## set threshold for a model
 
-sitega_thr_dist_mat.cpp (threshold selection for a scaner by false positive rate):
+sitega_thr_dist_mat.cpp
 
 1sitega_matrix_file = file with sitega model https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat
 
@@ -85,7 +85,7 @@ sitega_thr_dist_mat.cpp (threshold selection for a scaner by false positive rate
 
 ## scan test seauences with a model
 
-andy1_mat.cpp (scaner to apply a trained model for a test file)
+andy1_mat.cpp
 
 1file.seq = test file
 
