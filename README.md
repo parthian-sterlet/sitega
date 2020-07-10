@@ -1,5 +1,10 @@
 # sitega
-folder src contains four files with sitega source codes, c++ language
+Requirement
+To compile exetubable codes from source codes, you need:
+Linux - GCC compuler https://gcc.gnu.org/ 
+Windiws - Microsoft Visual C++, e.g. https://visualstudio.microsoft.com/vs/express/
+
+Folder src contains five files with sitega source codes, c++ language
 
 monte0dg.cpp prepare parameter file to train a model (andy02.cpp) or perform the bootsrap cross validation test (andy0bsn2.cpp)
 command line arguments:
@@ -21,7 +26,7 @@ command line arguments:
 
 andy0bsn2.cpp performs the bootsrap cross validation test to estimate the performance of a model with a given train ChIP-seq dataset
 command line arguments:
-1char file_cor 2int motif_len 3int size_start 4int size_end 5int size_dif 6double ratio_cnt_of_all(0=jk) 7int num_iterations 
+1char file_cor 2int motif_len 3int size_start 4int size_end 5int size_dif 6double ratio_cnt_of_all 7int num_iterations 
 
 1char file_cor = parameter file from monte0dg.cpp
 2int motif_len = length of motif (integer value above 30 is recommended, default value 30)
@@ -33,11 +38,11 @@ command line arguments:
 
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 command line arguments:
-1file.seq  2sitename 3file_train 4thr 5cmpl 6file.ipr 7seq_head 8print_pos 9site_desc 10bit
+1file.seq  2sitega_matrix_file 3file_train 4thr 5cmpl 6file.ipr 7seq_head 8print_pos 9site_desc 10bit
 
 1file.seq = test file
-2sitename = file with sitega model
-3file_train = faculatative file (default value train.fa)
+2sitega_matrix_file = file with sitega model
+3file_train = facultative file (default value train.fa)
 4thr = threshold for  sitega model
 5cmpl = default value 2 
 6file.ipr = name for ouput files (default value chipseq)
@@ -45,3 +50,15 @@ command line arguments:
 8print_pos = (default value = 1)
 9site_desc = (default value = 0)
 10bit = (default value = 300)
+
+sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cpp) based on score distribution for a background dataset
+command line arguments:
+1sitega_matrix_file 2file_profile_fasta 3file out_dist 4double pvalue_large 5double score_min 6double dpvalue
+
+1sitega_matrix_file = file with sitega model
+2file_profile_fasta = background dataset (files genomes/hg38/ups2kb.seq & genomes/mm10/ups2kb.seq are recommended for human & mouse, respectively)
+3file out_dist = output file, table SiteGA model threshold vs. False Positive Rate (FPR)
+4double pvalue_large = low bound for FPR (default value 0.0005)
+5double score_min = low bound for tested threshold of SiteGA model (default value 0.997)
+6double dpvalue = granulation value for FPR compaction in table (threshold vs. FPR), default value 0.0000000005 implies the absence of compaction
+
