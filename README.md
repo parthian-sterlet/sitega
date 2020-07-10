@@ -56,7 +56,7 @@ command line arguments:
 1sitega_matrix_file 2file_profile_fasta 3file out_dist 4double pvalue_large 5double score_min 6double dpvalue
 
 1sitega_matrix_file = file with sitega model
-2file_profile_fasta = background dataset (files genomes/hg38/ups2kb.seq & genomes/mm10/ups2kb.seq are recommended for human & mouse, respectively)
+2file_profile_fasta = background dataset (unzip files from folder genomes, use hs* & mm* files for human & mouse, respectively)
 3file out_dist = output file, table SiteGA model threshold vs. False Positive Rate (FPR)
 4double pvalue_large = low bound for FPR (default value 0.0005)
 5double score_min = low bound for tested threshold of SiteGA model (default value 0.997)
