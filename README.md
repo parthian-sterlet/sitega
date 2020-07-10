@@ -12,7 +12,7 @@ Current SiteGA version represented the algorithm of previous version (2007) adop
 # Source code
 Folder **src** contains five files with sitega source codes in c++ language, they respect to separate modules of pipeline analysis. 
 ## preparation
-monte0dg.cpp prepare parameter file to train a model (andy02.cpp) or perform the bootsrap cross validation test (andy0bsn2.cpp)
+monte0dg.cpp prepares parameter file to train a model (andy02.cpp) or perform the bootsrap cross validation test (andy0bsn2.cpp)
 ## train a model
 andy02.cpp  trains a model with a given train ChIP-seq dataset (peaks)
 ## estimate accuracy for a model
