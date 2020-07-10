@@ -39,7 +39,7 @@ monte0dg.cpp
 
 1int reg = length of region of one locally positioned dinucleotide (default value 6)
 
-2file seq = peaks [fasta file](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa) each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
+2file seq = [fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa) each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
 
 3file out = output file = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 
@@ -59,7 +59,7 @@ andy02.cpp
 
 andy0bsn2.cpp
 
-1char file_cor =[parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
+1char file_cor = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 
 2int motif_len = length of motif (integer value respecting to the optimal length of a traditional position weight matrix is recommended, default value 30 usually brought good results)
 
@@ -93,7 +93,7 @@ sitega_thr_dist_mat.cpp
 
 andy1_mat.cpp
 
-1file.seq = test file
+1file.seq = test file has the same format as [fasta file of peaks], non ('a', 'c', 'g' and 't') nucleotides are ignored
 
 2sitega_matrix_file = [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
 
@@ -121,11 +121,11 @@ monte0dg.cpp creates [parameter file](https://github.com/parthian-sterlet/sitega
 
 ## train a model
 
-andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned according to 3rd, 4th and 5th parameters of the command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed by FPR estimated (see file with {train.txt} extension, it has the same format as output file of bootsrap procedure https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
+andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned according to 3rd, 4th and 5th parameters of the command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed by FPR estimated (see file with *{train.txt}* extension, it has the same format as output file of bootsrap procedure [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
 
 ## estimate accuracy for a model
 
-andy0bsn2.cpp may several tomes gradually construct several sitega models (parameter 7th num_iterations), but each time use only a part of dataset for training, the rest part of dataset is used to estimate FPR). Results represent the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. The stored in [fpr_tpr file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt)
+andy0bsn2.cpp may several tomes gradually construct several sitega models (parameter 7th num_iterations), but each time use only a part of dataset for training, the rest part of dataset is used to estimate FPR). Results represent the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. The stored in [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt)
 
 ## scan test sequences with a model
 
