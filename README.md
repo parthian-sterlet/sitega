@@ -57,9 +57,9 @@ andy02.cpp
 
 andy0bsn2.cpp
 
-1char file_cor = parameter file from monte0dg.cpp
+1char file_cor = parameter file from monte0dg.cpp https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt
 
-2int motif_len = length of motif (integer value above 30 is recommended, default value 30)
+2int motif_len = length of motif (integer value respecting to the optimal length of a traditional position weight matrix is recommended, default value 30 usually brought good results)
 
 3int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
 
@@ -119,7 +119,7 @@ monte0dg.cpp creates file with **mnt** extention https://github.com/parthian-ste
 
 ## train a model
 
-andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned in 3rd, 4th and 5th parameters of command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed according to FPR estimated (see file with {train.txt} extension). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in file with **mat** extention, https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat
+andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned according to 3rd, 4th and 5th parameters of the command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed by FPR estimated (see file with {train.txt} extension, it has the same format as output file of bootsrap procedure https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in file with **mat** extention, https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat
 
 ## estimate accuracy for a model
 
