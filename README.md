@@ -36,17 +36,13 @@ command line arguments below described for each module
 ## preparation
 
 monte0dg.cpp 
-
-1int reg = length of region of one locally positioned dinucleotide (default value 6)
-
-2file seq = [fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa) each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
-
-3file out = output file = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
+1. int reg = length of region of one locally positioned dinucleotide (default value 6)
+2. file seq = [fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa) each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
+3. file out = output file = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 
 ## train a model
 
 andy02.cpp
-
 1. char file_cor = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 2. int motif_len = length of motif (default value 30)
 3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
@@ -56,7 +52,6 @@ andy02.cpp
 ## estimate accuracy for a model
 
 andy0bsn2.cpp
-
 1. char file_cor = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 2. int motif_len = length of motif (integer value respecting to the optimal length of a traditional position weight matrix is recommended, default value 30 usually brought good results)
 3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
