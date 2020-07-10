@@ -48,9 +48,7 @@ monte0dg.cpp
 andy02.cpp
 
 1. char file_cor = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
-
 2. int motif_len = length of motif (default value 30)
-
 3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
 
 4. int size_end = end value for the number of LPDs (default value 90)
