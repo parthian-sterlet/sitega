@@ -5,8 +5,10 @@ in Linux system GCC compuler https://gcc.gnu.org/
 in Windiws system Microsoft Visual C++, e.g. https://visualstudio.microsoft.com/vs/express/
 
 # Description
-Previous SiteGA version required the alignment of binding sites, see of the description of the algorithm here
+Previous SiteGA version required the alignment of binding sites
+
 Levitsky et al. Effective transcription factor binding site prediction using a combination of optimization, a genetic algorithm and discriminant analysis to capture distant interactions. BMC Bioinformatics 8, 481 (2007). https://doi.org/10.1186/1471-2105-8-481
+
 Current SiteGA version represented the algorithm of previous version (2007) adopted for de novo search in ChIP-seq dataset, i.e. the alignment of binding sites is not required
 
 # Source code
@@ -93,9 +95,9 @@ andy1_mat.cpp
 
 3file_train = facultative file (default value train.fa)
 
-4thr = threshold for  sitega model
+4thr = threshold for sitega model
 
-5cmpl = default value 2 
+5cmpl = DNA strand parameter, default value 2 
 
 6file.ipr = name for ouput files (default value chipseq)
 
@@ -128,5 +130,5 @@ I.e. after the header of each peak with first '>' symbol from 0 to several line 
 
 ## set threshold for a model
 
-sitega_thr_dist_mat.cpp compute the distribition of sitega scores, output file (3rd parameter of command line) represents two columns with thresholds and respective FPRs, e.g.
+sitega_thr_dist_mat.cpp computes the distribition of sitega scores, output file (3rd parameter of command line) represents two columns with thresholds and respective FPRs, e.g.
 https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr
