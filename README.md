@@ -115,7 +115,7 @@ andy1_mat.cpp
 
 ## preparation
 
-monte0dg.cpp creates file with **mnt** extention https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt that may used for training (andy02.cpp) or performance evaluation andy0bsn2.cpp)
+monte0dg.cpp creates file with **mnt** extention https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt that may be used for training (andy02.cpp) or performance evaluation (andy0bsn2.cpp)
 
 ## train a model
 
