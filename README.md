@@ -21,17 +21,17 @@ andy02.cpp  trains a model with a given train ChIP-seq dataset (peaks)
 andy0bsn2.cpp performs the bootsrap cross validation test to estimate the performance of a model with a given train ChIP-seq dataset
 ## set threshold for a model
 sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cpp) based on score distribution for a background dataset
-## scan test sequences with a model
+## scan sequences with a model
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 
-Pairs of modules {preparation, train a model} and {preparation, estimate accuracy for a model} are tightly related, i.e. the second module each time requires the result of the first module
+Pairs of modules **estimate accuracy for a model** and **train a model** modules must run with [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **preparation** module
 
-Modules {set threshold for a model} and {scan test seauences with a model} require the sitega model which should be previosly computed by {train a model} module
+Modules **set threshold for a model** and **scan test seauences with a model** require the sitega model which should be previosly computed by {train a model} module
 
-Module {set threshold for a model} only helps to select a correct threshold, since scan module {test seauences with a model} takes the threshold from command line
+Module **set threshold for a model** only helps to select a correct threshold, since scan module **scan test sequences with a model** module takes the threshold from command line
 
 # How to run separate modules
-command line arguments below described for each module
+List of command line arguments for all modules are described below.
 
 ## preparation
 
@@ -64,10 +64,10 @@ andy0bsn2.cpp
 
 sitega_thr_dist_mat.cpp
 1. sitega_matrix_file = [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
-2. file_profile_fasta = background dataset (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse, respectively)
+2. file_profile_fasta = background dataset (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse data, respectively)
 3. file out_dist = output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
-4. double pvalue_large = low bound for FPR (default value 0.0005)
-5. double score_min = low bound for tested threshold of SiteGA model (default value 0.997)
+4. double pvalue_large = maximal FPR (default value 0.0005)
+5. double score_min = lowest threshold of SiteGA model (default value 0.997)
 6. double dpvalue = granulation value for FPR compaction in table (threshold vs. FPR), default value 0.0000000005 implies the absence of compaction
 
 ## scan test sequences with a model
