@@ -10,7 +10,7 @@ Previous SiteGA version required the alignment of binding sites (Levitsky et al.
 Current SiteGA version represented the algorithm of previous version (2007) adopted for de novo search in ChIP-seq dataset, i.e. the alignment of binding sites is not required
 
 # Source code
-Folder src contains five files with sitega source codes in c++ language, they respect to separate modules of pipeline analysis. 
+Folder **src** contains five files with sitega source codes in c++ language, they respect to separate modules of pipeline analysis. 
 ## preparation
 monte0dg.cpp prepare parameter file to train a model (andy02.cpp) or perform the bootsrap cross validation test (andy0bsn2.cpp)
 ## train a model
@@ -115,19 +115,19 @@ andy1_mat.cpp
 
 ## preparation
 
-monte0dg.cpp creates file with {mnt} extention https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt that may used for training (andy02.cpp) or performance evaluation andy0bsn2.cpp)
+monte0dg.cpp creates file with **mnt** extention https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt that may used for training (andy02.cpp) or performance evaluation andy0bsn2.cpp)
 
 ## train a model
 
-andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned in 3rd, 4th and 5th parameters of command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed according to FPR estimated (see file with {train.txt} extension). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in file with {mat} extention, https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat
+andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned in 3rd, 4th and 5th parameters of command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed according to FPR estimated (see file with {train.txt} extension). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in file with **mat** extention, https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat
 
 ## estimate accuracy for a model
 
-andy0bsn2.cpp may several tomes gradually construct several sitega models (parameter 7th num_iterations), but each time use only a part of dataset for training, the rest part of dataset is used to estimate FPR). Results represent the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. The stored in file with extentsion {bs1.txt} https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt
+andy0bsn2.cpp may several tomes gradually construct several sitega models (parameter 7th num_iterations), but each time use only a part of dataset for training, the rest part of dataset is used to estimate FPR). Results represent the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. The stored in file with extentsion **bs1.txt** https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt
 
 ## scan test seauences with a model
 
-andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file respect to 6th parameter of command line, the format of output file is following https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile
+andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file respect to 6th parameter of command line, the format of output **profile** file is following https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile
 I.e. after the header of each peak with first '>' symbol from zero to several lines respect to separate hits, for each hit are printed the start position, score, strand and whole sequence 
 
 ## set threshold for a model
