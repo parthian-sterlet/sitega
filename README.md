@@ -1,8 +1,12 @@
-# sitega
+# SiteGA
 Requirement
 To compile exetubable codes from source codes, you need:
 Linux - GCC compuler https://gcc.gnu.org/ 
 Windiws - Microsoft Visual C++, e.g. https://visualstudio.microsoft.com/vs/express/
+
+Previous SiteGA version required the alignment of binding sites, see of the description of the algorithm here
+Levitsky et al. Effective transcription factor binding site prediction using a combination of optimization, a genetic algorithm and discriminant analysis to capture distant interactions. BMC Bioinformatics 8, 481 (2007). https://doi.org/10.1186/1471-2105-8-481
+Current SiteGA version represents the same algorithm adopted for de novo search in ChIP-seq dataset, i.e. the alignment of binding sites is not required
 
 Folder src contains five files with sitega source codes, c++ language
 
