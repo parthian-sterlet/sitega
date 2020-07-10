@@ -19,14 +19,14 @@ andy02.cpp  trains a model with a given train ChIP-seq dataset (peaks)
 andy0bsn2.cpp performs the bootsrap cross validation test to estimate the performance of a model with a given train ChIP-seq dataset
 ## set threshold for a model
 sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cpp) based on score distribution for a background dataset
-## scan test seauences with a model
+## scan test sequences with a model
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 
-Among all modules pair of modules {preparation, train a model} and {preparation, estimate accuracy for a model} are tightly related, i.e. the second module each time require the result of the first module. 
+Pairs of modules {preparation, train a model} and {preparation, estimate accuracy for a model} are tightly related, i.e. the second module each time requires the result of the first module
 
-{set threshold for a model} and {scan test seauences with a model} modules and require the sitega model which should be previosly computed by {train a model} module
+Modules {set threshold for a model} and {scan test seauences with a model} require the sitega model which should be previosly computed by {train a model} module
 
-{set threshold for a model} module only helps to select a correct threshold, since scan module {test seauences with a model} takes the threshold from command line
+Module {set threshold for a model} only helps to select a correct threshold, since scan module {test seauences with a model} takes the threshold from command line
 
 # How to run separate modules
 command line arguments below described for each module
