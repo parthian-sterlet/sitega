@@ -12,16 +12,16 @@ Previous SiteGA version required the alignment of binding sites, [Levitsky et al
 Current SiteGA version represented the algorithm of previous version (2007) adopted for de novo search in a ChIP-seq dataset, i.e. the alignment of binding sites is not required
 
 # Source code
-Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains five files with SiteGA source codes, they respect to separate modules of pipeline analysis. 
-## Module 1: Preparation
+Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains five files with SiteGA source codes, they respect to five separate modules of pipeline: 
+## 1. Preparation
 monte0dg.cpp prepares parameter file to train a model (andy02.cpp) or perform the bootsrap cross validation test (andy0bsn2.cpp)
-## Module 2: Train a model
+## 2. Train a model
 andy02.cpp  trains a model with a given train ChIP-seq dataset (peaks)
-## Module 3: Estimate accuracy for a model
+## 3. Estimate accuracy for a model
 andy0bsn2.cpp performs the bootsrap cross validation test to estimate the performance of a model with a given train ChIP-seq dataset
-## Module 4: Set threshold for a model
+## 4. Set threshold for a model
 sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cpp) based on score distribution for a background dataset
-## Module 5: Scan test sequences with a model
+## 5. Scan test sequences with a model
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 
 ## Interaction of modules
