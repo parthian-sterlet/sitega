@@ -50,9 +50,7 @@ andy02.cpp
 1. char file_cor = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 2. int motif_len = length of motif (default value 30)
 3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
-
 4. int size_end = end value for the number of LPDs (default value 90)
-
 5. int size_dif = variation value for the number of LPDs (default value 10)
 
 ## estimate accuracy for a model
@@ -60,58 +58,38 @@ andy02.cpp
 andy0bsn2.cpp
 
 1. char file_cor = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
-
-2int motif_len = length of motif (integer value respecting to the optimal length of a traditional position weight matrix is recommended, default value 30 usually brought good results)
-
-3int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
-
-4int size_end = end value for the number of LPDs (default value 90)
-
-5int size_dif = variation value for the number of LPDs (default value 10)
-
-6double ratio_cnt_of_all  = ratio of the number of peaks to the number of control peaks (default value 10)
-
-7int num_iterations = number of iteration in bootatrap (default 1), but it is recomended to run bootstrap several times (at least 5 runs) to get reliable results
+2. int motif_len = length of motif (integer value respecting to the optimal length of a traditional position weight matrix is recommended, default value 30 usually brought good results)
+3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
+4. int size_end = end value for the number of LPDs (default value 90)
+5. int size_dif = variation value for the number of LPDs (default value 10)
+6. double ratio_cnt_of_all  = ratio of the number of peaks to the number of control peaks (default value 10)
+7. int num_iterations = number of iteration in bootatrap (default 1), but it is recomended to run bootstrap several times (at least 5 runs) to get reliable results
 
 ## set threshold for a model
 
 sitega_thr_dist_mat.cpp
 
-1sitega_matrix_file = [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
-
-2file_profile_fasta = background dataset (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse, respectively)
-
-3file out_dist = output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
-
-4double pvalue_large = low bound for FPR (default value 0.0005)
-
-5double score_min = low bound for tested threshold of SiteGA model (default value 0.997)
-
-6double dpvalue = granulation value for FPR compaction in table (threshold vs. FPR), default value 0.0000000005 implies the absence of compaction
+1. sitega_matrix_file = [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
+2. file_profile_fasta = background dataset (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse, respectively)
+3. file out_dist = output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
+4. double pvalue_large = low bound for FPR (default value 0.0005)
+5. double score_min = low bound for tested threshold of SiteGA model (default value 0.997)
+6. double dpvalue = granulation value for FPR compaction in table (threshold vs. FPR), default value 0.0000000005 implies the absence of compaction
 
 ## scan test sequences with a model
 
 andy1_mat.cpp
 
-1file.seq = test file has the same format as [fasta file of peaks], non ('a', 'c', 'g' and 't') nucleotides are ignored
-
-2sitega_matrix_file = [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
-
-3file_train = facultative file (default value train.fa)
-
-4thr = threshold for sitega model, it is recommended to use [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) from **set threshold for a model** module
-
-5cmpl = DNA strand parameter, default value 2 
-
-6file.ipr = [profile file](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile) with recognized hits
-
-7seq_head = (default value = 1)
-
-8print_pos = (default value = 1)
-
-9site_desc = (default value = 0)
-
-10bit = (default value = 300)
+1. file.seq = test file has the same format as [fasta file of peaks], non ('a', 'c', 'g' and 't') nucleotides are ignored
+2. sitega_matrix_file = [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
+3. file_train = facultative file (default value train.fa)
+4. thr = threshold for sitega model, it is recommended to use [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) from **set threshold for a model** module
+5. cmpl = DNA strand parameter, default value 2 
+6. file.ipr = [profile file](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile) with recognized hits
+7. seq_head = (default value = 1)
+8. print_pos = (default value = 1)
+9. site_desc = (default value = 0)
+10. bit = (default value = 300)
 
 # Interpretation of results
 
