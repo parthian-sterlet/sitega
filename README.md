@@ -7,7 +7,7 @@ in Linux system [GCC](https://gcc.gnu.org/) compuler
 in Windiws system [Microsoft Visual C++](https://visualstudio.microsoft.com/vs/express/)
 
 # Description
-Previous SiteGA version required the alignment of binding sites, [SiteGA paper](https://doi.org/10.1186/1471-2105-8-481)
+Previous SiteGA version required the alignment of binding sites, [Levitsky et al., 2007](https://doi.org/10.1186/1471-2105-8-481)
 
 Current SiteGA version represented the algorithm of previous version (2007) adopted for de novo search in ChIP-seq dataset, i.e. the alignment of binding sites is not required
 
@@ -39,15 +39,15 @@ monte0dg.cpp
 
 1int reg = length of region of one locally positioned dinucleotide (default value 6)
 
-2file seq = peaks (fasta file) https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
+2file seq = peaks [fasta file](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa) each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
 
-3file out = output file = parameter file from monte0dg.cpp https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt
+3file out = output file = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 
 ## train a model
 
 andy02.cpp
 
-1char file_cor = parameter file from monte0dg.cpp https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt
+1char file_cor = [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 
 2int motif_len = length of motif (default value 30)
 
@@ -59,7 +59,7 @@ andy02.cpp
 
 andy0bsn2.cpp
 
-1char file_cor = parameter file from monte0dg.cpp https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt
+1char file_cor =[parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 
 2int motif_len = length of motif (integer value respecting to the optimal length of a traditional position weight matrix is recommended, default value 30 usually brought good results)
 
@@ -77,7 +77,7 @@ andy0bsn2.cpp
 
 sitega_thr_dist_mat.cpp
 
-1sitega_matrix_file = file with sitega model https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat
+1sitega_matrix_file = [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
 
 2file_profile_fasta = background dataset (unzip files from folder genomes, use hs* & mm* files for human & mouse, respectively)
 
