@@ -67,7 +67,7 @@ andy0bsn2.cpp
 
 6double ratio_cnt_of_all(0=jk)  = ratio of the number of peaks to the number of control peaks (default value 10)
 
-7int num_iterations = bumber of iteration in bootatrap (default 1), but it is recomended to run bootstrap several times to get reliable results
+7int num_iterations = number of iteration in bootatrap (default 1), but it is recomended to run bootstrap several times (at least 5 runs) to get reliable results
 
 ## set threshold for a model
 
