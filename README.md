@@ -81,7 +81,7 @@ sitega_thr_dist_mat.cpp
 
 2file_profile_fasta = background dataset (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse, respectively)
 
-3file out_dist = output file, table SiteGA model threshold vs. False Positive Rate (FPR)
+3file out_dist = output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
 
 4double pvalue_large = low bound for FPR (default value 0.0005)
 
@@ -99,11 +99,11 @@ andy1_mat.cpp
 
 3file_train = facultative file (default value train.fa)
 
-4thr = threshold for sitega model
+4thr = threshold for sitega model, it is recommended to use [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) from **set threshold for a model** module
 
 5cmpl = DNA strand parameter, default value 2 
 
-6file.ipr = name for ouput files (default value chipseq)
+6file.ipr = [profile file](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile) with recognized hits
 
 7seq_head = (default value = 1)
 
@@ -134,4 +134,4 @@ I.e. after the header of each peak with first '>' symbol from zero to several li
 
 ## set threshold for a model
 
-sitega_thr_dist_mat.cpp computes the distribition of sitega scores, output [table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) (3rd parameter of command line) represents two columns with thresholds and respective FPRs
+sitega_thr_dist_mat.cpp computes the distribition of sitega scores, output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) (3rd parameter of command line) represents two columns with thresholds and respective FPRs
