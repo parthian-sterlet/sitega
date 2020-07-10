@@ -31,7 +31,7 @@ command line arguments below described for each module
 
 monte0dg.cpp 
 
-1int reg = length of region (default value 6)
+1int reg = length of region of one locally positioned dinucleotide (default value 6)
 
 2file seq = peaks (fasta file) https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
 
@@ -43,13 +43,11 @@ andy02.cpp
 
 1char file_cor = parameter file from monte0dg.cpp https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt
 
-2int motif_len = length of motif (integer value above 30 is recommended, default value 30)
+2int motif_len = length of motif (default value 30)
 
-3int size_start = start value for the number of locally positioned dinucleotides (default value 10)
+4int size_end = end value for the number of LPDs (default value 90)
 
-4int size_end = end value for the number of locally positioned dinucleotides (default value 90)
-
-5int size_dif = variation value for the number of locally positioned dinucleotides (default value 10)
+5int size_dif = variation value for the number of LPDs (default value 10)
 
 ## estimate accuracy for a model
 
@@ -59,11 +57,11 @@ andy0bsn2.cpp
 
 2int motif_len = length of motif (integer value above 30 is recommended, default value 30)
 
-3int size_start = start value for the number of locally positioned dinucleotides (default value 10)
+3int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
 
-4int size_end = end value for the number of locally positioned dinucleotides (default value 90)
+4int size_end = end value for the number of LPDs (default value 90)
 
-5int size_dif = variation value for the number of locally positioned dinucleotides (default value 10)
+5int size_dif = variation value for the number of LPDs (default value 10)
 
 6double ratio_cnt_of_all(0=jk)  = ratio of the number of peaks to the number of control peaks (default value 10)
 
@@ -125,8 +123,8 @@ andy0bsn2.cpp may several tomes gradually construct several sitega models (param
 
 ## scan test seauences with a model
 
-andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file  respect to 6th parameter of command line, the format of output file is following https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile
-I.e. after the header of each peak with first '>' symbol from 0 to several line respect to separate hits, for each hit are printed the start position, score, strand and sequence
+andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file respect to 6th parameter of command line, the format of output file is following https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile
+I.e. after the header of each peak with first '>' symbol from zero to several lines respect to separate hits, for each hit are printed the start position, score, strand and whole sequence 
 
 ## set threshold for a model
 
