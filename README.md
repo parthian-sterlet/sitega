@@ -39,7 +39,7 @@ List of command line arguments for all modules are described below.
 monte0dg.cpp 
 1. int reg = length of region of one locally positioned dinucleotide (default value 6)
 2. file seq = [fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa) each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
-3. file out = output [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
+3. file out = output [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt)
 
 ## Train a model
 
@@ -64,7 +64,7 @@ andy0bsn2.cpp
 ## Set threshold for a model
 
 sitega_thr_dist_mat.cpp
-1. sitega_matrix_file = input [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
+1. sitega_matrix_file = input [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from andy02.cpp
 2. file_profile_fasta = background dataset (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse data, respectively)
 3. file out_dist = output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
 4. double pvalue_large = maximal FPR (default value 0.0005)
@@ -75,7 +75,7 @@ sitega_thr_dist_mat.cpp
 
 andy1_mat.cpp
 1. file.seq = input test file has the same format as [fasta file of peaks], non ('a', 'c', 'g' and 't') nucleotides are ignored
-2. sitega_matrix_file = input [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
+2. sitega_matrix_file = input [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from andy02.cpp
 3. file_train = facultative file (default value train.fa)
 4. thr = threshold for sitega model, it is recommended to use [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) from **set threshold for a model** module
 5. cmpl = DNA strand parameter, default value 2 
