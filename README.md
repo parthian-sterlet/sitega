@@ -63,7 +63,7 @@ sitega_thr_dist_mat.cpp (threshold selection for a scaner by false positive rate
 
 # Interpretation of results
 
-monte0dg.cpp creates file with {mnt} extention https://github.com/parthian-sterlet/sitega/blob/master/examples/GSM1537597_CREB1_mm10_4000.mnt that may used for training (andy02.cpp) or performance evaluation andy0bsn2.cpp)
+monte0dg.cpp creates file with {mnt} extention https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt that may used for training (andy02.cpp) or performance evaluation andy0bsn2.cpp)
 
 andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned in 3rd, 4th and 5th parameters of command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed according to FPR estimated (see file with {train.txt} extension). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in file with {mat} extention, https://github.com/parthian-sterlet/sitega/blob/master/examples/model
 
