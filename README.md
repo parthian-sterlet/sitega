@@ -11,25 +11,39 @@ Current SiteGA version represented the algorithm of previous version (2007) adop
 
 # Source code
 Folder src contains five files with sitega source codes in c++ language, they respect to separate modeules of pipeline analysis:
+## preparation
 monte0dg.cpp prepare parameter file to train a model (andy02.cpp) or perform the bootsrap cross validation test (andy0bsn2.cpp)
-andy02.cpp trains a model with a given train ChIP-seq dataset (peaks)
+## train a model
+andy02.cpp  trains a model with a given train ChIP-seq dataset (peaks)
+## estimate accuracy for a model
 andy0bsn2.cpp performs the bootsrap cross validation test to estimate the performance of a model with a given train ChIP-seq dataset
-andy1_mat.cpp scans a fasta file with DNA sequences with a given model
+## set threshold for a model
 sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cpp) based on score distribution for a background dataset
+## scan test seauences with a model
+andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 
 # How to run separate modules
 command line arguments below described for each module
 
-monte0dg.cpp (preparation step to train a model):
+## preparation
+monte0dg.cpp 
+
 1int reg = length of region (default value 6)
 2file seq = peaks (fasta file) https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
 3file out = output file = parameter file from monte0dg.cpp https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt
 
-andy02.cpp (train a model):
+## train a model
+
+andy02.cpp
+
 1char file_cor = parameter file from monte0dg.cpp https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt
+
 2int motif_len = length of motif (integer value above 30 is recommended, default value 30)
+
 3int size_start = start value for the number of locally positioned dinucleotides (default value 10)
+
 4int size_end = end value for the number of locally positioned dinucleotides (default value 90)
+
 5int size_dif = variation value for the number of locally positioned dinucleotides (default value 10)
 
 andy0bsn2.cpp (performace estimation by cross-validation):
@@ -70,11 +84,9 @@ andy02.cpp gradually constructs several sitega models, with the numbers of local
 andy0bsn2.cpp may several tomes gradually construct several sitega models (parameter 7th num_iterations), but each time use only a part of dataset for training, the rest part of dataset is used to estimate FPR). Results represent the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. The stored in file with extentsion {bs1.txt} https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt
 
 andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file  respect to 6th parameter of command line, the format of output file is following
-
 https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile
 
 after the header of each peak with first '>' symbol from 0 to several line respect to separate hits, for each hit are printed the start position, score, strand and sequence
 
 sitega_thr_dist_mat.cpp compute the distribition of sitega scores, output file (3rd parameter of command line) represents two columns with thresholds and respective FPRs, e.g.
-
 https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr
