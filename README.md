@@ -1,7 +1,7 @@
 # SiteGA
 # Requirement
 To compile exetubable codes from source codes, you need:
-Linux - GCC compuler https://gcc.gnu.org/ 
+Linux - GCC compuler https://gcc.gnu.org/
 Windiws - Microsoft Visual C++, e.g. https://visualstudio.microsoft.com/vs/express/
 
 # Description
