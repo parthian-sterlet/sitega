@@ -13,17 +13,18 @@ Current SiteGA version represented the algorithm of previous version (2007) adop
 
 # Source code
 Folder **src** contains five files with sitega source codes in c++ language, they respect to separate modules of pipeline analysis. 
-## Preparation
+## Module 1: Preparation
 monte0dg.cpp prepares parameter file to train a model (andy02.cpp) or perform the bootsrap cross validation test (andy0bsn2.cpp)
-## Train a model
+## Module 2: Train a model
 andy02.cpp  trains a model with a given train ChIP-seq dataset (peaks)
-## Estimate accuracy for a model
+## Module 3: Estimate accuracy for a model
 andy0bsn2.cpp performs the bootsrap cross validation test to estimate the performance of a model with a given train ChIP-seq dataset
-## Set threshold for a model
+## Module 4: Set threshold for a model
 sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cpp) based on score distribution for a background dataset
-## Scan sequences with a model
+## Module 5: Scan sequences with a model
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 
+## Interaction of modules
 Pairs of modules **Estimate accuracy for a model** and **Train a model** modules must run with [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
 
 Modules **Set threshold for a model** and **Scan test seauences with a model** require the sitega model which should be previosly computed by **Train a model** module
