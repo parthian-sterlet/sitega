@@ -12,7 +12,7 @@ Previous SiteGA version required the alignment of binding sites, [Levitsky et al
 Current SiteGA version represented the algorithm of previous version (2007) adopted for de novo search in a ChIP-seq dataset, i.e. the alignment of binding sites is not required
 
 # Source code
-Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains five files with sitega source codes in c++ language, they respect to separate modules of pipeline analysis. 
+Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains five files with SiteGA source codes in c++ language, they respect to separate modules of pipeline analysis. 
 ## Module 1: Preparation
 monte0dg.cpp prepares parameter file to train a model (andy02.cpp) or perform the bootsrap cross validation test (andy0bsn2.cpp)
 ## Module 2: Train a model
