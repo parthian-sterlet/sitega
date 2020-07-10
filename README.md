@@ -87,7 +87,7 @@ sitega_thr_dist_mat.cpp
 
 6double dpvalue = granulation value for FPR compaction in table (threshold vs. FPR), default value 0.0000000005 implies the absence of compaction
 
-## scan test seauences with a model
+## scan test sequences with a model
 
 andy1_mat.cpp
 
@@ -125,7 +125,7 @@ andy02.cpp gradually constructs several sitega models, with the numbers of local
 
 andy0bsn2.cpp may several tomes gradually construct several sitega models (parameter 7th num_iterations), but each time use only a part of dataset for training, the rest part of dataset is used to estimate FPR). Results represent the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. The stored in file with extentsion **bs1.txt** https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt
 
-## scan test seauences with a model
+## scan test sequences with a model
 
 andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file respect to 6th parameter of command line, the format of output **profile** file is following https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile
 I.e. after the header of each peak with first '>' symbol from zero to several lines respect to separate hits, for each hit are printed the start position, score, strand and whole sequence 
