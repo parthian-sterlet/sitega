@@ -71,23 +71,10 @@ andy0bsn2.cpp may several tomes gradually construct several sitega models (param
 
 andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file  respect to 6th parameter of command line, the format of output file is following
 
->487	GSM2827249_CREB1_hg38_4000	SEQ 488	THR 0.999190
->488	GSM2827249_CREB1_hg38_4000	SEQ 489	THR 0.999190
-289	0.999362150000	-	ccggtgtgctcTGATTGGCCcaggctcttt
-408	0.999393233333	+	tggcacgcgctACCCCCTTTtgctttggtt
->489	GSM2827249_CREB1_hg38_4000	SEQ 490	THR 0.999190
-65	0.999858233333	+	gatggtgatgaTGATGGTGAtgatggtgat
-118	0.999526933333	+	gatgatgatgaTGATGGTGAttgtgatgat
-217	0.999561166667	-	ccatcatcgccGTCATCATCaccatcatca
-243	0.999853133333	+	atggtgatgatGATGGTGATgtgatgatga
+link1
 
 after the header of each peak with first '>' symbol from 0 to several line respect to separate hits, for each hit are printed the start position, score, strand and sequence
 
 sitega_thr_dist_mat.cpp compute the distribition of sitega scores, output file (3rd parameter of command line) represents two columns with thresholds and respective FPRs, e.g.
 
-1.000000000000	5.12710661275e-07
-0.999998750000	1.02542132255e-06
-0.999997900000	1.53813198382e-06
-0.999996766667	2.0508426451e-06
-0.999995533333	2.56355330637e-06
-0.999994733333	3.07626396765e-06
+link2
