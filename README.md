@@ -76,28 +76,45 @@ sitega_thr_dist_mat.cpp (threshold selection for a scaner by false positive rate
 andy1_mat.cpp (scaner to apply a trained model for a test file)
 
 1file.seq = test file
+
 2sitega_matrix_file = file with sitega model https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat
+
 3file_train = facultative file (default value train.fa)
+
 4thr = threshold for  sitega model
+
 5cmpl = default value 2 
+
 6file.ipr = name for ouput files (default value chipseq)
+
 7seq_head = (default value = 1)
+
 8print_pos = (default value = 1)
+
 9site_desc = (default value = 0)
+
 10bit = (default value = 300)
 
 # Interpretation of results
 
+## preparation
+
 monte0dg.cpp creates file with {mnt} extention https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt that may used for training (andy02.cpp) or performance evaluation andy0bsn2.cpp)
+
+## train a model
 
 andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned in 3rd, 4th and 5th parameters of command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed according to FPR estimated (see file with {train.txt} extension). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in file with {mat} extention, https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat
 
+## estimate accuracy for a model
+
 andy0bsn2.cpp may several tomes gradually construct several sitega models (parameter 7th num_iterations), but each time use only a part of dataset for training, the rest part of dataset is used to estimate FPR). Results represent the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. The stored in file with extentsion {bs1.txt} https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt
 
-andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file  respect to 6th parameter of command line, the format of output file is following
-https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile
+## scan test seauences with a model
 
-after the header of each peak with first '>' symbol from 0 to several line respect to separate hits, for each hit are printed the start position, score, strand and sequence
+andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file  respect to 6th parameter of command line, the format of output file is following https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile
+I.e. after the header of each peak with first '>' symbol from 0 to several line respect to separate hits, for each hit are printed the start position, score, strand and sequence
+
+## set threshold for a model
 
 sitega_thr_dist_mat.cpp compute the distribition of sitega scores, output file (3rd parameter of command line) represents two columns with thresholds and respective FPRs, e.g.
 https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr
