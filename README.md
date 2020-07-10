@@ -31,6 +31,8 @@ Modules **Set threshold for a model** and **Scan test seauences with a model** r
 
 Module **Set threshold for a model** only helps to select a correct threshold for **Scan test sequences with a model** module, since this scannig module takes the threshold from command line
 
+Module **Estimate accuracy for a model** is not required for functionality of **Set threshold for a model** and **Scan test seauences with a model** modules, estimates of False Positive Rate for a [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) may be retrieved from results of testing with trining data, i.e. see file with *{train.txt}* extension [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt)
+
 # How to run separate modules
 List of command line arguments for all modules are described below.
 
