@@ -2,11 +2,9 @@
 # Requirement
 To compile exetubable codes from source codes, you need:
 
-in Linux system GCC compuler https://gcc.gnu.org/
+in Linux system [GCC](https://gcc.gnu.org/) compuler 
 
-in Windiws system Microsoft Visual C++, e.g. https://visualstudio.microsoft.com/vs/express/
-
-[link to Google!](http://google.com)
+in Windiws system [Microsoft Visual C++](https://visualstudio.microsoft.com/vs/express/)
 
 # Description
 Previous SiteGA version required the alignment of binding sites (Levitsky et al. (2007) Effective transcription factor binding site prediction using a combination of optimization, a genetic algorithm and discriminant analysis to capture distant interactions. *BMC Bioinformatics* 8, 481 https://doi.org/10.1186/1471-2105-8-481)
