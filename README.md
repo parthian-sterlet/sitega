@@ -24,11 +24,11 @@ sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cp
 ## scan test seauences with a model
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 
-Among all modules {preparation, train a model} and {preparation, estimate accuracy for a model} are tightly related, i.e. the second module each time require the result of the first module. 
+Among all modules pair of modules {preparation, train a model} and {preparation, estimate accuracy for a model} are tightly related, i.e. the second module each time require the result of the first module. 
 
-{set threshold for a model} {scan test seauences with a model} modules and require the sitega model which should be previosly computed by {train a model} module
+{set threshold for a model} and {scan test seauences with a model} modules and require the sitega model which should be previosly computed by {train a model} module
 
-{set threshold for a model} only helps to select correct threshold, since scan module {test seauences with a model} takes the threshold from command line
+{set threshold for a model} module only helps to select a correct threshold, since scan module {test seauences with a model} takes the threshold from command line
 
 # How to run separate modules
 command line arguments below described for each module
@@ -69,7 +69,7 @@ andy0bsn2.cpp
 
 5int size_dif = variation value for the number of LPDs (default value 10)
 
-6double ratio_cnt_of_all(0=jk)  = ratio of the number of peaks to the number of control peaks (default value 10)
+6double ratio_cnt_of_all  = ratio of the number of peaks to the number of control peaks (default value 10)
 
 7int num_iterations = number of iteration in bootatrap (default 1), but it is recomended to run bootstrap several times (at least 5 runs) to get reliable results
 
