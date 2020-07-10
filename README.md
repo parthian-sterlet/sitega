@@ -18,7 +18,7 @@ monte0dg.cpp prepares parameter file to train a model (andy02.cpp) or perform th
 ## 2. Train a model
 andy02.cpp  trains a model with a given train ChIP-seq dataset (peaks)
 ## 3. Estimate accuracy for a model
-andy0bsn2.cpp performs the bootsrap cross validation test to estimate the performance of a model with a given train ChIP-seq dataset
+andy0bsn2.cpp performs the bootsrap cross-validation test to estimate the performance of a model with a given train ChIP-seq dataset
 ## 4. Set threshold for a model
 sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cpp) based on score distribution for a background dataset
 ## 5. Scan test sequences with a model
@@ -31,7 +31,7 @@ Modules **Set threshold for a model** and **Scan test seauences with a model** r
 
 Module **Set threshold for a model** only helps to select a correct threshold for **Scan test sequences with a model** module, since this scannig module takes the threshold from command line
 
-Module **Estimate accuracy for a model** is not required for functionality of **Set threshold for a model** and **Scan test seauences with a model** modules, estimates of False Positive Rate for a [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) may be retrieved from results of testing with trining data, i.e. see file with *{train.txt}* extension [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt)
+Module **Estimate accuracy for a model** is not required for functionality of **Set threshold for a model** and **Scan test seauences with a model** modules. Though only bootstrap procedure correctly evaluates the accuracy, estimates of False Positive Rate for a [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) may be retrieved from results of testing with training data, i.e. see file with *{train.txt}* extension [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt)
 
 # How to run separate modules
 List of command line arguments for all modules are described below.
