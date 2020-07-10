@@ -22,7 +22,7 @@ command line arguments below described for each module
 
 monte0dg.cpp (preparation step to train a model):
 1int reg = length of region (default value 6)
-2file seq = peaks (fasta file) https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa each peaks should contain from 4 letters respecting to nucleotides, i.e. 'n' is forbidden
+2file seq = peaks (fasta file) https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
 3file out = output file = parameter file from monte0dg.cpp https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt
 
 andy02.cpp (train a model):
