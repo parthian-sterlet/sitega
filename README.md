@@ -63,7 +63,6 @@ andy0bsn2.cpp
 ## set threshold for a model
 
 sitega_thr_dist_mat.cpp
-
 1. sitega_matrix_file = [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
 2. file_profile_fasta = background dataset (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse, respectively)
 3. file out_dist = output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
@@ -74,7 +73,6 @@ sitega_thr_dist_mat.cpp
 ## scan test sequences with a model
 
 andy1_mat.cpp
-
 1. file.seq = test file has the same format as [fasta file of peaks], non ('a', 'c', 'g' and 't') nucleotides are ignored
 2. sitega_matrix_file = [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
 3. file_train = facultative file (default value train.fa)
