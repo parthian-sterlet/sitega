@@ -132,5 +132,4 @@ I.e. after the header of each peak with first '>' symbol from zero to several li
 
 ## set threshold for a model
 
-sitega_thr_dist_mat.cpp computes the distribition of sitega scores, output file (3rd parameter of command line) represents two columns with thresholds and respective FPRs, e.g.
-https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr
+sitega_thr_dist_mat.cpp computes the distribition of sitega scores, output **table** file (3rd parameter of command line) represents two columns with thresholds and respective FPRs, e.g. https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr
