@@ -71,10 +71,10 @@ andy0bsn2.cpp may several tomes gradually construct several sitega models (param
 
 andy1_mat.cpp takes ready sitega model and threshold and construct the profile of hits for tested file in fasta format, main ouput file  respect to 6th parameter of command line, the format of output file is following
 
-link1
+https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile
 
 after the header of each peak with first '>' symbol from 0 to several line respect to separate hits, for each hit are printed the start position, score, strand and sequence
 
 sitega_thr_dist_mat.cpp compute the distribition of sitega scores, output file (3rd parameter of command line) represents two columns with thresholds and respective FPRs, e.g.
 
-link2
+https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr
