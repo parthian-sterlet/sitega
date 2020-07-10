@@ -54,21 +54,33 @@ andy02.cpp
 andy0bsn2.cpp (performace estimation by cross-validation):
 
 1char file_cor = parameter file from monte0dg.cpp
+
 2int motif_len = length of motif (integer value above 30 is recommended, default value 30)
+
 3int size_start = start value for the number of locally positioned dinucleotides (default value 10)
+
 4int size_end = end value for the number of locally positioned dinucleotides (default value 90)
+
 5int size_dif = variation value for the number of locally positioned dinucleotides (default value 10)
+
 6double ratio_cnt_of_all(0=jk)  = ratio of the number of peaks to the number of control peaks (default value 10)
+
 7int num_iterations = bumber of iteration in bootatrap (default 1), but it is recomended to run bootstrap several times to get reliable results
 
 ## set threshold for a model
 
 sitega_thr_dist_mat.cpp (threshold selection for a scaner by false positive rate):
+
 1sitega_matrix_file = file with sitega model https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat
+
 2file_profile_fasta = background dataset (unzip files from folder genomes, use hs* & mm* files for human & mouse, respectively)
+
 3file out_dist = output file, table SiteGA model threshold vs. False Positive Rate (FPR)
+
 4double pvalue_large = low bound for FPR (default value 0.0005)
+
 5double score_min = low bound for tested threshold of SiteGA model (default value 0.997)
+
 6double dpvalue = granulation value for FPR compaction in table (threshold vs. FPR), default value 0.0000000005 implies the absence of compaction
 
 ## scan test seauences with a model
