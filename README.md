@@ -22,11 +22,11 @@ command line arguments below described for each module
 
 monte0dg.cpp (preparation step to train a model):
 1int reg = length of region (default value 6)
-2file seq = peaks (fasta file) 
-3file out = output file = parameter file from monte0dg.cpp
+2file seq = peaks (fasta file) https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa each peaks should contain from 4 letters respecting to nucleotides, i.e. 'n' is forbidden
+3file out = output file = parameter file from monte0dg.cpp https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt
 
 andy02.cpp (train a model):
-1char file_cor = parameter file from monte0dg.cpp
+1char file_cor = parameter file from monte0dg.cpp https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt
 2int motif_len = length of motif (integer value above 30 is recommended, default value 30)
 3int size_start = start value for the number of locally positioned dinucleotides (default value 10)
 4int size_end = end value for the number of locally positioned dinucleotides (default value 90)
@@ -43,7 +43,7 @@ andy0bsn2.cpp (performace estimation by cross-validation):
 
 andy1_mat.cpp (scaner to apply a trained model for a test file)
 1file.seq = test file
-2sitega_matrix_file = file with sitega model
+2sitega_matrix_file = file with sitega model https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat
 3file_train = facultative file (default value train.fa)
 4thr = threshold for  sitega model
 5cmpl = default value 2 
@@ -54,7 +54,7 @@ andy1_mat.cpp (scaner to apply a trained model for a test file)
 10bit = (default value = 300)
 
 sitega_thr_dist_mat.cpp (threshold selection for a scaner by false positive rate):
-1sitega_matrix_file = file with sitega model
+1sitega_matrix_file = file with sitega model https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat
 2file_profile_fasta = background dataset (unzip files from folder genomes, use hs* & mm* files for human & mouse, respectively)
 3file out_dist = output file, table SiteGA model threshold vs. False Positive Rate (FPR)
 4double pvalue_large = low bound for FPR (default value 0.0005)
@@ -65,7 +65,7 @@ sitega_thr_dist_mat.cpp (threshold selection for a scaner by false positive rate
 
 monte0dg.cpp creates file with {mnt} extention https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt that may used for training (andy02.cpp) or performance evaluation andy0bsn2.cpp)
 
-andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned in 3rd, 4th and 5th parameters of command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed according to FPR estimated (see file with {train.txt} extension). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in file with {mat} extention, https://github.com/parthian-sterlet/sitega/blob/master/examples/model
+andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned in 3rd, 4th and 5th parameters of command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed according to FPR estimated (see file with {train.txt} extension). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in file with {mat} extention, https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat
 
 andy0bsn2.cpp may several tomes gradually construct several sitega models (parameter 7th num_iterations), but each time use only a part of dataset for training, the rest part of dataset is used to estimate FPR). Results represent the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. The stored in file with extentsion {bs1.txt} https://github.com/parthian-sterlet/sitega/blob/master/examples/bootstrap.txt
 
