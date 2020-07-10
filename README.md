@@ -9,7 +9,7 @@ in Windiws system [Microsoft Visual C++](https://visualstudio.microsoft.com/vs/e
 # Description
 Previous SiteGA version required the alignment of binding sites, [Levitsky et al., 2007](https://doi.org/10.1186/1471-2105-8-481)
 
-Current SiteGA version represented the algorithm of previous version (2007) adopted for de novo search in ChIP-seq dataset, i.e. the alignment of binding sites is not required
+Current SiteGA version represented the algorithm of previous version (2007) adopted for de novo search in a ChIP-seq dataset, i.e. the alignment of binding sites is not required
 
 # Source code
 Folder **src** contains five files with sitega source codes in c++ language, they respect to separate modules of pipeline analysis. 
