@@ -98,9 +98,9 @@ andy0bsn2.cpp may several tomes gradually construct several sitega models (param
 
 ## Set threshold for a model
 
-sitega_thr_dist_mat.cpp computes the distribition of sitega scores, output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) (3rd parameter of command line) represents two columns with thresholds and respective FPRs
+sitega_thr_dist_mat.cpp computes the distribition of SiteGA scores, output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) represents two columns with thresholds and respective FPRs
 
 ## Scan test sequences with a model
 
-andy1_mat.cpp takes ready sitega model and threshold  from input  [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) and constructs the profile of hits for tested file in fasta format, main output file respects to 5th parameter of command line, the format of [profile file](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile)
+andy1_mat.cpp takes ready sitega model and threshold  from input  [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) and constructs the profile of hits for tested file in fasta format, main output file is [profile file](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile)
 I.e. after the header of each peak with first '>' symbol from zero to several lines respect to separate hits, for each hit a start position, score, strand and whole sequence are printed
