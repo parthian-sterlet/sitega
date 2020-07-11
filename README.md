@@ -25,11 +25,11 @@ sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cp
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 
 ## Interactions of modules
-Pairs of modules **Estimate accuracy for a model** and **Train a model** modules must run with [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module
+Pairs of modules **Estimate accuracy for a model** and **Train a model** modules must run with [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module. See examples scripts for [training a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/train) and [bootstrap test](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap)
 
 Modules **Set threshold for a model** and **Scan test seauences with a model** require [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previosly computed by **Train a model** module
 
-Module **Set threshold for a model** is required to select a correct threshold for **Scan test sequences with a model** module
+Module **Set threshold for a model** is required to select a correct threshold for **Scan test sequences with a model** module, see example script [for training and scanning](https://github.com/parthian-sterlet/sitega/blob/master/scripts/scan)
 
 Module **Estimate accuracy for a model** is not required for functionality of **Set threshold for a model** and **Scan test seauences with a model** modules. Though only bootstrap procedure correctly evaluates the accuracy, estimates of False Positive Rate for a [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) may be retrieved from results of testing with training data (**Train a model**), i.e. see output file with *{train.txt}* extension [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt)
 
