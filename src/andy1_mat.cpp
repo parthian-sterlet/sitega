@@ -3,7 +3,7 @@
 #include  <stdio.h>
 #include  <stdlib.h>
 #include  <string.h>
-//#include  <conio.h>
+#include  <ctype.h>
 #include  <math.h>
 #include  <time.h>
 #define DIM 90
@@ -3320,27 +3320,62 @@ int main(int argc, char *argv[])
 	char head1[5000];
 	int n, ret = 0, len, i, k, len0;
 	char mess[300];
-	char sitename[100], file1[80], file2[80];
+	char sitename[120], file1[120], file2[120], file_thr_fpr[120], file_test[120], file_out_base[120];
 	int cmpl, rec_pos = 0, all_pos = 0, rec_seq = 0;
 	double *p, thr;
 	FILE  *out, *out1;
-	if (argc != 11)
+	if (argc != 6)
 	{
-		printf("andy1.exe 1file.seq  2sitename 3file_train 4thr 5cmpl 6file.ipr 7seq_head 8print_pos 9site_desc 10bit");//-shift_min -shift_max
+		printf("andy1.exe 1file.seq  2sitename 3file thr_fpr 4pval_crit 5file output_profile ");//7seq_head 8print_pos 9site_desc 10bit
 		exit(1);
 	}
+	strcpy(file_test, argv[1]);
 	strcpy(sitename, argv[2]);
-	int bit = atoi(argv[10]);
+	strcpy(file_thr_fpr, argv[3]);
+	double pval_crit = atof(argv[4]);
+	strcpy(file_out_base, argv[5]);
+	int bit = 300;// atoi(argv[10]); interval in bp for histograms
 	if (bit < 1)
 	{
 		puts("Wrong bit value"); exit(1);
+	}	
+	int site_desc = 0;// atoi(argv[9]);
+	int head_pr = 1;//atoi(argv[7]);
+	int pos_pr = 1;//atoi(argv[8]);
+	cmpl = 2;// atoi(argv[5]);	
+	{
+		
+		FILE *in_thr;
+		if ((in_thr = fopen(file_thr_fpr, "rt")) == NULL)
+		{
+			printf("Output file %s can't be opened!", file_thr_fpr);
+			exit(1);
+		}
+		char dt[200], sfp[50];
+		double thr_prev=2;
+		while (fgets(dt, sizeof(dt), in_thr) != NULL)
+		{			
+			int retu = UnderStol(dt, 1, sfp, '\t');
+			if (retu == -1)
+			{
+				printf("Table Thr..FPR Line Error %s", dt);
+				exit(1);
+			}
+			double fpr_cur = atof(sfp);
+			if (fpr_cur > pval_crit)
+			{
+				thr = thr_prev;
+				break;
+			}
+			thr_prev = atof(dt);
+		}
+		if (thr_prev == 2)
+		{
+			printf("FPR table %s Error, Program parmameter %f are bad\n", file_thr_fpr, pval_crit);
+			exit(1);
+		}
+		fclose(in_thr);
 	}
-	//int empty_pos=atoi(argv[10]);
-	int site_desc = atoi(argv[9]);
-	int head_pr = atoi(argv[7]);
-	int pos_pr = atoi(argv[8]);
-	cmpl = atoi(argv[5]);
-	thr = atof(argv[4]);
 	char alfabet[5];
 	double p_zero = 0.9, dp_zero = 1 - p_zero, step_zero = dp_zero / TEN;
 	strcpy(alfabet, "acgt");
@@ -3349,11 +3384,7 @@ int main(int argc, char *argv[])
 	alfabet[4] = '\0';
 
 	int cnt_mode = 0;
-	if (thr <= 0)
-	{
-		cnt_mode = 1;
-		thr = -thr;
-	}
+	
 	int cmpl2[2] = { 0,1 };
 	int cmpl1;
 	if (cmpl == 0)cmpl2[1] = -1;
@@ -3372,22 +3403,14 @@ int main(int argc, char *argv[])
 	int print_size = 32;
 	FILE *in;
 	int len1 = 0, len2 = 0;
-	ReadSeq(argv[1], file1, nseq, len1);
+	ReadSeq(file_test, file1, nseq, len1);
 	len = len1;
-	int nseq1 = nseq;
-	if (cnt_mode == 1)
-	{
-		ReadSeq(argv[3], file2, nseq, len2);
-		len2 *= vmix;
-		len = Max(len2, len1);
-	}
-	{
-		d = new char[len + 2];
-		if (d == NULL) { puts("Out of memory..."); exit(1); }
-		//memset(d,0,sizeof(d));
-		p = new double[len];
-		if (p == NULL) { puts("Out of memory..."); exit(1); }
-	}
+	d = new char[len + 2];
+	if (d == NULL) { puts("Out of memory..."); exit(1); }
+	//memset(d,0,sizeof(d));
+	p = new double[len];
+	if (p == NULL) { puts("Out of memory..."); exit(1); }	
+	int nseq1 = nseq;	
 	if (cnt_mode == 1)
 	{
 		qbs *q1;
@@ -3501,7 +3524,7 @@ int main(int argc, char *argv[])
 					char add[]=".ert";
 					char file_out[80];
 					memset(file_out,0,sizeof(file_out));
-					//strcpy(file_out,argv[1]);
+					//strcpy(file_out,file_test);
 					strcat(file_out,argv[2]);
 					strcat(file_out,add);
 					//strcat(file_out,"te");
@@ -3510,7 +3533,7 @@ int main(int argc, char *argv[])
 						printf("Output file can't be opened!\n");
 						exit(1);
 					}
-					//fprintf(outq,"%s\t%s\tlen\t%d\twin\t1\nFN\tFP_%.e\tZsc\tThr\n",argv[1],sitename,len0,1/(double)nseqn);
+					//fprintf(outq,"%s\t%s\tlen\t%d\twin\t1\nFN\tFP_%.e\tZsc\tThr\n",file_test,sitename,len0,1/(double)nseqn);
 					fprintf(outq,"threshold\tI type\tII type\n");
 					int exit_time=0;
 					for(n=0;n<nseq;n++)
@@ -3575,7 +3598,7 @@ int main(int argc, char *argv[])
 	}
 	char plfile[200];
 	char plfile0[200];
-	strcpy(plfile, argv[6]);
+	strcpy(plfile, file_out_base);
 	strcat(plfile, ".dns");
 	if ((out1 = fopen(plfile, "wt")) == NULL)
 	{
@@ -3583,7 +3606,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	fclose(out1);
-	strcpy(plfile0, argv[6]);
+	strcpy(plfile0, file_out_base);
 	strcat(plfile0, ".lst");
 	if ((out1 = fopen(plfile0, "wt")) == NULL)
 	{
@@ -3606,12 +3629,12 @@ int main(int argc, char *argv[])
 	FILE *out_best;
 	char file_best_score[80];
 	memset(file_best_score, 0, sizeof(file_best_score));
-	strcpy(file_best_score, argv[1]);
+	strcpy(file_best_score, file_test);
 	{
 
 		/*for(i=0;;i++)
 		{
-			char argvi=argv[1][i];
+			char argvi=file_test[i];
 			//if(argvi=='.' || argvi=='\0')break;
 			if(argvi=='\0')break;
 			file_best_score[i]=argvi;
@@ -3646,7 +3669,7 @@ int main(int argc, char *argv[])
 		pl_all[i] = 0;
 		alive_all[i] = 0;
 	}
-	if ((out = fopen(argv[6], "wt")) == NULL)
+	if ((out = fopen(file_out_base, "wt")) == NULL)
 	{
 		printf("Input file can't be opened!\n");
 		exit(1);
@@ -3867,7 +3890,7 @@ int main(int argc, char *argv[])
 					k1++;
 				}
 			}
-			if (((cmpl == 2 && cmpl1 == 1) || cmpl != 2) && strstr(argv[1], "~") == NULL)// random omitted!
+			if (((cmpl == 2 && cmpl1 == 1) || cmpl != 2) && strstr(file_test, "~") == NULL)// random omitted!
 			{
 				int j;
 				if (cmpl >= 1) if (ComplStr(d) != 1) { puts("Out of memory..."); exit(1); }
@@ -4106,7 +4129,7 @@ int main(int argc, char *argv[])
 		all_pos += dall_pos;
 		/*	if(bit_count_all>255)
 			{
-				fprintf(out,"\t%s_(%d,%.2f)\n",argv[1],tata,thr);
+				fprintf(out,"\t%s_(%d,%.2f)\n",file_test,tata,thr);
 				for(bit0=0;i<bit_count_here-bit0;i++)
 				{
 					fprintf(out,"%d",bit*(1+i));
@@ -4232,7 +4255,7 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
-		fprintf(out, "%s_DENS(%d)", argv[1], cmpl);
+		fprintf(out, "%s_DENS(%d)", file_test, cmpl);
 		for (i = bit0; i < 1 + bit_count_all - bit0; i++)
 		{
 			if (alive_all[i] != 0)fprintf(out, "\t%f", (double)pl_all[i] / alive_all[i]);
@@ -4246,12 +4269,12 @@ int main(int argc, char *argv[])
 		printf("Input file can't be opened!\n");
 		exit(1);
 	}
-	fprintf(out, "%s_(%s,%d)\t%f\t%f\t%d\t%d\t%f\t%d\t%d\t\n", argv[1], sitename, cmpl, thr, (double)rec_seq / nseq, rec_seq, nseq, (double)rec_pos / all_pos, rec_pos, all_pos);
-	printf("%s_(%s,%d, Th %f)\t%.2f\t%d\t%d\t%.2f\t%d\t%d\t\n", argv[1], sitename, cmpl, thr, (double)rec_seq / nseq, rec_seq, nseq, (double)rec_pos / all_pos, rec_pos, all_pos);
+	fprintf(out, "%s_(%s,%d)\t%f\t%f\t%d\t%d\t%f\t%d\t%d\t\n", file_test, sitename, cmpl, thr, (double)rec_seq / nseq, rec_seq, nseq, (double)rec_pos / all_pos, rec_pos, all_pos);
+	printf("%s_(%s,%d, Th %f)\t%.2f\t%d\t%d\t%.2f\t%d\t%d\t\n", file_test, sitename, cmpl, thr, (double)rec_seq / nseq, rec_seq, nseq, (double)rec_pos / all_pos, rec_pos, all_pos);
 	//	delete(p);
 	fclose(out);
 	char pltfile[200];
-	strcpy(pltfile, argv[6]);
+	strcpy(pltfile, file_out_base);
 	strcat(pltfile, ".plt");
 	if ((out = fopen(pltfile, "at")) == NULL)
 	{
@@ -4261,30 +4284,30 @@ int main(int argc, char *argv[])
 	//	fprintf(out,"\t");
 		/*
 		fprintf(out,"Thr\t");
-		fprintf(out,"SEQ_%s_%s\t",argv[1],sitename);
-		fprintf(out,"SITE_%s_%s\n",argv[1],sitename);
+		fprintf(out,"SEQ_%s_%s\t",file_test,sitename);
+		fprintf(out,"SITE_%s_%s\n",file_test,sitename);
 		for(i=0;i<TEN;i++)
 		{
 			fprintf(out,"%.6f\t",thr+(1-thr)*i/TEN);
 			fprintf(out,"%d\t",den[i].seq);
 			fprintf(out,"%d\n",den[i].sit);
 		}*/
-	fprintf(out, "SEQ_%s_%s", argv[3], argv[1]);
+	fprintf(out, "SEQ_%s", file_test);
 	for (i = TEN - 1; i >= 0; i--)
 	{
 		fprintf(out, "\t%d", den[i].seq);
 	}
 	fprintf(out, "\n");
-	//	if(strstr(argv[1],"~")!=NULL)
+	//	if(strstr(file_test,"~")!=NULL)
 	{
 		int ten1 = TEN - 1;
-		fprintf(out, "SITE_%s_%s", argv[3], argv[1]);
+		fprintf(out, "SITE_%s", file_test);
 		for (i = ten1; i >= 0; i--)
 		{
 			fprintf(out, "\t%d", den[i].sit);
 		}
 		fprintf(out, "\n");
-		fprintf(out, "Thr_%s_%s_%s", argv[3], argv[1], sitename);
+		fprintf(out, "Thr_%s_%s", file_test, sitename);
 		double thr_max = 1;
 		for (i = TEN; i >= 1; i--)
 		{
@@ -4296,5 +4319,8 @@ int main(int argc, char *argv[])
 		fprintf(out, "\n");
 	}
 	fclose(out);
+	delete[] d;
+	delete[] p;
 	return ret;
 }
+
