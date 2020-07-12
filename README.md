@@ -1,15 +1,16 @@
 # SiteGA
+
+# Description
+Previous SiteGA version 1 required the alignment of binding sites, [Levitsky et al., 2007](https://doi.org/10.1186/1471-2105-8-481)
+
+Current SiteGA version 2 represented the algorithm of previous version (2007) adopted for de novo search in a ChIP-seq dataset, i.e. the alignment of binding sites is not required (Levitsky et al., in preparation)
+
 # Requirement
 To compile exetubable codes from source code, that was written in C++ language, you need:
 
 in Linux system [GCC](https://gcc.gnu.org/) compuler 
 
 in Windiws system [Microsoft Visual C++](https://visualstudio.microsoft.com/vs/express/)
-
-# Description
-Previous SiteGA version required the alignment of binding sites, [Levitsky et al., 2007](https://doi.org/10.1186/1471-2105-8-481)
-
-Current SiteGA version represented the algorithm of previous version (2007) adopted for de novo search in a ChIP-seq dataset, i.e. the alignment of binding sites is not required
 
 # Source code
 Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains five files with SiteGA source codes, they respect to five separate modules of pipeline: 
