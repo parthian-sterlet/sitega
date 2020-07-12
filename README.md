@@ -42,13 +42,13 @@ List of command line arguments for all modules are described below.
 
 monte0dg.cpp 
 1. int reg = length of region of one locally positioned dinucleotide (default value 6)
-2. file seq = [fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa) each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
+2. file seq = input [fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa) each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
 3. file out = output file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt)
 
 ## Train a model
 
 andy02.cpp
-1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
+1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
 2. int motif_len = length of motif (default value 30)
 3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
 4. int size_end = end value for the number of LPDs (default value 90)
@@ -57,7 +57,7 @@ andy02.cpp
 ## Estimate accuracy for a model
 
 andy0bsn2.cpp
-1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
+1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
 2. int motif_len = length of motif (integer value respecting to the optimal length of a traditional position weight matrix is recommended, default value 30 usually brought good results)
 3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
 4. int size_end = end value for the number of LPDs (default value 90)
@@ -68,8 +68,8 @@ andy0bsn2.cpp
 ## Set threshold for a model
 
 sitega_thr_dist_mat.cpp
-1. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from andy02.cpp
-2. file_profile_fasta = background dataset (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse data, respectively)
+1. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
+2. file_profile_fasta = input background dataset in fasta format (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse data, respectively)
 3. output file [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
 4. double pvalue_large = maximal FPR (default value 0.0005)
 5. double score_min = lowest threshold of SiteGA model (default value 0.997)
@@ -78,17 +78,17 @@ sitega_thr_dist_mat.cpp
 ## Scan test sequences with a model
 
 andy1_mat.cpp
-1. file.seq = input test file has the same format as [fasta file of peaks], non ('a', 'c', 'g' and 't') nucleotides are ignored
-2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from andy02.cpp
+1. file.seq = input test file has the same format as [fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa), non ('a', 'c', 'g' and 't') nucleotides are ignored
+2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
 4. FPR threshold = threshold for FPR of sitega model is used to select the sitega threshold according to file [Table Threshold vs FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) from **Set threshold for a model** module
 5. input file [Threshold vs FPR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
 6. output [Profile file](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile) with recognized hits
 
 # Examples scripts:
 
-1. [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/train) - **Preparation** and  **Train a model**  modules
-2. [bootstrap test for a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap) - **Preparation** and **Estimate accuracy for a model**  modules
-3. [training and scanning with a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/scan) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model**  modules
+1. [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/train) - **Preparation** and  **Train a model** modules
+2. [bootstrap test for a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap) - **Preparation** and **Estimate accuracy for a model** modules
+3. [training and scanning with a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/scan) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model** modules
 
 Files with *.exe* extention denote compiled coded
 
@@ -96,11 +96,11 @@ Files with *.exe* extention denote compiled coded
 
 ## Preparation
 
-monte0dg.cpp creates file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that may be used for training (andy02.cpp) or performance evaluation (andy0bsn2.cpp)
+monte0dg.cpp creates file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that may be used for training (**Train a model** module) or performance evaluation (**Estimate accuracy for a model** module)
 
 ## Train a model
 
-andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned according to 3rd, 4th and 5th parameters of the command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed by FPR estimated (see file with *{train.txt}* extension, it has the same format as output file of accuracy estimation procedure [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
+andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned according to 3rd, 4th and 5th parameters of the command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed by FPR estimated (see file with *{train.txt}* extension, it has the same format as output file of accuracy estimation procedure [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in output file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with *.mat* extension
 
 ## Estimate accuracy for a model
 
