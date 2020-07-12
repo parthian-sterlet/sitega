@@ -35,12 +35,6 @@ Module **Set threshold for a model** is required to select a correct threshold f
 
 Module **Estimate accuracy for a model** is not required for functionality of **Set threshold for a model** and **Scan test seauences with a model** modules. Though only bootstrap procedure correctly evaluates the accuracy (see block **ROC curve, control data**), estimates of False Positive Rate for a [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) may be retrieved from results of testing with training data (**Train a model**), i.e. see output file with *{train.txt}* extension [FPR_vs_TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt), it respects to **ROC curve, training data** block on the scheme
 
-Examples scripts:
-
-1. [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/train) - **Preparation** and  **Train a model**  modules
-2. [bootstrap test for a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap) - **Preparation** and **Estimate accuracy for a model**  modules
-3. [training and scanning with a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/scan) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model**  modules
-
 # How to run separate modules
 List of command line arguments for all modules are described below.
 
@@ -89,6 +83,14 @@ andy1_mat.cpp
 4. FPR threshold = threshold for FPR of sitega model is used to select the sitega threshold according to file [Table Threshold vs FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) from **Set threshold for a model** module
 5. input file [Threshold vs FPR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
 6. output [Profile file](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile) with recognized hits
+
+# Examples scripts:
+
+1. [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/train) - **Preparation** and  **Train a model**  modules
+2. [bootstrap test for a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap) - **Preparation** and **Estimate accuracy for a model**  modules
+3. [training and scanning with a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/scan) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model**  modules
+
+Files with *.exe* extention denote compiled coded
 
 # Interpretation of results
 
