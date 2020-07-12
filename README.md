@@ -3,12 +3,11 @@
 # Description
 Current SiteGA version (Levitsky et al., in preparation) represented the algorithm of [(Levitsky et al., 2007)](https://doi.org/10.1186/1471-2105-8-481) adopted for *de novo* motif search in a ChIP-seq dataset
 
-# Requirement
-To compile exetubable codes from source code, that was written in C++ language, you need:
+# Requirements
+SiteGA source code was written in C++ langua. Hence, to compile exetubable codes from source code you need:
 
-in Linux system [GCC](https://gcc.gnu.org/) compuler 
-
-in Windiws system [Microsoft Visual C++](https://visualstudio.microsoft.com/vs/express/)
+* In Linux system [GCC](https://gcc.gnu.org/) compuler 
+* In Windiws system [Microsoft Visual C++](https://visualstudio.microsoft.com/vs/express/)
 
 # Source code
 Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains five files with SiteGA source codes, they respect to five separate modules of pipeline: 
