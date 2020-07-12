@@ -12,11 +12,11 @@ SiteGA source code was written in C++ language. Hence, to compile exetubables fr
 # Source code
 Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains five files with SiteGA source codes, they respect to five separate modules of pipeline: 
 ## 1. Preparation
-[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares parameter file to train a model (**Train a model** module) or perform the bootsrap cross validation test (**Estimate accuracy for a model** module)
+[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) to train a model (**Train a model** module) or perform the bootsrap cross validation test (**Estimate accuracy for a model** module)
 ## 2. Train a model
-[andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a model with a given train ChIP-seq dataset (peaks)
+[andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with a given train ChIP-seq dataset (peaks)
 ## 3. Estimate accuracy for a model
-[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to estimate the performance of a model with a given train ChIP-seq dataset, i.e. ROC curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) is computed for control data
+[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to estimate the performance of a model with a given train ChIP-seq dataset, i.e. computes ROC curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) for control data
 ## 4. Set threshold for a model
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp) creates table of thresholds for the scaner (**Scan test sequences with a model** module) based on score distribution for the background set of whole whole-genome promoters
 ## 5. Scan test sequences with a model
