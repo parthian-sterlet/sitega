@@ -43,7 +43,7 @@ List of command line arguments for all modules are described below.
 monte0dg.cpp 
 1. int reg = length of region of one locally positioned dinucleotide (default value 6)
 2. file seq = [fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa) each peak should consists of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
-3. file out = output [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt)
+3. file out = output file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt)
 
 ## Train a model
 
