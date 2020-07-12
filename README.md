@@ -90,7 +90,7 @@ andy1_mat.cpp
 2. [bootstrap test for a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap) - **Preparation** and **Estimate accuracy for a model** modules
 3. [training and scanning with a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/scan) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model** modules
 
-Files with *.exe* extention denote compiled coded
+Files with *.exe* extention denote compiled source codes
 
 # Interpretation of results
 
