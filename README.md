@@ -1,7 +1,7 @@
 # SiteGA - binding Sites recognition by Genetic Algorithm
 
 # Description
-Current SiteGA version (Levitsky et al., in preparation) represented the algorithm of [Levitsky et al. (2007)](https://doi.org/10.1186/1471-2105-8-481) adopted for *de novo* motif search in a ChIP-seq dataset. SiteGA is stochastic algorithm that searches in input sequences the pattern of mutually dependedent locally positioned dinucleotides (LPDs) that simulate short- and long-range intractions of nucleotide context within binding sites. Hence, SiteGA approach is drastically different from that of traditional Position Weight Matrix (PWM), which searches for the most conserved motifs based on additive impacts of nucleotide frequencies from various site positions
+Current SiteGA version (Levitsky et al., in preparation) represented the algorithm of [Levitsky et al. (2007)](https://doi.org/10.1186/1471-2105-8-481) adopted for *de novo* motif search in a ChIP-seq dataset. SiteGA is stochastic algorithm that searches in input sequences the pattern of mutually dependedent locally positioned dinucleotides (LPDs) that simulates short- and long-range intractions of nucleotide context within binding sites. Hence, SiteGA approach is drastically different from that of traditional Position Weight Matrix (PWM), which searches for the most conserved motifs based on additive impacts of nucleotide frequencies from various site positions
 
 # Requirements
 SiteGA source code was written in C++ language. Hence, to compile exetubables from source code you need:
