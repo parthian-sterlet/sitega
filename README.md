@@ -25,7 +25,7 @@ sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cp
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 
 ## Integration of modules
-![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega.jpg)
+![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega1.jpg)
 
 Pairs of modules **Estimate accuracy for a model** and **Train a model** modules must run with [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module. See examples scripts for [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/train) and [bootstrap test](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap)
 
@@ -68,9 +68,9 @@ andy0bsn2.cpp
 ## Set threshold for a model
 
 sitega_thr_dist_mat.cpp
-1. sitega_matrix_file = input [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from andy02.cpp
+1. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from andy02.cpp
 2. file_profile_fasta = background dataset (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse data, respectively)
-3. output [Thr_vs_FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
+3. output file [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
 4. double pvalue_large = maximal FPR (default value 0.0005)
 5. double score_min = lowest threshold of SiteGA model (default value 0.997)
 6. double dpvalue = granulation value for FPR compaction in table (Threshold vs. FPR), default value 0.0000000005 implies the absence of compaction
@@ -79,10 +79,10 @@ sitega_thr_dist_mat.cpp
 
 andy1_mat.cpp
 1. file.seq = input test file has the same format as [fasta file of peaks], non ('a', 'c', 'g' and 't') nucleotides are ignored
-2. sitega_matrix_file = input [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from andy02.cpp
-4. FPR threshold = threshold for FPR of sitega model is used to select the sitega threshold according to [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) from **Set threshold for a model** module
-5. input [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
-6. output [profile file](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile) with recognized hits
+2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from andy02.cpp
+4. FPR threshold = threshold for FPR of sitega model is used to select the sitega threshold according to file [Table Threshold vs FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) from **Set threshold for a model** module
+5. input file [Threshold vs FPR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
+6. output [Profile file](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile) with recognized hits
 
 # Interpretation of results
 
@@ -92,17 +92,17 @@ monte0dg.cpp creates [parameter file](https://github.com/parthian-sterlet/sitega
 
 ## Train a model
 
-andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned according to 3rd, 4th and 5th parameters of the command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed by FPR estimated (see file with *{train.txt}* extension, it has the same format as output file of accuracy estimation procedure [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
+andy02.cpp gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned according to 3rd, 4th and 5th parameters of the command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the final best model among these {10, 20, 30, .., 90} models is performed by FPR estimated (see file with *{train.txt}* extension, it has the same format as output file of accuracy estimation procedure [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt). The final sitega model with the minimal FPR at true positive rate (TPR) 0.5 is written in input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
 
 ## Estimate accuracy for a model
 
-andy0bsn2.cpp may several times gradually construct several sitega models (parameter 7th num_iterations), but each time use only a part of dataset for training, the rest part of dataset is used to estimate FPR). Output [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt) represents the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. 
+andy0bsn2.cpp may several times gradually construct several sitega models (parameter 7th num_iterations), but each time use only a part of dataset for training, the rest part of dataset is used to estimate FPR). Output file [Table FPR_vs TPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt) represents the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. 
 
 ## Set threshold for a model
 
-sitega_thr_dist_mat.cpp computes the distribition of SiteGA scores, output [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) represents two columns with thresholds and respective FPRs
+sitega_thr_dist_mat.cpp computes the distribition of SiteGA scores, output file [Table Threshold vs FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) represents two columns with thresholds and respective FPRs
 
 ## Scan test sequences with a model
 
-andy1_mat.cpp takes ready sitega model and threshold  from input  [Thr vs FPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) and constructs the profile of hits for tested file in fasta format, main output file is [profile file](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile)
+andy1_mat.cpp takes ready sitega model and threshold  from input file [Table Threshold vs FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) and constructs the profile of hits for tested file in fasta format, main output file is [Profile file](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile)
 I.e. after the header of each peak with first '>' symbol from zero to several lines respect to separate hits, for each hit a start position, score, strand and whole sequence are printed
