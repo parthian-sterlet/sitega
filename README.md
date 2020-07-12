@@ -26,15 +26,18 @@ Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) con
 [andy1_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy1_mat.cpp) scans test sequences with a constructed model and a selected for it threshold
 
 ## Integration of modules
+
+Scheme of modules fucntioning
+
 ![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega.jpg)
 
 Modules **Estimate accuracy for a model** and **Train a model** must run with file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module
 
-Modules **Set threshold for a model** and **Scan test seauences with a model** require [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previosly computed by **Train a model** module
+Modules **Set threshold for a model** and **Scan test seauences with a model** require file with [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previosly computed by **Train a model** module
 
 Module **Set threshold for a model** is required to select a correct threshold for **Scan test sequences with a model** module, see example script [for training and scanning](https://github.com/parthian-sterlet/sitega/blob/master/scripts/scan)
 
-Module **Estimate accuracy for a model** is not required for functionality of **Set threshold for a model** and **Scan test seauences with a model** modules. Though only bootstrap procedure correctly evaluates the accuracy (see block **ROC curve, control data**), estimates of False Positive Rate for a [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) may be retrieved from results of testing with training data (**Train a model**), i.e. see output file with *{train.txt}* extension [FPR_vs_TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt), it respects to **ROC curve, training data** block on the scheme
+Module **Estimate accuracy for a model** is not required for functionality of **Set threshold for a model** and **Scan test seauences with a model** modules. Though only bootstrap procedure correctly evaluates the accuracy (see output data block **ROC curve, control data**), estimates of False Positive Rate for a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) may be retrieved from results of testing with training data (**Train a model**), i.e. see output file with *{train.txt}* extension [FPR_vs_TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt), it respects to output data block **ROC curve, training data** on the scheme
 
 # How to run separate modules
 Lists of command line arguments for all modules are described below
