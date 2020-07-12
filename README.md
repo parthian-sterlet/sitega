@@ -21,7 +21,7 @@ andy02.cpp  trains a model with a given train ChIP-seq dataset (peaks)
 ## 3. Estimate accuracy for a model
 andy0bsn2.cpp performs the bootsrap cross-validation test to estimate the performance of a model with a given train ChIP-seq dataset, i.e. ROC curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) is computed for control data
 ## 4. Set threshold for a model
-sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (**Scan test sequences with a model**) based on score distribution for a background dataset
+sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (**Scan test sequences with a model** module) based on score distribution for the background set of whole whole-genome promoters
 ## 5. Scan test sequences with a model
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 
