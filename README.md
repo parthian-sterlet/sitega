@@ -27,13 +27,19 @@ andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 ## Integration of modules
 ![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega2.jpg)
 
-Pairs of modules **Estimate accuracy for a model** and **Train a model** modules must run with file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module. See examples scripts for [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/train) and [bootstrap test](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap)
+Modules **Estimate accuracy for a model** and **Train a model** must run with file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module. 
 
 Modules **Set threshold for a model** and **Scan test seauences with a model** require [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previosly computed by **Train a model** module
 
 Module **Set threshold for a model** is required to select a correct threshold for **Scan test sequences with a model** module, see example script [for training and scanning](https://github.com/parthian-sterlet/sitega/blob/master/scripts/scan)
 
 Module **Estimate accuracy for a model** is not required for functionality of **Set threshold for a model** and **Scan test seauences with a model** modules. Though only bootstrap procedure correctly evaluates the accuracy (see block **ROC curve, control data**), estimates of False Positive Rate for a [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) may be retrieved from results of testing with training data (**Train a model**), i.e. see output file with *{train.txt}* extension [FPR_vs_TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt), it respects to **ROC curve, training data** block on the scheme
+
+Examples scripts:
+
+1. [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/train) - **Preparation** and  **Train a model**  modules
+2. [bootstrap test for a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap) - **Preparation** and **Estimate accuracy for a model**  modules
+3. [training and scanning with a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/scan) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model**  modules
 
 # How to run separate modules
 List of command line arguments for all modules are described below.
