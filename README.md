@@ -1,7 +1,7 @@
 # SiteGA - binding Sites recognition by Genetic Algorithm
 
 # Description
-Current SiteGA version (Levitsky et al., in preparation) represented the algorithm of [(Levitsky et al., 2007)](https://doi.org/10.1186/1471-2105-8-481) adopted for *de novo* motif search in a ChIP-seq dataset. SiteGA is stochastic algorithm that searches in input sequences the pattern of mutually dependedent locally positioned dinucleotides (LPDs) that simulate short- and long-range dependences of nucleotide context within binding sites. Hence, SiteGA approach is drastically different from that of traditional Position Weight Matrix, which searches for the most conserved motifs based on additive impacts of nucleotide frequencies from various site positions
+Current SiteGA version (Levitsky et al., in preparation) represented the algorithm of [(Levitsky et al., 2007)](https://doi.org/10.1186/1471-2105-8-481) adopted for *de novo* motif search in a ChIP-seq dataset. SiteGA is stochastic algorithm that searches in input sequences the pattern of mutually dependedent locally positioned dinucleotides (LPDs) that simulate short- and long-range dependences of nucleotide context within binding sites. Hence, SiteGA approach is drastically different from that of traditional Position Weight Matrix (PWM), which searches for the most conserved motifs based on additive impacts of nucleotide frequencies from various site positions
 
 # Requirements
 SiteGA source code was written in C++ language. Hence, to compile exetubables from source code you need:
@@ -50,7 +50,7 @@ Lists of command line arguments for all modules are described below
 
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp)
 1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
-2. int motif_len = length of motif (integer value respecting to the optimal length of a traditional position weight matrix is recommended, default value 30 usually brought good results)
+2. int motif_len = length of motif (integer value respecting to the optimal length of a traditional PWM is recommended, default value 30 usually brought good results)
 3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
 4. int size_end = end value for the number of LPDs (default value 90)
 5. int size_dif = variation value for the number of LPDs (default value 10)
