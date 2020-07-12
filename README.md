@@ -36,7 +36,7 @@ Module **Set threshold for a model** is required to select a correct threshold f
 Module **Estimate accuracy for a model** is not required for functionality of **Set threshold for a model** and **Scan test seauences with a model** modules. Though only bootstrap procedure correctly evaluates the accuracy (see block **ROC curve, control data**), estimates of False Positive Rate for a [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) may be retrieved from results of testing with training data (**Train a model**), i.e. see output file with *{train.txt}* extension [FPR_vs_TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt), it respects to **ROC curve, training data** block on the scheme
 
 # How to run separate modules
-List of command line arguments for all modules are described below
+Lists of command line arguments for all modules are described below
 
 ## Preparation
 
