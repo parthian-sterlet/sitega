@@ -96,7 +96,7 @@ Files with *.exe* extention denote compiled coded
 
 ## Preparation
 
-monte0dg.cpp creates [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that may be used for training (andy02.cpp) or performance evaluation (andy0bsn2.cpp)
+monte0dg.cpp creates file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that may be used for training (andy02.cpp) or performance evaluation (andy0bsn2.cpp)
 
 ## Train a model
 
