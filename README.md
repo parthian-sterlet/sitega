@@ -12,7 +12,7 @@ SiteGA source code was written in C++ language. Hence, to compile exetubables fr
 # Source code
 Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains five files with SiteGA source codes, they respect to five separate modules of pipeline: 
 ## 1. Preparation
-[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) to train a model (**Train a model** module) or perform the bootsrap cross validation test (**Estimate accuracy for a model** module)
+[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) to train a model (**Train a model** module) or perform the bootsrap cross validation test (**Estimate accuracy for a model** module). Model's parameters are diaganal elements of the covariation matrix for LPDs of all 16 types for all allowed lengths for the background dataset [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481)
 ## 2. Train a model
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with a given train ChIP-seq dataset (peaks)
 ## 3. Estimate accuracy for a model
@@ -42,7 +42,7 @@ Lists of command line arguments for all modules are described below
 ## Preparation
 
 [monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp)
-1. int reg = length of region of one locally positioned dinucleotide (default value 6)
+1. int reg = maximal length of region of one locally positioned dinucleotide (default value 6)
 2. file seq = input [Fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa), each peak should consist of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
 3. file out = output file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt)
 
