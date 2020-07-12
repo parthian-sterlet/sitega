@@ -25,7 +25,7 @@ sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cp
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 
 ## Integration of modules
-![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega2.jpg)
+![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega.jpg)
 
 Pairs of modules **Estimate accuracy for a model** and **Train a model** modules must run with [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module. See examples scripts for [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/train) and [bootstrap test](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap)
 
