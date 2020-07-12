@@ -27,7 +27,7 @@ andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 ## Integration of modules
 ![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega2.jpg)
 
-Pairs of modules **Estimate accuracy for a model** and **Train a model** modules must run with [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module. See examples scripts for [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/train) and [bootstrap test](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap)
+Pairs of modules **Estimate accuracy for a model** and **Train a model** modules must run with file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module. See examples scripts for [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/train) and [bootstrap test](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap)
 
 Modules **Set threshold for a model** and **Scan test seauences with a model** require [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previosly computed by **Train a model** module
 
@@ -48,7 +48,7 @@ monte0dg.cpp
 ## Train a model
 
 andy02.cpp
-1. char file_cor = input [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
+1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 2. int motif_len = length of motif (default value 30)
 3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
 4. int size_end = end value for the number of LPDs (default value 90)
@@ -57,7 +57,7 @@ andy02.cpp
 ## Estimate accuracy for a model
 
 andy0bsn2.cpp
-1. char file_cor = input [parameter file](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
+1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from monte0dg.cpp 
 2. int motif_len = length of motif (integer value respecting to the optimal length of a traditional position weight matrix is recommended, default value 30 usually brought good results)
 3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
 4. int size_end = end value for the number of LPDs (default value 90)
