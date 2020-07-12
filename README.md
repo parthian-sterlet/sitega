@@ -60,11 +60,11 @@ Lists of command line arguments for all modules are described below
 [andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp)
 1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
 2. int motif_len = length of motif (integer value respecting to the optimal length of a traditional position weight matrix is recommended, default value 30 usually brought good results)
-3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
+3. int size_start = start value for the number of LPDs (default value 10)
 4. int size_end = end value for the number of LPDs (default value 90)
 5. int size_dif = variation value for the number of LPDs (default value 10)
-6. double ratio_cnt_of_all  = ratio of the number of peaks to the number of control peaks (default value 10)
-7. int num_iterations = number of iteration in bootatrap (default 1), but it is recomended to run bootstrap several times (at least 5 runs) to get reliable results
+6. double ratio_cnt_of_all  = ratio of the number of peaks in training dataset to that control dataset (default value 10)
+7. int num_iterations = number of iterations in bootatrap (default 1), but it is recomended to run bootstrap several times (at least 5 runs) to get reliable results
 
 ## Set threshold for a model
 
