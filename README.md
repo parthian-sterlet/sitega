@@ -23,7 +23,7 @@ andy0bsn2.cpp performs the bootsrap cross-validation test to estimate the perfor
 ## 4. Set threshold for a model
 sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (**Scan test sequences with a model** module) based on score distribution for the background set of whole whole-genome promoters
 ## 5. Scan test sequences with a model
-andy1_mat.cpp scans a fasta file with DNA sequences with a given model
+andy1_mat.cpp scans test sequences with a constructed model and a selected for it threshold
 
 ## Integration of modules
 ![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega.jpg)
