@@ -1,4 +1,4 @@
-# SiteGA
+# SiteGA - binding Sites recognition by Genetic Algorithm
 
 # Description
 Previous SiteGA version 1 required the alignment of binding sites, [Levitsky et al., 2007](https://doi.org/10.1186/1471-2105-8-481)
