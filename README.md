@@ -1,7 +1,7 @@
 # SiteGA - binding Sites recognition by Genetic Algorithm
 
 # Description
-Current SiteGA represented the algorithm of [(Levitsky et al., 2007)](https://doi.org/10.1186/1471-2105-8-481) adopted for *de novo* search in a ChIP-seq dataset (Levitsky et al., in preparation).
+Current SiteGA version (Levitsky et al., in preparation) represented the algorithm of [(Levitsky et al., 2007)](https://doi.org/10.1186/1471-2105-8-481) adopted for *de novo* motif search in a ChIP-seq dataset
 
 # Requirement
 To compile exetubable codes from source code, that was written in C++ language, you need:
