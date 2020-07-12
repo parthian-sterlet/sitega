@@ -14,20 +14,20 @@ Current SiteGA version represented the algorithm of previous version (2007) adop
 # Source code
 Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains five files with SiteGA source codes, they respect to five separate modules of pipeline: 
 ## 1. Preparation
-monte0dg.cpp prepares parameter file to train a model (andy02.cpp) or perform the bootsrap cross validation test (andy0bsn2.cpp)
+monte0dg.cpp prepares parameter file to train a model (**Train a model** module) or perform the bootsrap cross validation test (**Estimate accuracy for a model** module)
 ## 2. Train a model
 andy02.cpp  trains a model with a given train ChIP-seq dataset (peaks)
 ## 3. Estimate accuracy for a model
 andy0bsn2.cpp performs the bootsrap cross-validation test to estimate the performance of a model with a given train ChIP-seq dataset
 ## 4. Set threshold for a model
-sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (andy1_mat.cpp) based on score distribution for a background dataset
+sitega_thr_dist_mat.cpp creates table of thresholds for the scaner (**Scan test sequences with a model**) based on score distribution for a background dataset
 ## 5. Scan test sequences with a model
 andy1_mat.cpp scans a fasta file with DNA sequences with a given model
 
 ## Integration of modules
 ![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega.jpg)
 
-Modules **Estimate accuracy for a model** and **Train a model** must run with file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module. 
+Modules **Estimate accuracy for a model** and **Train a model** must run with file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module
 
 Modules **Set threshold for a model** and **Scan test seauences with a model** require [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previosly computed by **Train a model** module
 
@@ -36,7 +36,7 @@ Module **Set threshold for a model** is required to select a correct threshold f
 Module **Estimate accuracy for a model** is not required for functionality of **Set threshold for a model** and **Scan test seauences with a model** modules. Though only bootstrap procedure correctly evaluates the accuracy (see block **ROC curve, control data**), estimates of False Positive Rate for a [sitega model file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) may be retrieved from results of testing with training data (**Train a model**), i.e. see output file with *{train.txt}* extension [FPR_vs_TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt), it respects to **ROC curve, training data** block on the scheme
 
 # How to run separate modules
-List of command line arguments for all modules are described below.
+List of command line arguments for all modules are described below
 
 ## Preparation
 
