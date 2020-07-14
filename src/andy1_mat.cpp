@@ -123,7 +123,7 @@ int city::get_file(char *file)
 	fgets(d, sizeof(d), in);
 	len = atoi(d);
 	fgets(d, sizeof(d), in);
-	c = atoi(d);
+	c = atof(d);
 	std = 0.05;
 	char sep = '\t', s[20];
 	int i, test;
@@ -136,7 +136,7 @@ int city::get_file(char *file)
 		tot[i].end = atoi(s);
 		test = UnderStol(d, 2, s, sep);
 		if (test == -1) { printf("Wrong format %s\n", d); return(-1); }
-		tot[i].buf = atoi(s);
+		tot[i].buf = atof(s);
 		test = UnderStol(d, 3, s, sep);
 		if (test == -1) { printf("Wrong format %s\n", d); return(-1); }
 		tot[i].num = atoi(s);
