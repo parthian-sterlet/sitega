@@ -25,8 +25,6 @@ Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) con
 # How to compile
 * In Linux system: 
 
-mkdir sitega\
-cd sitega\
 git clone https://github.com/parthian-sterlet/sitega \
 cd sitega\src\
 chmod a+x build.sh\
