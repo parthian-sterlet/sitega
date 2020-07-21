@@ -1,4 +1,0 @@
-./monte0dg.exe 6 peaks.fa peaks.mnt
-./andy02.exe peaks.mnt 30 10 90 10
-./sitega_thr_dist_mat.exe peaks_mat hs_ups2kb.seq peaks.dist 0.0005 0.997 0.0000000005
-./andy1_mat.exe test.seq peaks.fa_mat peaks.dist 0.0005 chipseq
