@@ -25,13 +25,7 @@ Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) con
 # How to compile
 * In Linux system: 
 
-mkdir sitega
-
-cd sitega  git clone https://github.com/parthian-sterlet/sitega  cd src
-
-chmod a+x makefile
-
-./makefile
+mkdir sitega  cd sitega  git clone https://github.com/parthian-sterlet/sitega  cd src  chmod a+x makefile  ./makefile
 
 In Windiws system: separate compilation of five modules in VC++
 
