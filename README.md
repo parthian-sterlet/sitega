@@ -28,9 +28,9 @@ Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) con
 mkdir sitega\
 cd sitega\
 git clone https://github.com/parthian-sterlet/sitega \
-cd src\
-chmod a+x makefile\
-./makefile
+cd sitega\src\
+chmod a+x build.sh\
+./build.sh
 
 * In Windiws system:
 
