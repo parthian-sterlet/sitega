@@ -32,7 +32,9 @@ cd src\
 chmod a+x makefile\
 ./makefile
 
-* In Windiws system: separate compilation of five modules in VC++
+* In Windiws system:
+
+separate compilation of five modules in VC++
 
 ## Integration of modules
 
