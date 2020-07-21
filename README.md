@@ -92,9 +92,9 @@ Lists of command line arguments for all modules are described below
 # Examples scripts:
 
 These scripts implement various pipelines for Linux:
-1. [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/train) - **Preparation** and  **Train a model** modules
-2. [bootstrap test for a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/bootstrap) - **Preparation** and **Estimate accuracy for a model** modules
-3. [training and scanning with a model](https://github.com/parthian-sterlet/sitega/blob/master/scripts/scan) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model** modules
+1. [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/src/train) - **Preparation** and  **Train a model** modules
+2. [bootstrap test for a model](https://github.com/parthian-sterlet/sitega/blob/master/src/bootstrap) - **Preparation** and **Estimate accuracy for a model** modules
+3. [training and scanning with a model](https://github.com/parthian-sterlet/sitega/blob/master/src/scan) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model** modules
 
 Files with *.exe* extention denote executables
 
