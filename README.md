@@ -23,7 +23,13 @@ Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) con
 [andy1_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy1_mat.cpp) scans test sequences with a constructed model and a selected for it threshold
 
 # How to compile
-* In Linux system: run [makefile](https://github.com/parthian-sterlet/sitega/blob/master/src/makefile)
+* In Linux system: 
+##mkdir sitega
+##cd sitega
+##git clone https://github.com/parthian-sterlet/sitega
+##cd src
+##chmod a+x makefile
+##./makefile
 * In Windiws system: separate compilation of five modules in VC++
 
 ## Integration of modules
