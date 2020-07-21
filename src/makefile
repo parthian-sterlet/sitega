@@ -8,3 +8,6 @@ chmod a+x andy1_mat.exe
 chmod a+x andy02.exe
 chmod a+x monte0dg.exe
 chmod a+x sitega_thr_dist_mat.exe
+chmod a+x bootstrap
+chmod a+x scan 
+chmod a+x train
