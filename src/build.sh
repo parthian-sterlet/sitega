@@ -1,3 +1,4 @@
+#!/bin/sh
 g++ -o sitega_thr_dist_mat sitega_thr_dist_mat.cpp
 g++ -o andy0bsn2 andy0bsn2.cpp
 g++ -o andy1_mat andy1_mat.cpp
