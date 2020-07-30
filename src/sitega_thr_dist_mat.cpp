@@ -545,9 +545,18 @@ int main(int argc, char *argv[])
 		double fpr = (double)(j + 1) / all_pos_rec;
 		if ((thr[j] != thr_pred && fpr - fpr_pred > bin) || j == nthr_final)
 		{
-			thr_dist[count] = thr_pred;
-			fpr_dist[count] = -log10(fpr_pred);
-			fprintf(out_dist, "%.18f\t%.18g\n", thr_pred, fpr_pred);
+			if (j != nthr_final)
+			{
+				thr_dist[count] = thr_pred;
+				fpr_dist[count] = fpr_pred;
+			}
+			else
+			{
+				thr_dist[count] = thr[j];
+				fpr_dist[count] = fpr;
+			}
+			fprintf(out_dist, "%.18f\t%.18g\n", thr_dist[count], fpr_dist[count]);
+			fpr_dist[count] = -log10(fpr_dist[count]);
 			count++;
 			if (fpr_pred >= pvalue_large)
 			{
