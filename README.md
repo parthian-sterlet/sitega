@@ -62,8 +62,8 @@ Lists of command line arguments for all modules are described below
 
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp)
 1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
-2. int motif_len = length of motif (integer value respecting to the optimal length of a respective traditional PWM model is recommended, default value 30 usually brought good results)
-3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 10)
+2. int motif_len = length of motif (integer value respecting to the optimal length of a respective traditional PWM model is recommended, default value 60 usually brought good results)
+3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 60)
 4. int size_end = end value for the number of LPDs (default value 90)
 5. int size_dif = variation value for the number of LPDs (default value 10)
 
@@ -71,11 +71,11 @@ Lists of command line arguments for all modules are described below
 
 [andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp)
 1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
-2. int motif_len = length of motif (integer value respecting to the optimal length of a respective traditional PWM model is recommended, default value 30 usually brought good results)
-3. int size_start = start value for the number of LPDs (default value 10)
+2. int motif_len = length of motif (integer value respecting to the optimal length of a respective traditional PWM model is recommended, default value 60 usually brought good results)
+3. int size_start = start value for the number of LPDs (default value 60)
 4. int size_end = end value for the number of LPDs (default value 90)
 5. int size_dif = variation value for the number of LPDs (default value 10)
-6. double ratio_cnt_of_all  = ratio of the number of peaks in training dataset to that control dataset (default value 10)
+6. double ratio_cnt_of_all  = ratio of the number of peaks in training dataset to that control dataset (default value 11)
 7. int num_iterations = number of iterations in bootatrap (default 1), but it is recomended to run bootstrap several times (at least 5 runs) to get reliable results
 
 ## Set threshold for a model
@@ -85,7 +85,7 @@ Lists of command line arguments for all modules are described below
 2. file_profile_fasta = input background dataset in fasta format (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse data, respectively)
 3. char output file [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
 4. double pvalue_large = maximal FPR (default value 0.0005)
-5. double score_min = lowest threshold of SiteGA model (default value 0.997)
+5. double score_min = lowest threshold of SiteGA model (default value 0.995)
 6. double dpvalue = granulation value for FPR compaction in [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), the default value 0.0000000005 implies the absence of compaction
 
 ## Scan test sequences with a model
