@@ -2160,11 +2160,11 @@ int main(int argc, char *argv[])
 		printf("Wrong setting for population size %d %d\n",size_start,size_end);
 		exit(1);
 	}
-	if(size_dif<1 || (size_end != size_start && size_dif>size_end-size_start))
+	/*if(size_dif<1 || (size_end != size_start && size_dif>size_end-size_start))
 	{
 		printf("Wrong setting for population size change: Size change = %d Size start = %d Size end = %d\n",size_dif,size_start,size_end);
 		exit(1);
-	}	
+	}	*/
 	int reg_max;
 	int size0;
 	best_selected = new town[size_step];
