@@ -1,4 +1,4 @@
 ./monte0dg 6 peaks.fa peaks.mnt
-./andy02 peaks.mnt 30 10 90 10
-./sitega_thr_dist_mat peaks_mat hs_ups2kb.seq peaks.dist 0.0005 0.997 0.0000000005
+./andy02 peaks.mnt 60 70 70 10
+./sitega_thr_dist_mat peaks_mat hs_ups2kb.seq peaks.dist 0.0005 0.995 0.0000000005
 ./andy1_mat test.seq peaks.fa_mat peaks.dist 0.0005 chipseq
