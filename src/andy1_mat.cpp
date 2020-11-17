@@ -3320,7 +3320,7 @@ int main(int argc, char *argv[])
 	char head1[5000];
 	int n, ret = 0, len, i, k, len0;
 	char mess[300];
-	char sitename[120], file1[120], file2[120], file_thr_fpr[120], file_test[120], file_out_base[120];
+	char sitename[120], file1[120], file2[120], file_thr_fpr[500], file_test[500], file_out_base[500];
 	int cmpl, rec_pos = 0, all_pos = 0, rec_seq = 0;
 	double *p, thr;
 	FILE  *out, *out1;
