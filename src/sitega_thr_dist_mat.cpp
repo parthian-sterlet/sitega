@@ -257,9 +257,9 @@ double UnderStol(char *str, int nstol, char razd)
 	ret[len] = '\0';
 	return atof(ret);
 }
-int UnderStolStr(char *str, int nstol, char *ret, char sep)
+int UnderStolStr(char *str, int nstol, char *ret, size_t size, char sep)
 {
-	memset(ret, 0, sizeof(ret));
+	memset(ret, 0, size);
 	int p1, p2, len;
 	if (nstol == 0)
 	{
@@ -277,7 +277,7 @@ int UnderStolStr(char *str, int nstol, char *ret, char sep)
 		{
 			p2 = strlen(str);
 		}
-		if (p1 == -1 || p2 == -1) return 0;
+		if (p1 == -1 || p2 == -1) return -1;
 		len = p2 - p1 - 1;
 		strncpy(ret, &str[p1 + 1], len);
 		ret[len] = '\0';
@@ -348,13 +348,13 @@ int city::get_file(char *file)
 	{
 		fgets(d, sizeof(d), in);
 		tot[i].sta = atoi(d);
-		test = UnderStolStr(d, 1, s, sep);
+		test = UnderStolStr(d, 1, s, sizeof(s), sep);
 		if (test == -1) { printf("Wrong format %s\n", d); return(-1); }
 		tot[i].end = atoi(s);
-		test = UnderStolStr(d, 2, s, sep);
+		test = UnderStolStr(d, 2, s, sizeof(s), sep);
 		if (test == -1) { printf("Wrong format %s\n", d); return(-1); }
 		tot[i].buf = atof(s);
-		test = UnderStolStr(d, 3, s, sep);
+		test = UnderStolStr(d, 3, s, sizeof(s), sep);
 		if (test == -1) { printf("Wrong format %s\n", d); return(-1); }
 		tot[i].num = atoi(s);
 	}
@@ -606,7 +606,8 @@ int main(int argc, char *argv[])
 		printf("Out file %s can't be opened!\n", file_sta);
 		return -1;
 	}
-	fprintf(out_sta, "%s\t%d\n", file_out_dist, nthr_dist);
+	fprintf(out_sta, "%s\t%d\t", file_out_dist, nthr_dist);
+	fprintf(out_sta, "%.18f\t%.18g\n", thr_dist[count-1], fpr_dist[count-1]);
 	fclose(out_sta);
 	delete[] thr_dist;
 	delete[] fpr_dist;
