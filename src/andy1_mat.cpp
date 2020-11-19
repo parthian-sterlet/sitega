@@ -3627,7 +3627,7 @@ int main(int argc, char *argv[])
 	}
 	fclose (out);*/
 	FILE *out_best;
-	char file_best_score[80];
+	char file_best_score[500];
 	memset(file_best_score, 0, sizeof(file_best_score));
 	strcpy(file_best_score, file_test);
 	{
