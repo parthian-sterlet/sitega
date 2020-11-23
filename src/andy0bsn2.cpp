@@ -2113,9 +2113,9 @@ void ReadSeq(char *file, int nseq, int *len, int ***seq_real, char ***peak_real,
 int main(int argc, char *argv[])
 {	
 	int *len, nseq,i,j,k,n,m;			
-	char file[100];	
-	char file_ksi[100];
-	char d[50];
+	char file[500];	
+	char file_ksi[500];
+	char d[500];
 	int ***seq_real;
 	char ***peak_real;
 	//int  *peak_wei, ***peak_wei_pos;
@@ -2341,10 +2341,10 @@ int main(int argc, char *argv[])
 	double auc_max = 0;
 	int isize_selected = 0;	
 	double dtp = 1 / (double)nseq;
-	char add_roc[80], add_auc[80];
+	char add_roc[500], add_auc[500];
 	strcpy(add_roc, "_roc_bs.txt");
 	strcpy(add_auc, "_auc_bs.txt");
-	char file_out_cnt[80];
+	char file_out_cnt[500];
 	int size0, isize;
 	for(isize=0;isize<size_step;isize++)	
 	{	
