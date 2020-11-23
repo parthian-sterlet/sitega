@@ -564,7 +564,7 @@ void town::fprint_all(char *file, char *add)
 {
 	int i;
 	FILE *out;
-	char file_out[80];
+	char file_out[500];
 	strcpy(file_out, file);
 	strcat(file_out, add);
 	if ((out = fopen(file_out, "at")) == NULL)
@@ -590,7 +590,7 @@ void town::fprint_allfi(char *file, char *add, int len, double c0, double *buf)
 {
 	int i;	
 	FILE *out;
-	char file_out[80];
+	char file_out[500];
 	strcpy(file_out, file);
 	strcat(file_out, add);
 	if ((out = fopen(file_out, "at")) == NULL)
@@ -621,7 +621,7 @@ void town::fprint_allfi_mat(char *file, char *add, char *name, int len, double c
 {
 	int i;	
 	FILE *out;
-	char file_out[80];
+	char file_out[500];
 	strcpy(file_out, file);
 	strcat(file_out, add);
 	
@@ -2124,9 +2124,9 @@ void ReadSeq(char *file, int nseq, int *len, int ***seq_real, char ***peak_real,
 int main(int argc, char *argv[])
 {
 	int *len, nseq, i, j, k, n, m;
-	char file[100];
-	char file_ksi[100], filef[100], file_out[100];
-	char d[50];
+	char file[500];
+	char file_ksi[500], filef[500], file_out[500];
+	char d[500];
 	int ***seq_real;
 	char ***peak_real;
 //	int ***peak_wei_pos;
@@ -2309,10 +2309,10 @@ int main(int argc, char *argv[])
 	int isize_selected=0;
 	int isize;
 	double dtp = 1 / (double)nseq;	
-	char add_roc[80], add_auc[80];
+	char add_roc[500], add_auc[500];
 	strcpy(add_roc, "_roc_train.txt");
 	strcpy(add_auc, "_auc_train.txt");
-	char file_out_cnt[80];
+	char file_out_cnt[500];
 	for(isize=0;isize<size_step;isize++)	
 	{
 		size0=size_start+isize*size_dif;				
@@ -3066,7 +3066,7 @@ int main(int argc, char *argv[])
 		}
 		delete[] fp_rate1;
 	}	
-	char name[100];
+	char name[500];
 	for(i=0;;i++)
 	{
 		if(file[i]=='.'){name[i]='\0';break;}
@@ -3085,7 +3085,7 @@ int main(int argc, char *argv[])
 		best_selected[isize_selected].fprint_allfi(file, ext2best, olen, best_selected_ext[isize_selected].c0, best_selected_ext[isize_selected].buf);
 		best_selected[isize_selected].fprint_allfi_mat(file, extmat, name, olen, best_selected_ext[isize_selected].c0, best_selected_ext[isize_selected].buf);
 	}
-	char file_train_seq[80];
+	char file_train_seq[500];
 	int file_fasta_len=strlen(file);
 	k=0;
 	for(j=0;j<file_fasta_len;j++)
