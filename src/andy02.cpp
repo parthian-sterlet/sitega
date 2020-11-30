@@ -2294,24 +2294,25 @@ int main(int argc, char *argv[])
 	}
 	det1.mem_in(nseq);
 	double *fp_rate_best;
-	fp_rate_best = new double[nseq];
-	double *tp_rate;
-	tp_rate = new double[nseq];
-	{
-		double dtp = 1 / double(nseq);
-		tp_rate[0] = dtp / 2;
-		for (n = 1; n < nseq; n++)tp_rate[n] = tp_rate[n - 1] + dtp;
-	}
+	fp_rate_best = new double[nseq+1];
+	int *tp_rate;
+	tp_rate = new int[nseq];
+	double *fp_rate_step;
+	fp_rate_step = new double[nseq + 1];
 	for(i=0;i<size_step;i++)best_selected[i].mem_in(nseq);	
-	int n_decil[CENT], cent1= CENT - 1;
-	for (n = 0; n < cent1; n++)n_decil[n] = (int)(nseq*(n + 1) / CENT);
+	int n_decil[CENT];
+	{
+		n_decil[0] = 0;
+		for (n = 1; n < CENT; n++)n_decil[n] = (int)(nseq*n / CENT) - 1;
+	}
 	double auc_max = 0;
 	int isize_selected=0;
 	int isize;
-	double dtp = 1 / (double)nseq;	
-	char add_roc[500], add_auc[500];
+	//double dtp = 1 / (double)nseq;	
+	char add_roc[500], add_auc[500], add_fpt[500];
 	strcpy(add_roc, "_roc_train.txt");
 	strcpy(add_auc, "_auc_train.txt");
+	strcpy(add_fpt, "_fpt_train.txt");
 	char file_out_cnt[500];
 	for(isize=0;isize<size_step;isize++)	
 	{
@@ -3010,15 +3011,17 @@ int main(int argc, char *argv[])
 		}
 		if(isize==0)
 		{
-			for(n=0;n<cent1;n++)
-			{
-				double fn0=(double)(n_decil[n]+1)/(nseq+1);
-				fprintf(outq,"\t%.3f",fn0);
+			double dtp = 1 / (double)CENT;
+			double dtp2 = 1 / (double)nseq / 2;
+			fprintf(outq, "\t%.5f", dtp2);
+			for(n=1;n<CENT;n++)
+			{				
+				fprintf(outq,"\t%.3f",n*dtp);
 			}
 			fprintf(outq,"\n");
 		}
 		fprintf(outq,"%s_%d",file,size0);
-		for(n=0;n<cent1;n++)
+		for(n=0;n<CENT;n++)
 		{									
 			fprintf(outq,"\t%.3e",fp_rate1[n_decil[n]]);												
 		}
@@ -3032,30 +3035,29 @@ int main(int argc, char *argv[])
 			printf("Output file can't be opened!\n");
 			exit(1);
 		}
-		double fp1 = 0.05, fp2 = 0.001, fp3 = 0.0005, fp4 = 0.0001, auc1 = 0, auc2 = 0, auc3 = 0, auc4 = 0;
-		double fpr_pred = 0;
-		int n_pred = 0;
+		double fp2 = 0.001;		
+		fp_rate_step[0] = 0;
+		tp_rate[0] = 0;
+		int k_step = 1;
 		for (n = 1; n < nseq; n++)
 		{
-			double fprn = fp_rate1[n];
-			if (fprn == fp_rate1[n_pred])continue;
-			double fprn_m1 = fp_rate1[n-1];
-			double dauc = (tp_rate[n_pred] + tp_rate[n - 1]) * (fprn_m1- fpr_pred) / 2;
-			auc1 += dauc;
-			if (fprn_m1 < fp2)
+			if (fp_rate1[n] >= fp2)break;
+			int n1 = n - 1;
+			if (fp_rate1[n] > fp_rate1[n1])
 			{
-				auc2 += dauc;
-				if (fprn_m1 < fp3)
-				{
-					auc3 += dauc;
-					if (fprn_m1 < fp4)auc4 += dauc;
-				}
+				tp_rate[k_step] = n;
+				fp_rate_step[k_step] = fp_rate1[n1];
+				k_step++;
 			}
-			n_pred = n;
-			fpr_pred = fprn_m1;
-			if (fprn >= fp1)break;
 		}
-		fprintf(outq, "%s\t%d\t%f\t%f\t%f\t%f\n",file,size0, auc4, auc3, auc2, auc1);		
+		double auc2 = 0;
+		for (n = 1; n < k_step; n++)
+		{
+			int n1 = n - 1;
+			double dauc = (tp_rate[n] + tp_rate[n1]) * (fp_rate_step[n] - fp_rate_step[n1]) / 2 / nseq;
+			auc2 += dauc;
+		}
+		fprintf(outq, "%s\t%d\t%f\n",file,size0, auc2);		
 		fclose(outq);
 		double auc_here = auc2;
 		if (auc_here > auc_max)
@@ -3064,6 +3066,27 @@ int main(int argc, char *argv[])
 			isize_selected = isize;
 			for (n = 0; n < nseq; n++)fp_rate_best[n] = fp_rate1[n];
 		}
+		memset(file_out_cnt, 0, sizeof(file_out_cnt));
+		strcpy(file_out_cnt, file);
+		strcat(file_out_cnt, add_fpt);
+		if ((outq = fopen(file_out_cnt, "at")) == NULL)
+		{
+			printf("Output file can't be opened!\n");
+			exit(1);
+		}
+		fprintf(outq, "%s\t%d\t%f\nFPR\tTPR\n", file, size0, auc2);
+		//		fprintf(outq, "%g\t%d\n", fp_rate_step[0], tp_rate[0]);
+		for (n = 0; n < k_step; n++)
+		{
+			fprintf(outq, "%g\t%d\n", fp_rate_step[n], tp_rate[n]);
+		}
+		fprintf(outq, "%s\t%f\nFPR\n", file, auc2);
+		for (n = 0; n < nseq; n++)
+		{
+			//if (fp_rate[n] >= fp2)break;
+			fprintf(outq, "%g\n", fp_rate1[n]);
+		}
+		fclose(outq);
 		delete[] fp_rate1;
 	}	
 	char name[500];
@@ -3111,15 +3134,17 @@ int main(int argc, char *argv[])
 	}
 	int size_best = size_start + size_dif * isize_selected;		
 	{			
-		for (n = 0; n < cent1; n++)
+		double dtp = 1 / (double)CENT;
+		double dtp2 = 1 / (double)nseq / 2;
+		fprintf(outq, "\t%.5f", dtp2);
+		for (n = 1; n < CENT; n++)
 		{
-			double fn0 = (double)(n_decil[n] + 1) / (nseq + 1);
-			fprintf(outq, "\t%.3f", fn0);
+			fprintf(outq, "\t%.3f", n*dtp);
 		}
 		fprintf(outq, "\n");
 	}
 	fprintf(outq, "%s_%d", file,size_best);
-	for (n = 0; n < cent1; n++)
+	for (n = 0; n < CENT; n++)
 	{
 		fprintf(outq, "\t%.3e", fp_rate_best[n_decil[n]]);		///qsd											
 	}
@@ -3133,30 +3158,30 @@ int main(int argc, char *argv[])
 		printf("Output file can't be opened!\n");
 		exit(1);
 	}
-	double fp1 = 0.05, fp2 = 0.001, fp3 = 0.0005, fp4 = 0.0001, auc1 = 0, auc2 = 0, auc3 = 0, auc4 = 0;
-	double fpr_pred = 0;
-	int n_pred = 0;
+
+	double fp2 = 0.001;
+	fp_rate_step[0] = 0;
+	tp_rate[0] = 0;
+	int k_step = 1;
 	for (n = 1; n < nseq; n++)
 	{
-		double fprn = fp_rate_best[n];
-		if (fprn == fp_rate_best[n_pred])continue;
-		double fprn_m1 = fp_rate_best[n - 1];
-		double dauc = (tp_rate[n_pred] + tp_rate[n - 1]) * (fprn_m1 - fpr_pred) / 2;
-		auc1 += dauc;
-		if (fprn_m1 < fp2)
+		if (fp_rate_best[n] >= fp2)break;
+		int n1 = n - 1;
+		if (fp_rate_best[n] > fp_rate_best[n1])
 		{
-			auc2 += dauc;
-			if (fprn_m1 < fp3)
-			{
-				auc3 += dauc;
-				if (fprn_m1 < fp4)auc4 += dauc;
-			}
+			tp_rate[k_step] = n;
+			fp_rate_step[k_step] = fp_rate_best[n1];
+			k_step++;
 		}
-		n_pred = n;
-		fpr_pred = fprn_m1;
-		if (fprn >= fp1)break;
-	}		
-	fprintf(outq, "%s\t%d\t%f\t%f\t%f\t%f\n", file, size_best, auc4, auc3, auc2, auc1);
+	}
+	double auc2 = 0;
+	for (n = 1; n < k_step; n++)
+	{
+		int n1 = n - 1;
+		double dauc = (tp_rate[n] + tp_rate[n1]) * (fp_rate_step[n] - fp_rate_step[n1]) / 2 / nseq;
+		auc2 += dauc;
+	}
+	fprintf(outq, "%s\t%d\t%f\n", file, size_best, auc2);
 	fclose(outq);	
 	for (i = 0; i<MEGE; i++)pop[i].mem_out();
 	for (i = 0; i<2; i++)det2[i].mem_out();
@@ -3195,6 +3220,7 @@ int main(int argc, char *argv[])
 	for (k = 0; k<size_step; k++)delete[] fp_rate[k];
 	delete[] fp_rate;	
 	delete[] tp_rate;
+	delete[] fp_rate_step;
 	delete[] len;
 	delete [] best_selected;	
 	delete [] best_selected_ext;		
