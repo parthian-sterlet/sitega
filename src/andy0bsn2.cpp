@@ -2289,13 +2289,7 @@ int main(int argc, char *argv[])
 	{
 		puts("Out of memory...");exit(1);
 	}
-	double *tp_rate;
-	tp_rate = new double[n_cnt_tot];
-	{
-		double dtp = 1 / double(n_cnt_tot);
-		tp_rate[0] = dtp / 2;
-		for (n = 1; n < n_cnt_tot; n++)tp_rate[n] = tp_rate[n - 1] + dtp;
-	}
+
 	int *xport;
 	xport=new int [nseq];
 	if(xport==NULL){puts("Out of memory...");exit(1);}	
@@ -2336,14 +2330,22 @@ int main(int argc, char *argv[])
 			xport[iter]=0;//control
 		}
 	}
-	int n_decil[CENT], cent1 = CENT - 1;
-	for (n = 0; n < cent1; n++)n_decil[n] = (int)(n_cnt_tot*(n + 1) / CENT);
+	int n_decil[CENT];
+	{
+		n_decil[0] = 0;
+		for (n = 1; n < CENT; n++)n_decil[n] = (int)(n_cnt_tot*n / CENT) - 1;
+	}
 	double auc_max = 0;
 	int isize_selected = 0;	
-	double dtp = 1 / (double)nseq;
-	char add_roc[500], add_auc[500];
+	int *tp_rate;
+	tp_rate = new int[n_cnt_tot+1];
+	double *fp_rate_step;
+	fp_rate_step = new double[n_cnt_tot+1];
+//	double dtp = 1 / (double)nseq;
+	char add_roc[500], add_auc[500], add_fpt[500];
 	strcpy(add_roc, "_roc_bs.txt");
 	strcpy(add_auc, "_auc_bs.txt");
+	strcpy(add_fpt, "_fpt_bs.txt");
 	char file_out_cnt[500];
 	int size0, isize;
 	for(isize=0;isize<size_step;isize++)	
@@ -2951,15 +2953,17 @@ int main(int argc, char *argv[])
 		//	fprintf(outq,"FN rate\tFP rate\n");		
 		if(isize==0)
 		{
-			for(n=0;n<cent1;n++)
+			double dtp = 1 / (double)CENT;
+			double dtp2 = 1 / (double)nseq / 2;
+			fprintf(outq, "\t%.5f", dtp2);
+			for (n = 1; n < CENT; n++)
 			{
-				double fn0=(double)(n_decil[n]+1)/(n_cnt_tot+1);
-				fprintf(outq,"\t%.3f",fn0);
-			}
+				fprintf(outq, "\t%.3f", n*dtp);
+			}			
 			fprintf(outq,"\n");
 		}		
 		fprintf(outq,"%s_%d",file,size0);
-		for(n=0;n<cent1;n++)
+		for(n=0;n<CENT;n++)
 		{									
 			fprintf(outq,"\t%.3e",fp_rate[n_decil[n]]);		///qsd											
 		}
@@ -2978,30 +2982,50 @@ int main(int argc, char *argv[])
 			printf("Output file can't be opened!\n");
 			exit(1);
 		}
-		double fp1 = 0.05, fp2 = 0.001, fp3 = 0.0005, fp4 = 0.0001, auc1 = 0, auc2 = 0, auc3 = 0, auc4 = 0;
-		double fpr_pred = 0;
-		int n_pred = 0;
+		double fp2 = 0.001;
+		fp_rate_step[0] = 0;
+		tp_rate[0] = 0;
+		int k_step = 1;
 		for (n = 1; n < n_cnt_tot; n++)
 		{
-			double fprn = fp_rate[n];
-			if (fprn == fp_rate[n_pred])continue;
-			double fprn_m1 = fp_rate[n - 1];
-			double dauc = (tp_rate[n_pred] + tp_rate[n - 1]) * (fprn_m1 - fpr_pred) / 2;
-			auc1 += dauc;
-			if (fprn_m1 < fp2)
+			if (fp_rate[n] >= fp2)break;
+			int n1 = n - 1;
+			if (fp_rate[n] > fp_rate[n1])
 			{
-				auc2 += dauc;
-				if (fprn_m1 < fp3)
-				{
-					auc3 += dauc;
-					if (fprn_m1 < fp4)auc4 += dauc;
-				}
+				tp_rate[k_step] = n;
+				fp_rate_step[k_step] = fp_rate[n1];
+				k_step++;
 			}
-			n_pred = n;
-			fpr_pred = fprn_m1;
-			if (fprn >= fp1)break;
+		}		
+		double auc2 = 0;
+		for (n = 1; n < k_step; n++)
+		{
+			int n1 = n - 1;
+			double dauc = (tp_rate[n]+ tp_rate[n1]) * (fp_rate_step[n] - fp_rate_step[n1]) / 2 / n_cnt_tot;
+			auc2 += dauc;
 		}
-		fprintf(outq, "%s\t%d\t%f\t%f\t%f\t%f\n", file, size0, auc4, auc3, auc2, auc1);
+		fprintf(outq, "%s\t%d\t%f\n", file, size0, auc2);
+		fclose(outq);
+		memset(file_out_cnt, 0, sizeof(file_out_cnt));
+		strcpy(file_out_cnt, file);
+		strcat(file_out_cnt, add_fpt);
+		if ((outq = fopen(file_out_cnt, "at")) == NULL)
+		{
+			printf("Output file can't be opened!\n");
+			exit(1);
+		}
+		fprintf(outq, "%s\t%d\t%f\nFPR\tTPR\n",file,size0,auc2);
+//		fprintf(outq, "%g\t%d\n", fp_rate_step[0], tp_rate[0]);
+		for (n = 0; n < k_step; n++)
+		{
+			fprintf(outq, "%g\t%d\n", fp_rate_step[n], tp_rate[n]);
+		}
+		fprintf(outq, "%s\t%f\nFPR\n", file, auc2);
+		for (n = 0; n < n_cnt_tot; n++)
+		{
+			//if (fp_rate[n] >= fp2)break;
+			fprintf(outq, "%g\n", fp_rate[n]);
+		}
 		fclose(outq);
 	}
 	for(iter=0;iter<iteration;iter++)
@@ -3039,6 +3063,7 @@ int main(int argc, char *argv[])
 	delete [] xport;
 	delete [] fp_rate;	
 	delete [] tp_rate;
+	delete [] fp_rate_step;
 	delete [] n_train;
 	delete [] n_cntrl;
 	delete [] sco_pos; 	
