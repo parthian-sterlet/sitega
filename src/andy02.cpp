@@ -1188,7 +1188,11 @@ double EvalMahFITTrain(town *a, int nseq, int ***seq, double **mono,char *file, 
 		}
 	}	
 	while(fpr[inx_half]<fp_max || nseqn < nseq_max);
-	for(k=0;k<nseq;k++)fp_rate[k]/=nseqn;
+	for (k = 0; k < nseq; k++)
+	{
+		if(fp_rate[k]>0)fp_rate[k] /= nseqn;
+		else fp_rate[k] = 0.5 / (double)nseqn;
+	}
 	delete[] q;
 	delete[] fpr;
 	return a->fit;
@@ -2302,8 +2306,8 @@ int main(int argc, char *argv[])
 	for(i=0;i<size_step;i++)best_selected[i].mem_in(nseq);	
 	int n_decil[CENT];
 	{
-		n_decil[0] = 0;
-		for (n = 1; n < CENT; n++)n_decil[n] = (int)(nseq*n / CENT) - 1;
+		n_decil[0] = 1;
+		for (n = 1; n < CENT; n++)n_decil[n] = (int)(nseq*n / CENT);
 	}
 	double auc_max = 0;
 	int isize_selected=0;
@@ -2995,10 +2999,11 @@ int main(int argc, char *argv[])
 		for(i=0;i<nseq;i++)fp_rate[isize][i]=0;		
 		EvalMahFITTrain(&pop[0], nseq, seq_real, mono, file, olen,len,fp_rate[isize],peak_real,&best_selected_ext[isize],best_sco[isize]);
 		double *fp_rate1;
-		fp_rate1=new double[nseq];
+		fp_rate1=new double[nseq+1];
 		if(fp_rate1==NULL){puts("Out of memory...");exit(1);}
-		for(i=0;i<nseq;i++)fp_rate1[i]=fp_rate[isize][i];	
-		qsort(fp_rate1,nseq,sizeof(double),compare_qq);
+		fp_rate1[0] = 0;
+		for(i=1;i<=nseq;i++)fp_rate1[i]=fp_rate[isize][i];	
+		qsort(fp_rate1,nseq+1,sizeof(double),compare_qq);
 		printf("Go out big cycle ");
 		big_exit1 = 1;					
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
@@ -3036,16 +3041,14 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 		double fp2 = 0.001;		
-		fp_rate_step[0] = 0;
-		tp_rate[0] = 0;
-		int k_step = 1;
-		for (n = 1; n < nseq; n++)
+		int k_step = 0;
+		for (n = 1; n <= nseq; n++)
 		{
 			if (fp_rate1[n] >= fp2)break;
 			int n1 = n - 1;
 			if (fp_rate1[n] > fp_rate1[n1])
 			{
-				tp_rate[k_step] = n;
+				tp_rate[k_step] = n1;
 				fp_rate_step[k_step] = fp_rate1[n1];
 				k_step++;
 			}
@@ -3064,7 +3067,7 @@ int main(int argc, char *argv[])
 		{
 			auc_max = auc_here;
 			isize_selected = isize;
-			for (n = 0; n < nseq; n++)fp_rate_best[n] = fp_rate1[n];
+			for (n = 0; n <= nseq; n++)fp_rate_best[n] = fp_rate1[n];
 		}
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
 		strcpy(file_out_cnt, file);
@@ -3073,19 +3076,21 @@ int main(int argc, char *argv[])
 		{
 			printf("Output file can't be opened!\n");
 			exit(1);
-		}
-		fprintf(outq, "%s\t%d\t%f\nFPR\tTPR\n", file, size0, auc2);
-		//		fprintf(outq, "%g\t%d\n", fp_rate_step[0], tp_rate[0]);
-		for (n = 0; n < k_step; n++)
-		{
-			fprintf(outq, "%g\t%d\n", fp_rate_step[n], tp_rate[n]);
-		}
-		fprintf(outq, "%s\t%f\nFPR\n", file, auc2);
-		for (n = 0; n < nseq; n++)
+		}		
+		fprintf(outq, "%s\t%d\t%d\t%f\n", file, size0, nseq, auc2);
+		fprintf(outq, "FPR");
+		for (n = 0; n < k_step; n++)fprintf(outq, "\t%g", fp_rate_step[n]);
+		fprintf(outq, "\n");
+		fprintf(outq, "TPR");
+		for (n = 0; n < k_step; n++)fprintf(outq, "\t%d", tp_rate[n]);
+		fprintf(outq, "\n");
+		fprintf(outq, "FPR");
+		for (n = 1; n < nseq + 1; n++)
 		{
 			//if (fp_rate[n] >= fp2)break;
-			fprintf(outq, "%g\n", fp_rate1[n]);
+			fprintf(outq, "\t%g", fp_rate1[n]);
 		}
+		fprintf(outq, "\n");
 		fclose(outq);
 		delete[] fp_rate1;
 	}	
@@ -3158,11 +3163,8 @@ int main(int argc, char *argv[])
 		printf("Output file can't be opened!\n");
 		exit(1);
 	}
-
 	double fp2 = 0.001;
-	fp_rate_step[0] = 0;
-	tp_rate[0] = 0;
-	int k_step = 1;
+	int k_step = 0;
 	for (n = 1; n < nseq; n++)
 	{
 		if (fp_rate_best[n] >= fp2)break;
