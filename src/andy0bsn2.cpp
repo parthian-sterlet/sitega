@@ -1063,7 +1063,8 @@ int EvalMahControl(char *file, town *a, int nseq, int *xport,int n_train, double
 	{
 		int kk=n_cntrl+k;
 		sco_pos_out[kk]=q[k].q;
-		fp_rate[kk]=(double)fpr[k]/nseqn;
+		if(fpr[k]>0)fp_rate[kk]=(double)fpr[k]/nseqn;
+		else fp_rate[kk] = 0.5 / (double)nseqn;
 	}
 	n_cntrl+=n_control;	
 	delete[] q;
@@ -2284,7 +2285,7 @@ int main(int argc, char *argv[])
 		puts("Out of memory...");exit(1);
 	}
 	double *fp_rate;
-	fp_rate=new double[n_cnt_tot];
+	fp_rate=new double[n_cnt_tot+1];
 	if(fp_rate==NULL)
 	{
 		puts("Out of memory...");exit(1);
@@ -2332,8 +2333,8 @@ int main(int argc, char *argv[])
 	}
 	int n_decil[CENT];
 	{
-		n_decil[0] = 0;
-		for (n = 1; n < CENT; n++)n_decil[n] = (int)(n_cnt_tot*n / CENT) - 1;
+		n_decil[0] = 1;
+		for (n = 1; n < CENT; n++)n_decil[n] = (int)(n_cnt_tot*n / CENT);
 	}
 	double auc_max = 0;
 	int isize_selected = 0;	
@@ -2939,7 +2940,8 @@ int main(int argc, char *argv[])
 			EvalMahControl(file,&pop[iter][0], nseq,xport,n_train[iter],fp_rate, sco_pos,cnt_count,seq_real,peak_real,mono,olen,len);					
 			big_exit1=1;
 		}
-		qsort(fp_rate,n_cnt_tot,sizeof(double),compare_qq);
+		fp_rate[n_cnt_tot] = 0;
+		qsort(fp_rate,n_cnt_tot+1,sizeof(double),compare_qq);
 		qsort(sco_pos,n_cnt_tot,sizeof(double),compare_qq2);							
 		FILE *outq;
 		memset(file_out_cnt,0,sizeof(file_out_cnt));
@@ -2983,16 +2985,16 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 		double fp2 = 0.001;
-		fp_rate_step[0] = 0;
-		tp_rate[0] = 0;
-		int k_step = 1;
-		for (n = 1; n < n_cnt_tot; n++)
+		//fp_rate_step[0] = 0;
+		//tp_rate[0] = 0;
+		int k_step = 0;
+		for (n = 1; n <= n_cnt_tot; n++)
 		{
 			if (fp_rate[n] >= fp2)break;
 			int n1 = n - 1;
 			if (fp_rate[n] > fp_rate[n1])
 			{
-				tp_rate[k_step] = n;
+				tp_rate[k_step] = n1;
 				fp_rate_step[k_step] = fp_rate[n1];
 				k_step++;
 			}
@@ -3014,18 +3016,20 @@ int main(int argc, char *argv[])
 			printf("Output file can't be opened!\n");
 			exit(1);
 		}
-		fprintf(outq, "%s\t%d\t%f\nFPR\tTPR\n",file,size0,auc2);
-//		fprintf(outq, "%g\t%d\n", fp_rate_step[0], tp_rate[0]);
-		for (n = 0; n < k_step; n++)
-		{
-			fprintf(outq, "%g\t%d\n", fp_rate_step[n], tp_rate[n]);
-		}
-		fprintf(outq, "%s\t%f\nFPR\n", file, auc2);
-		for (n = 0; n < n_cnt_tot; n++)
+		fprintf(outq, "%s\t%d\t%d\t%f\n",file,size0,n_cnt_tot,auc2);
+		fprintf(outq, "FPR");
+		for (n = 0; n < k_step; n++)fprintf(outq, "\t%g", fp_rate_step[n]);
+		fprintf(outq, "\n");
+		fprintf(outq, "TPR");
+		for (n = 0; n < k_step; n++)fprintf(outq, "\t%d", tp_rate[n]);
+		fprintf(outq, "\n");		
+		fprintf(outq, "FPR");
+		for (n = 1; n < n_cnt_tot+1; n++)
 		{
 			//if (fp_rate[n] >= fp2)break;
-			fprintf(outq, "%g\n", fp_rate[n]);
+			fprintf(outq, "\t%g", fp_rate[n]);
 		}
+		fprintf(outq, "\n");
 		fclose(outq);
 	}
 	for(iter=0;iter<iteration;iter++)
