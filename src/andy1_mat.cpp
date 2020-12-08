@@ -1650,7 +1650,7 @@ void GetSost2(char *d, stru5 a)
 	for(j=0;j<a.size;j++)sost[j]/=sha[a.wor[j].reg].part;
 }
 */
-int ConvertSym(int c)
+int ConvertSym(int &c)
 {
 	char four[5] = "atgc";
 	char di[6][3] = { "ag", "tc", "at", "ac", "gt", "gc" };
