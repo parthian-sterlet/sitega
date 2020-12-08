@@ -125,7 +125,7 @@ int CheckStr(char *d)
 	}
 	return(ret);
 }
-int ConvertSym(int c)
+int ConvertSym(int &c)
 {
 	char four[] = "atgc";
 	char di[6][3] = { "ag", "tc", "at", "ac", "gt", "gc" };
