@@ -331,7 +331,7 @@ int city::get_file(char *file)
 		printf("Input file %s can't be opened!", file);
 		return -1;
 	}
-	char d[100];
+	char d[300];
 	fgets(d, sizeof(d), in);
 	DelChar(d,'\n');
 	strcpy(site, d);
@@ -394,7 +394,7 @@ void city::sort_all(void)
 int main(int argc, char *argv[])
 {
 	int i, j, k, n;
-	char head[1000], file_out_dist[100], file_sitega[80];
+	char head[1000], file_out_dist[300], file_sitega[300];
 	FILE *in, *out_dist;
 
 	if (argc != 7)
