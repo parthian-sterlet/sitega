@@ -259,7 +259,7 @@ double UnderStol(char *str, int nstol, char razd)
 }
 int UnderStolStr(char *str, int nstol, char *ret, size_t size, char sep)
 {
-	memset(ret, 0, size);
+	memset(ret, '\0', size);
 	int p1, p2, len;
 	if (nstol == 0)
 	{
@@ -312,7 +312,7 @@ printf("[%d;%d]%s\t", sta, end, s[num].oli);
 }*/
 //set of dinucleotides
 struct city {
-	char site[80];
+	char site[300];
 	int size;
 	int len;
 	double c;
@@ -342,7 +342,7 @@ int city::get_file(char *file)
 	fgets(d, sizeof(d), in);
 	c = atof(d);
 	std = 0.05;
-	char sep = '\t', s[20];
+	char sep = '\t', s[30];
 	int i, test;
 	for (i = 0; i < size; i++)
 	{
