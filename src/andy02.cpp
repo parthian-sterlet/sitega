@@ -12,13 +12,13 @@
 #define Min(a,b) ((a)>(b))? (b):(a);
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
-#define MOTLEN 105
+#define MOTLEN 125
 //#define GA_EXIT 0.01 //GA_EXIT
 #define MEGE 20//population size 1st stage
 #define ELIT 4//population size 2nd stage
 #define NMUT 3
 #define NREC 5
-#define POPSIZE 150
+#define POPSIZE 200
 #define CENT 100
 
 double  uw[POPSIZE][POPSIZE], uw0[POPSIZE];
@@ -1977,8 +1977,8 @@ void EvalSeq(char *file, int &nseq, int olen)
 		if (strlen(d) + strlen(l) > sizeof(d))
 		{
 			printf("Size is large...");
-			printf("l:%s\nstrlen(l):%d\n", l, strlen(l));
-			printf("d:%s\nstrlen(d):%d\n", d, strlen(d));
+			printf("l:%s\nstrlen(l):%lu\n", l, strlen(l));
+			printf("d:%s\nstrlen(d):%lu\n", d, strlen(d));
 			exit(1);
 		}
 		DelHole(l);
@@ -2031,8 +2031,8 @@ void EvalLen(char *file, int *len, int olen)
 		if (strlen(d) + strlen(l) > sizeof(d))
 		{
 			printf("Size is large...");
-			printf("l:%s\nstrlen(l):%d\n", l, strlen(l));
-			printf("d:%s\nstrlen(d):%d\n", d, strlen(d));
+			printf("l:%s\nstrlen(l):%lu\n", l, strlen(l));
+			printf("d:%s\nstrlen(d):%lu\n", d, strlen(d));
 			exit(1);
 		}
 		DelHole(l);
@@ -2117,8 +2117,8 @@ void ReadSeq(char *file, int nseq, int *len, int ***seq_real, char ***peak_real,
 		if (strlen(d[0]) + strlen(l)>sizeof(d[0]))
 		{
 			printf("Size is large...");
-			printf("l:%s\nstrlen(l):%d\n", l, strlen(l));
-			printf("d:%s\nstrlen(d):%d\n", d[0], strlen(d[0]));
+			printf("l:%s\nstrlen(l):%lu\n", l, strlen(l));
+			printf("d:%s\nstrlen(d):%lu\n", d[0], strlen(d[0]));
 			exit(1);
 		}
 		DelHole(l);
@@ -3069,6 +3069,7 @@ int main(int argc, char *argv[])
 			isize_selected = isize;
 			for (n = 0; n <= nseq; n++)fp_rate_best[n] = fp_rate1[n];
 		}
+		/*
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
 		strcpy(file_out_cnt, file);
 		strcat(file_out_cnt, add_fpt);
@@ -3092,6 +3093,7 @@ int main(int argc, char *argv[])
 		}
 		fprintf(outq, "\n");
 		fclose(outq);
+		*/
 		delete[] fp_rate1;
 	}	
 	char name[500];
