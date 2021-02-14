@@ -11,12 +11,12 @@
 #define Min(a,b) ((a)>(b))? (b):(a);
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
-#define MOTLEN 105
+#define MOTLEN 125
 #define MEGE 20//population size 1st stage
 #define ELIT 4//population size 2nd stage
 #define NMUT 3
 #define NREC 5
-#define POPSIZE 150
+#define POPSIZE 210
 #define CENT 100
 
 double  uw[POPSIZE][POPSIZE], uw0[POPSIZE];
@@ -3008,6 +3008,7 @@ int main(int argc, char *argv[])
 		}
 		fprintf(outq, "%s\t%d\t%f\n", file, size0, auc2);
 		fclose(outq);
+		/*
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
 		strcpy(file_out_cnt, file);
 		strcat(file_out_cnt, add_fpt);
@@ -3030,7 +3031,7 @@ int main(int argc, char *argv[])
 			fprintf(outq, "\t%g", fp_rate[n]);
 		}
 		fprintf(outq, "\n");
-		fclose(outq);
+		fclose(outq);*/
 	}
 	for(iter=0;iter<iteration;iter++)
 	{
