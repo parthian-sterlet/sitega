@@ -62,10 +62,10 @@ Lists of command line arguments for all modules are described below
 
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp)
 1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
-2. int motif_len = length of motif (integer value respecting to the optimal length of a respective traditional PWM model is recommended, default value 60 usually brought good results)
-3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value 60)
-4. int size_end = end value for the number of LPDs (default value 90)
-5. int size_dif = variation value for the number of LPDs (default value 10)
+2. int motif_len = length of motif (integer value respecting to the optimal length of a respective traditional PWM model is recommended, default values from 50 to 100 are recommended, the best length is selected according the accuracy estimate pAUC, the partial area under curve, which is computed at the end of the training process for each model)
+3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (default value about 60)
+4. int size_end = end value for the number of LPDs (default value about twice larger than a length of motif)
+5. int size_dif = variation value for the number of LPDs (default values 10 or 20)
 
 ## Estimate accuracy for a model
 
