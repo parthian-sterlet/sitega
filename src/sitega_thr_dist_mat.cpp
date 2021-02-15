@@ -110,7 +110,7 @@ int ComplStr(char *d)
 		default: d[i] = 'n';
 		}
 	}
-	delete d1;
+	delete[] d1;
 	return 1;
 }
 int CheckStr(char *d)
