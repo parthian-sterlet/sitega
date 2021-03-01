@@ -6,7 +6,7 @@ Current SiteGA version (Levitsky et al., in preparation) represented the algorit
 # Requirements
 SiteGA source code was written in C++ language. Hence, to compile exetubables from source code you at least need:
 
-* In Linux system [GCC](https://gcc.gnu.org/) compiler 
+* In Linux system, C++ compiler, e.g. [GCC](https://gcc.gnu.org/) compiler 
 * In Windiws system any VC++ package, e.g. [Microsoft Visual Studio Express](https://visualstudio.microsoft.com/vs/express/)
 
 # Source code
@@ -16,7 +16,7 @@ Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) con
 ## 2. Train a model
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with a given train ChIP-seq dataset (peaks)
 ## 3. Estimate accuracy for a model
-[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test (a) to estimate the performance of a model with a given train ChIP-seq dataset, i.e. computes ROC curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) for control data, and (b) to select parameters of model the optimial length and the number of locally positioned dinucleotides providing the best performance, i.e. the maximal partial area under curve (pAUC).
+[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test (a) to estimate the performance of a model with a given train ChIP-seq dataset, i.e. computes ROC curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) for control data, and (b) to select parameters of model the optimial length and the number of LPDs providing the best performance, i.e. the maximal partial area under curve (pAUC).
 ## 4. Set threshold for a model
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp) creates table of thresholds for the scaner (**Scan test sequences with a model** module) based on score distribution for the background set of whole whole-genome promoters
 ## 5. Scan test sequences with a model
@@ -113,11 +113,11 @@ These scripts implement various pipelines for Linux:
 
 ## Train a model
 
-[andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) gradually constructs several sitega models, with the numbers of locally positioned dinucleotides (LPDs) assigned according to 3rd, 4th and 5th parameters of the command line (size_start, size_end and size_dif), their default values 10, 90 and 10 define the search of nine SiteGA models - with 10, 20, 30, etc. up to 90 LPDs. Selection of the one model among these {10, 20, 30, .., 90} models is performed by respective estimated FPRs (see file with *{train.txt}* extension, it has the same format as output file of accuracy estimation procedure [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt). The selected model with the minimal FPR at TPR=0.5 is written in output file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with *.mat* extension
+[andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) constructs one sitega model, with the numbers of locally positioned dinucleotides (LPDs) assigned according to 3rd, 4th and 5th parameters of the command line (size_start, size_end and size_dif), their values deduced from the bootstrap cross validation test (see the next paragraph). The selected model respecting the maximal pAUC in the bootstrap cross validation test, this model is written in output file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with *.mat* extension
 
 ## Estimate accuracy for a model
 
-[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) may several times gradually construct several distinct [SiteGA models](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) (parameter 7th num_iterations), but each time it uses only a part of ChIP-seq dataset for training, the rest (control) part of dataset is used to estimate FPR). The output file [Table FPR_vs TPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt) represents the table of FPRs for TPR 0.1, 0.2, .. up to 0.9. 
+[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) may several times gradually construct several distinct [SiteGA models](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) (parameter 7th num_iterations), but each time it uses only a part of ChIP-seq dataset for training, the rest (control) part of dataset is used to estimate FPR). The output file [Table FPR_vs TPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt) represents the table of FPRs for TPR 0.01, 0.02, .. up to 0.99. Selection of the one model among several ones with different LPDs and lengths L is performed by respective estimated pAUC values computed for the receiver operating characteristic (ROC) curve (see file with *{train.txt}* extension, [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt). 
 
 ## Set threshold for a model
 
