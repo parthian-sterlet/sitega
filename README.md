@@ -1,18 +1,18 @@
 # SiteGA - binding Sites recognition by Genetic Algorithm
 
 # Description
-Current SiteGA version (Levitsky et al., in preparation) represented the algorithm of [Levitsky et al. (2007)](https://doi.org/10.1186/1471-2105-8-481) adopted for *de novo* motif search in a ChIP-seq dataset. SiteGA is stochastic algorithm that searches in input sequences the pattern of mutually dependedent locally positioned dinucleotides (LPDs) that simulates short- and long-range intractions of nucleotide context within binding sites. Hence, SiteGA approach is drastically different from that of traditional Position Weight Matrix (PWM), which searches for the most conserved motifs based on additive impacts of nucleotide frequencies from various site positions
+The current SiteGA version (Levitsky et al., in preparation) represented the algorithm of [Levitsky et al. (2007)](https://doi.org/10.1186/1471-2105-8-481) adopted for *de novo* motif search in a ChIP-seq dataset. SiteGA is stochastic algorithm that searches in input sequences the pattern of mutually dependent locally positioned dinucleotides (LPDs) that simulates short- and long-range intractions of nucleotide context within transcription factor binding sites. Hence, SiteGA approach is drastically different from that of traditional Position Weight Matrix (PWM), which searches for the most conserved motifs based on additive impacts of nucleotide frequencies from various site positions.
 
 # Requirements
-SiteGA source code was written in C++ language. Hence, to compile exetubables from source code you at least need:
+SiteGA source code was written in C++ language. Hence, to compile exetubables from source code you need:
 
 * In Linux system, C++ compiler, e.g. [GCC](https://gcc.gnu.org/) compiler 
 * In Windiws system any VC++ package, e.g. [Microsoft Visual Studio Express](https://visualstudio.microsoft.com/vs/express/)
 
 # Source code
-Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains five files with SiteGA source codes, they respect to five separate modules of pipeline: 
+Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains files with SiteGA source codes, they respect to separate modules of pipeline: 
 ## 1. Preparation
-[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) to train a model (**Train a model** module) or perform the bootsrap cross validation test (**Estimate accuracy for a model** module). Model's parameters are diaganal elements of the covariation matrix for LPDs of all dinucleotide types and all allowed lengths for the background dataset [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481)
+[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Model's ors](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) to perform the bootsrap cross validation test (**Estimate accuracy for a model** module) to train a model (**Train a model** module). Model's parameters are diaganal elements of the covariation matrix for LPDs of all dinucleotide types and all allowed lengths for the background dataset [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481)
 ## 2. Train a model
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with a given train ChIP-seq dataset (peaks)
 ## 3. Estimate accuracy for a model
