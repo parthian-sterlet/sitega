@@ -10,7 +10,7 @@ SiteGA source code was written in C++ language. Hence, to compile exetubables fr
 * In Windiws system any VC++ package, e.g. [Microsoft Visual Studio Express](https://visualstudio.microsoft.com/vs/express/)
 
 # Source code
-Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains files with SiteGA source codes, they respect to separate modules of pipeline: 
+Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains files with SiteGA source codes, they respect to following separate modules of pipeline.
 ## 1. Preparation
 [monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that are required to perform the bootsrap cross validation test (**Estimate accuracy for a model** module) and to train a model (**Train a model** module). 'Common settings of models' are diaganal elements of the covariation matrix for LPDs of all dinucleotide types and all allowed lengths for the background dataset [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481)
 ## 2. Set parameters of a model through accuracy estimation
