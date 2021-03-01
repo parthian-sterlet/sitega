@@ -40,13 +40,13 @@ Scheme of modules fucntioning is given below
 
 ![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega4.jpg)
 
-Modules **Estimate accuracy for a model** and **Train a model** must run with file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module
+Modules **Set parameters of a model through accuracy estimation** and **Train a model** must run with file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module
 
 Modules **Set threshold for a model** and **Scan test seauences with a model** require file with [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previosly computed by **Train a model** module
 
 Module **Set threshold for a model** is required to select a correct threshold for **Scan test sequences with a model** module
 
-Module **Estimate accuracy for a model** is not required for functionality of **Set threshold for a model** and **Scan test seauences with a model** modules. Though only bootstrap procedure correctly evaluates the accuracy (see output data block **ROC curve, control data**), estimates of False Positive Rate for a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) may be retrieved from results of testing with training data (**Train a model**), i.e. see output file with *{train.txt}* extension [FPR_vs_TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt), it respects to output data block **ROC curve, training data** on the scheme
+Module **Set parameters of a model through accuracy estimation** is required for functionality of **Train a model** and all consequent modules since only the bootstrap procedure correctly selects parameters of a model (see output data block **Table FPR vs. TPR, control data**).
 
 # How to run separate modules
 Lists of command line arguments for all modules are described below
