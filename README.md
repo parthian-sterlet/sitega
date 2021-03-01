@@ -12,11 +12,11 @@ SiteGA source code was written in C++ language. Hence, to compile exetubables fr
 # Source code
 Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains files with SiteGA source codes, they respect to separate modules of pipeline: 
 ## 1. Preparation
-[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Model's ors](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) to perform the bootsrap cross validation test (**Estimate accuracy for a model** module) to train a model (**Train a model** module). Model's parameters are diaganal elements of the covariation matrix for LPDs of all dinucleotide types and all allowed lengths for the background dataset [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481)
-## 2. Train a model
-[andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with a given train ChIP-seq dataset (peaks)
-## 3. Estimate accuracy for a model
-[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to select parameters of model the optimial length and the number of LPDs providing the best performance, i.e. the maximal partial area under curve (pAUC). the term partial mean that the criterion FPR < 0.001 is impied for pAUC computation. The maximal pAUC estimates the performance of a model with a given train ChIP-seq dataset, i.e. the receiver operating characteristic (ROC) curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) for control data.
+[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that are required to perform the bootsrap cross validation test (**Estimate accuracy for a model** module) and to train a model (**Train a model** module). 'Common settings of models' are diaganal elements of the covariation matrix for LPDs of all dinucleotide types and all allowed lengths for the background dataset [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481)
+## 2. Set parameters of a model through accuracy estimation
+[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to select parameters of model: the optimial length and the number of LPDs providing the best performance. The maximal partial area under curve (pAUC) is used to estimate the accuracy of a model, i.e. the receiver operating characteristic (ROC) curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) for control data. The term partial means that the criterion FPR < 0.001 is impied for pAUC computation. The maximal pAUC estimates the performance of a model with a given train ChIP-seq dataset.
+## 3. Train a model
+[andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with selected parameters of length and number of LPDs for a given train ChIP-seq dataset (peaks)
 ## 4. Set threshold for a model
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp) creates table of thresholds for the scaner (**Scan test sequences with a model** module) based on score distribution for the background set of whole whole-genome promoters
 ## 5. Scan test sequences with a model
@@ -40,7 +40,7 @@ Scheme of modules fucntioning is given below
 
 ![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega3.jpg)
 
-Modules **Estimate accuracy for a model** and **Train a model** must run with file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module
+Modules **Estimate accuracy for a model** and **Train a model** must run with file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module
 
 Modules **Set threshold for a model** and **Scan test seauences with a model** require file with [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previosly computed by **Train a model** module
 
@@ -56,27 +56,27 @@ Lists of command line arguments for all modules are described below
 [monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp)
 1. int reg = maximal length of region of one locally positioned dinucleotide (default value 6)
 2. file seq = input [Fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa), each peak should consist of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
-3. file out = output file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt)
+3. file out = output file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt)
 
-## Train a model
-
-[andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp)
-1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
-2. int motif_len = length of motif (integer value L respecting to the optimal length of a respective traditional PWM model is recommended, default values from 50 to 100 are recommended, the best length is selected according the accuracy estimate pAUC, the partial area under curve, which is estimated in the bootstrap crossvaliation test, see the next paragraph)
-3. int size_start = start value for the number of LPDs (a value is estimated in the bootstrap crossvaliation test, see the next paragraph)
-4. int size_end = end value for the number of LPDs (default value is equal to the previous parameter size_start)
-5. int size_dif = variation value for the number of LPDs (default value 10)
-
-## Estimate accuracy for a model
+## Set parameters of a model through accuracy estimation
 
 [andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp)
-1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
+1. char file_cor = input file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
 2. int motif_len = length of motif (integer value respecting to the optimal length L, default value is optimized in the range from 40 to 100 bp)
 3. int size_start = start value for the number of LPDs (default value the optimal length of motif, L)
 4. int size_end = end value for the number of LPDs (default value twice larger than the optimal length of motif, 2L)
 5. int size_dif = variation value for the number of LPDs (default value a quarter of the optimal length, L/4)
 6. double ratio_cnt_of_all  = ratio of the number of peaks in training dataset to that control dataset (default value -1 means odd/even peaks for training/control sequence sets)
 7. int num_iterations = number of iterations in bootatrap (default 1)
+
+## Train a model
+
+[andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp)
+1. char file_cor = input file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
+2. int motif_len = length of motif (integer value L respecting to the optimal length of a respective traditional PWM model is recommended, default values from 50 to 100 are recommended, the best length is selected according the accuracy estimate pAUC, the partial area under curve, which is estimated in the bootstrap crossvaliation test, see the next paragraph)
+3. int size_start = start value for the number of LPDs (a value is estimated in the bootstrap crossvaliation test, see the next paragraph)
+4. int size_end = end value for the number of LPDs (default value is equal to the previous parameter size_start)
+5. int size_dif = variation value for the number of LPDs (default value 10)
 
 ## Set threshold for a model
 
@@ -109,15 +109,15 @@ These scripts implement various pipelines for Linux:
 
 ## Preparation
 
-[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) creates file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that may be used for training (**Train a model** module) or performance evaluation (**Estimate accuracy for a model** module)
+[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) creates file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that may be used for training (**Train a model** module) or performance evaluation (**Estimate accuracy for a model** module)
+
+## Set parameters of a model through accuracy estimation
+
+[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) may several times gradually construct several distinct [SiteGA models](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) (parameter 7th num_iterations), but each time it uses only a part of ChIP-seq dataset for training, the rest (control) part of dataset is used to estimate FPR). The output file [Table FPR_vs TPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt) represents the table of FPRs for TPR 0.01, 0.02, .. up to 0.99. Selection of the one model among several ones with different LPDs and lengths L is performed by respective estimated pAUC values computed for the receiver operating characteristic (ROC) curve (see file with *{train.txt}* extension, [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt). 
 
 ## Train a model
 
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) constructs one sitega model, with the numbers of locally positioned dinucleotides (LPDs) assigned according to 3rd, 4th and 5th parameters of the command line (size_start, size_end and size_dif), their values deduced from the bootstrap cross validation test (see the next paragraph). The selected model respecting the maximal pAUC in the bootstrap cross validation test, this model is written in output file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with *.mat* extension
-
-## Estimate accuracy for a model
-
-[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) may several times gradually construct several distinct [SiteGA models](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) (parameter 7th num_iterations), but each time it uses only a part of ChIP-seq dataset for training, the rest (control) part of dataset is used to estimate FPR). The output file [Table FPR_vs TPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt) represents the table of FPRs for TPR 0.01, 0.02, .. up to 0.99. Selection of the one model among several ones with different LPDs and lengths L is performed by respective estimated pAUC values computed for the receiver operating characteristic (ROC) curve (see file with *{train.txt}* extension, [FPR_vs TPR table file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model_bs1.txt). 
 
 ## Set threshold for a model
 
