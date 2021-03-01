@@ -12,15 +12,15 @@ SiteGA source code was written in C++ language. Hence, to compile exetubables fr
 # Source code
 Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains files with SiteGA source codes, they respect to following separate modules of pipeline.
 ## 1. Preparation
-[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that are required to perform the bootsrap cross validation test (**Estimate accuracy for a model** module) and to train a model (**Train a model** module). 'Common settings of models' are diaganal elements of the covariation matrix for LPDs of all dinucleotide types and all allowed lengths for the background dataset [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481)
+[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that are required to perform the bootsrap cross validation test (**Set parameters of a model through accuracy estimation** module) and to train a model (**Train a model** module). 'Common settings of models' are diaganal elements of the covariation matrix for LPDs of all dinucleotide types and all allowed lengths for the background dataset [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481)
 ## 2. Set parameters of a model through accuracy estimation
-[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to select parameters of model: the optimial length and the number of LPDs providing the best performance. The maximal partial area under curve (pAUC) is used to estimate the accuracy of a model, i.e. the receiver operating characteristic (ROC) curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) for control data. The term partial means that the criterion FPR < 0.001 is impied for pAUC computation. The maximal pAUC estimates the performance of a model with a given train ChIP-seq dataset.
+[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to select parameters of a model: the optimial length and the number of LPDs providing the best performance. The maximal partial area under curve (pAUC) is used to estimate the accuracy of a model, i.e. the receiver operating characteristic (ROC) curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) for control data. The term partial means that the criterion FPR < 0.001 is impied for pAUC computation. 
 ## 3. Train a model
-[andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with selected parameters of length and number of LPDs for a given train ChIP-seq dataset (peaks)
+[andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with selected parameters of the motif length and the number of LPDs for a given train ChIP-seq dataset (peaks)
 ## 4. Set threshold for a model
-[sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp) creates table of thresholds for the scaner (**Scan test sequences with a model** module) based on score distribution for the background set of whole whole-genome promoters
+[sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp) creates table of thresholds for model's hits search in test sequences (**Scan test sequences with a model** module) based on score distribution for the background set of whole whole-genome promoters
 ## 5. Scan test sequences with a model
-[andy1_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy1_mat.cpp) scans test sequences with a constructed model and a selected for it threshold
+[andy1_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy1_mat.cpp) scans test sequences with a constructed model and a selected threshold
 
 # How to compile
 * In Linux system: 
@@ -44,7 +44,7 @@ Modules **Set parameters of a model through accuracy estimation** and **Train a 
 
 Module **Set parameters of a model through accuracy estimation** is required for functionality of **Train a model** and all consequent modules since only the bootstrap procedure correctly selects parameters of a model (see output data block **Table FPR vs. TPR, control data**)
 
-Modules **Set threshold for a model** and **Scan test seauences with a model** require file with [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previosly computed by **Train a model** module
+Modules **Set threshold for a model** and **Scan test seauences with a model** require file with [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previously computed by **Train a model** module
 
 Module **Set threshold for a model** is required to select a correct threshold for **Scan test sequences with a model** module
 
