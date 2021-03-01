@@ -16,7 +16,7 @@ Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) con
 ## 2. Train a model
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with a given train ChIP-seq dataset (peaks)
 ## 3. Estimate accuracy for a model
-[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to estimate the performance of a model with a given train ChIP-seq dataset, i.e. computes ROC curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) for control data
+[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test (a) to estimate the performance of a model with a given train ChIP-seq dataset, i.e. computes ROC curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) for control data, and (b) to select parameters of model the optimial length and the number of locally positioned dinucleotides providing the best performance, i.e. the maximal partial area under curve (pAUC).
 ## 4. Set threshold for a model
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp) creates table of thresholds for the scaner (**Scan test sequences with a model** module) based on score distribution for the background set of whole whole-genome promoters
 ## 5. Scan test sequences with a model
