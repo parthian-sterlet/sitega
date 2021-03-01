@@ -38,7 +38,7 @@ separate compilation of five modules in VC++
 
 Scheme of modules fucntioning is given below
 
-![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega3.jpg)
+![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega4.jpg)
 
 Modules **Estimate accuracy for a model** and **Train a model** must run with file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module
 
