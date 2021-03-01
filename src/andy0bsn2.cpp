@@ -2125,7 +2125,7 @@ int main(int argc, char *argv[])
 
 	if(argc!=8)
 	{
-		puts("Sintax: 1char file_cor 2int motif_len 3int size_start 4int size_end 5int size_dif 6double ratio_cnt_of_all(0=jk) 7int num_iterations ");//  5<pop_size>
+		puts("Sintax: 1char file_cor 2int motif_len 3int size_start 4int size_end 5int size_dif 6double ratio_cnt_of_all(0=jk <0=odd) 7int num_iterations ");//  5<pop_size>
 		exit (1);
 	}	
 	strcpy(file_ksi,argv[1]);
@@ -2155,11 +2155,12 @@ int main(int argc, char *argv[])
 		printf("Wrong setting for population size change: Size change = %d Size start = %d Size end = %d\n",size_dif,size_start,size_end);
 		exit(1);
 	}	*/
+	/*
 	if(ratio_train_to_control<0)
 	{
 		printf("Wring train to control ratio %f\n",ratio_train_to_control);
 		exit(1);
-	}	
+	}*/	
 	int olen1=olen-1;
 	int reg_max;		
 	FILE *in;
@@ -2268,13 +2269,17 @@ int main(int argc, char *argv[])
 	}	
 	else
 	{
-		int n_cnt = (int)(nseq/ratio_train_to_control);
-		int n_trn=nseq-n_cnt;		
-		for(iter=0;iter<iteration;iter++)
-		{				
-			n_train[iter] = n_trn;
-			n_cntrl[iter] = n_cnt;		
+		if (ratio_train_to_control > 0)
+		{
+			int n_cnt = (int)(nseq / ratio_train_to_control);
+			int n_trn = nseq - n_cnt;
+			for (iter = 0; iter < iteration; iter++)
+			{
+				n_train[iter] = n_trn;
+				n_cntrl[iter] = n_cnt;
+			}
 		}
+		else for (iter = 0; iter < iteration; iter++)n_train[iter] = n_cntrl[iter] = nseq / 2;
 	}
 	int n_cnt_tot=0;
 	for(i=0;i<iteration;i++)n_cnt_tot+=n_cntrl[i];	
@@ -2327,8 +2332,19 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			for(k=0;k<nseq;k++)xport[k]=1;//train
-			xport[iter]=0;//control
+			if (ratio_train_to_control == 0)
+			{
+				for (k = 0; k < nseq; k++)xport[k] = 1;//train
+				xport[iter] = 0;//control
+			}
+			else
+			{				
+				for (k = 0; k < nseq; k += 2)
+				{
+					xport[k] = 1;//train
+					xport[k + 1] = 0;
+				}
+			}
 		}
 	}
 	int n_decil[CENT];
@@ -2338,6 +2354,8 @@ int main(int argc, char *argv[])
 	}
 	double auc_max = 0;
 	int isize_selected = 0;	
+	double *fp_rate_best;
+	fp_rate_best = new double[nseq + 1];
 	int *tp_rate;
 	tp_rate = new int[n_cnt_tot+1];
 	double *fp_rate_step;
@@ -2952,7 +2970,6 @@ int main(int argc, char *argv[])
 			printf("Output file can't be opened!\n");
 			exit(1);
 		}					
-		//	fprintf(outq,"FN rate\tFP rate\n");		
 		if(isize==0)
 		{
 			double dtp = 1 / (double)CENT;
@@ -2969,11 +2986,6 @@ int main(int argc, char *argv[])
 		{									
 			fprintf(outq,"\t%.3e",fp_rate[n_decil[n]]);		///qsd											
 		}
-		/*fprintf(outq,"\t\t");
-		for(n=0;n<cent1;n++)
-		{									
-			fprintf(outq,"\t%f",sco_pos[n_decil[n]]);		///qsd											
-		}*/
 		fprintf(outq,"\n");
 		fclose(outq);		
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
@@ -3008,6 +3020,13 @@ int main(int argc, char *argv[])
 		}
 		fprintf(outq, "%s\t%d\t%f\n", file, size0, auc2);
 		fclose(outq);
+		double auc_here = auc2;
+		if (auc_here > auc_max)
+		{
+			auc_max = auc_here;
+			isize_selected = isize;
+			for (n = 0; n <= nseq; n++)fp_rate_best[n] = fp_rate[n];
+		}
 		/*
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
 		strcpy(file_out_cnt, file);
@@ -3032,6 +3051,69 @@ int main(int argc, char *argv[])
 		}
 		fprintf(outq, "\n");
 		fclose(outq);*/
+	}
+	int size_best = size_start + size_dif * isize_selected;
+	{
+		FILE *outq;
+		memset(file_out_cnt, 0, sizeof(file_out_cnt));
+		strcpy(file_out_cnt, file);
+		strcat(file_out_cnt, "_best");
+		strcat(file_out_cnt, add_roc);
+		if ((outq = fopen(file_out_cnt, "at")) == NULL)
+		{
+			printf("Output file can't be opened!\n");
+			exit(1);
+		}		
+		{
+			double dtp = 1 / (double)CENT;
+			double dtp2 = 1 / (double)n_cnt_tot / 2;
+			fprintf(outq, "\t%.5f", dtp2);
+			for (n = 1; n < CENT; n++)
+			{
+				fprintf(outq, "\t%.3f", n*dtp);
+			}
+			fprintf(outq, "\n");
+		}
+		fprintf(outq, "%s_%d", file, size_best);
+		for (n = 0; n < CENT; n++)
+		{
+			fprintf(outq, "\t%.3e", fp_rate_best[n_decil[n]]);		///qsd											
+		}
+		fprintf(outq, "\n");
+		fclose(outq);
+		memset(file_out_cnt, 0, sizeof(file_out_cnt));
+		strcpy(file_out_cnt, file);
+		strcat(file_out_cnt, "_best");
+		strcat(file_out_cnt, add_auc);
+		if ((outq = fopen(file_out_cnt, "at")) == NULL)
+		{
+			printf("Output file can't be opened!\n");
+			exit(1);
+		}
+		double fp2 = 0.001;
+		//fp_rate_step[0] = 0;
+		//tp_rate[0] = 0;
+		int k_step = 0;
+		for (n = 1; n <= n_cnt_tot; n++)
+		{
+			if (fp_rate_best[n] >= fp2)break;
+			int n1 = n - 1;
+			if (fp_rate_best[n] > fp_rate_best[n1])
+			{
+				tp_rate[k_step] = n1;
+				fp_rate_step[k_step] = fp_rate_best[n1];
+				k_step++;
+			}
+		}
+		double auc2 = 0;
+		for (n = 1; n < k_step; n++)
+		{
+			int n1 = n - 1;
+			double dauc = (tp_rate[n] + tp_rate[n1]) * (fp_rate_step[n] - fp_rate_step[n1]) / 2 / n_cnt_tot;
+			auc2 += dauc;
+		}
+		fprintf(outq, "%s\t%d\t%f\n", file, size_best, auc2);
+		fclose(outq);
 	}
 	for(iter=0;iter<iteration;iter++)
 	{
@@ -3069,6 +3151,7 @@ int main(int argc, char *argv[])
 	delete [] fp_rate;	
 	delete [] tp_rate;
 	delete [] fp_rate_step;
+	delete[] fp_rate_best;
 	delete [] n_train;
 	delete [] n_cntrl;
 	delete [] sco_pos; 	
