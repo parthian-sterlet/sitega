@@ -42,11 +42,12 @@ Scheme of modules fucntioning is given below
 
 Modules **Set parameters of a model through accuracy estimation** and **Train a model** must run with file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module
 
+Module **Set parameters of a model through accuracy estimation** is required for functionality of **Train a model** and all consequent modules since only the bootstrap procedure correctly selects parameters of a model (see output data block **Table FPR vs. TPR, control data**)
+
 Modules **Set threshold for a model** and **Scan test seauences with a model** require file with [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previosly computed by **Train a model** module
 
 Module **Set threshold for a model** is required to select a correct threshold for **Scan test sequences with a model** module
 
-Module **Set parameters of a model through accuracy estimation** is required for functionality of **Train a model** and all consequent modules since only the bootstrap procedure correctly selects parameters of a model (see output data block **Table FPR vs. TPR, control data**).
 
 # How to run separate modules
 Lists of command line arguments for all modules are described below
