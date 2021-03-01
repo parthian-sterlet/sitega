@@ -66,15 +66,15 @@ Lists of command line arguments for all modules are described below
 3. int size_start = start value for the number of LPDs (default value the optimal length of motif, L)
 4. int size_end = end value for the number of LPDs (default value twice larger than the optimal length of motif, 2L)
 5. int size_dif = variation value for the number of LPDs (default value a quarter of the optimal length, L/4)
-6. double ratio_cnt_of_all  = ratio of the number of peaks in training dataset to that control dataset (default value -1 means odd/even peaks for training/control sequence sets)
+6. double ratio_cnt_of_all  = ratio of the number of peaks in training dataset to that of control dataset (default value -1 means odd/even peaks for training/control sequence sets)
 7. int num_iterations = number of iterations in bootatrap (default 1)
 
 ## Train a model
 
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp)
 1. char file_cor = input file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
-2. int motif_len = length of motif (integer value L respecting to the optimal length of a respective traditional PWM model is recommended, default values from 50 to 100 are recommended, the best length is selected according the accuracy estimate pAUC, the partial area under curve, which is estimated in the bootstrap crossvaliation test, see the next paragraph)
-3. int size_start = start value for the number of LPDs (a value is estimated in the bootstrap crossvaliation test, see the next paragraph)
+2. int motif_len = length of motif (integer value L respecting to the optimal length of a respective traditional PWM model is recommended, default values from 40 to 100 are recommended, the optimal length is selected according the accuracy estimate pAUC, the partial area under curve, which is estimated in the bootstrap crossvaliation test, see the previous paragraph)
+3. int size_start = start value for the number of LPDs (a value is estimated in the bootstrap crossvaliation test, see the previous paragraph)
 4. int size_end = end value for the number of LPDs (default value is equal to the previous parameter size_start)
 5. int size_dif = variation value for the number of LPDs (default value 10)
 
