@@ -16,7 +16,7 @@ Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) con
 ## 2. Train a model
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with a given train ChIP-seq dataset (peaks)
 ## 3. Estimate accuracy for a model
-[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test (a) to estimate the performance of a model with a given train ChIP-seq dataset, i.e. computes ROC curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) for control data, and (b) to select parameters of model the optimial length and the number of LPDs providing the best performance, i.e. the maximal partial area under curve (pAUC).
+[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to select parameters of model the optimial length and the number of LPDs providing the best performance, i.e. the maximal partial area under curve (pAUC). the term partial mean that the criterion FPR < 0.001 is impied for pAUC computation. The maximal pAUC estimates the performance of a model with a given train ChIP-seq dataset, i.e. the receiver operating characteristic (ROC) curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) for control data.
 ## 4. Set threshold for a model
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp) creates table of thresholds for the scaner (**Scan test sequences with a model** module) based on score distribution for the background set of whole whole-genome promoters
 ## 5. Scan test sequences with a model
@@ -63,7 +63,7 @@ Lists of command line arguments for all modules are described below
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp)
 1. char file_cor = input file of [Model's parameters](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
 2. int motif_len = length of motif (integer value L respecting to the optimal length of a respective traditional PWM model is recommended, default values from 50 to 100 are recommended, the best length is selected according the accuracy estimate pAUC, the partial area under curve, which is estimated in the bootstrap crossvaliation test, see the next paragraph)
-3. int size_start = start value for the number of locally positioned dinucleotides (LPDs) (a value is estimated in the bootstrap crossvaliation test, see the next paragraph)
+3. int size_start = start value for the number of LPDs (a value is estimated in the bootstrap crossvaliation test, see the next paragraph)
 4. int size_end = end value for the number of LPDs (default value is equal to the previous parameter size_start)
 5. int size_dif = variation value for the number of LPDs (default value 10)
 
@@ -75,8 +75,8 @@ Lists of command line arguments for all modules are described below
 3. int size_start = start value for the number of LPDs (default value the optimal length of motif, L)
 4. int size_end = end value for the number of LPDs (default value twice larger than the optimal length of motif, 2L)
 5. int size_dif = variation value for the number of LPDs (default value a quarter of the optimal length, L/4)
-6. double ratio_cnt_of_all  = ratio of the number of peaks in training dataset to that control dataset (default value 11)
-7. int num_iterations = number of iterations in bootatrap (default 1), but it is recomended to run bootstrap several times (at least 5 runs) to get reliable results
+6. double ratio_cnt_of_all  = ratio of the number of peaks in training dataset to that control dataset (default value -1 means odd/even peaks for training/control sequence sets)
+7. int num_iterations = number of iterations in bootatrap (default 1)
 
 ## Set threshold for a model
 
