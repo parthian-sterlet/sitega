@@ -2334,8 +2334,11 @@ int main(int argc, char *argv[])
 		{
 			if (ratio_train_to_control == 0)
 			{
-				for (k = 0; k < nseq; k++)xport[k] = 1;//train
-				xport[iter] = 0;//control
+				int one, zer;
+				if (iter % 2 == 0) { one = 1; zer = 0; }
+				else { one = 0; zer = 1; }
+				for (k = 0; k < nseq; k++)xport[k] = one;//train
+				xport[iter] = zer;//control
 			}
 			else
 			{				
