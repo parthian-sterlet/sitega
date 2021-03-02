@@ -2324,7 +2324,7 @@ int main(int argc, char *argv[])
 	det1.mem_in(nseq);
 	for(iter=0;iter<iteration;iter++)
 	{
-		if(ratio_train_to_control!=0)
+		if(ratio_train_to_control!=0)// random splits cross-validation
 		{			
 			for (k = 0; k < n_cntrl[iter]; k++)xport[k] = 0;
 			for (k = n_cntrl[iter]; k < nseq; k++)xport[k] = 1;
@@ -2332,20 +2332,20 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			if (ratio_train_to_control == 0)
+			if (ratio_train_to_control == 0) //Leave-one-out cross-validation
 			{
+				for (k = 0; k < nseq; k++)xport[k] = 1;//train
+				xport[iter] = 0;//control
+			}
+			else //two-fold cross-validation
+			{				
 				int one, zer;
 				if (iter % 2 == 0) { one = 1; zer = 0; }
 				else { one = 0; zer = 1; }
-				for (k = 0; k < nseq; k++)xport[k] = one;//train
-				xport[iter] = zer;//control
-			}
-			else
-			{				
 				for (k = 0; k < nseq; k += 2)
 				{
-					xport[k] = 1;//train
-					xport[k + 1] = 0;
+					xport[k] = one;//train
+					xport[k + 1] = zer;
 				}
 			}
 		}
