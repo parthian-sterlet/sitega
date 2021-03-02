@@ -14,7 +14,7 @@ Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) con
 ## 1. Preparation
 [monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that are required to perform the bootsrap cross validation test (**Set parameters of a model through accuracy estimation** module) and to train a model (**Train a model** module). 'Common settings of models' are diaganal elements of the covariation matrix for LPDs of all dinucleotide types and all allowed lengths for the background dataset [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481)
 ## 2. Set parameters of a model through accuracy estimation
-[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to select parameters of a model: the optimial length and the number of LPDs providing the best performance. The maximal partial area under curve (pAUC) is used to estimate the accuracy of a model, i.e. the receiver operating characteristic (ROC) curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) for control data. The term partial means that the criterion FPR < 0.001 is impied for pAUC computation. 
+[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to select parameters of a model: the optimial length and the number of LPDs providing the best performance. The maximal partial area under curve (pAUC) is used to estimate the accuracy of a model, i.e. the receiver operating characteristic (ROC) curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR). The term partial means that the criterion FPR < 0.001 is impied for pAUC computation. 
 ## 3. Train a model
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with selected parameters of the motif length and the number of LPDs for a given train ChIP-seq dataset (peaks)
 ## 4. Set threshold for a model
@@ -32,17 +32,17 @@ chmod a+x build.sh\
 
 * In Windiws system:
 
-separate compilation of five modules in VC++
+separate compilation of all source files in VC++
 
 ## Integration of modules
 
 Scheme of modules fucntioning is given below
 
-![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega4.jpg)
+![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega5.jpg)
 
 Modules **Set parameters of a model through accuracy estimation** and **Train a model** must run with file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module
 
-Module **Set parameters of a model through accuracy estimation** is required for functionality of **Train a model** and all consequent modules since only the bootstrap procedure correctly selects parameters of a model (see output data block **Table FPR vs. TPR, control data**)
+Module **Set parameters of a model through accuracy estimation** is required for functionality of **Train a model** and all consequent modules since only the bootstrap procedure correctly selects parameters of a model (see output data block **Table FPR vs. TPR, ROC curve & pAUC**)
 
 Modules **Set threshold for a model** and **Scan test seauences with a model** require file with [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previously computed by **Train a model** module
 
@@ -110,7 +110,7 @@ These scripts implement various pipelines for Linux:
 
 ## Preparation
 
-[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) creates file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that may be used for training (**Train a model** module) or performance evaluation (**Estimate accuracy for a model** module)
+[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) creates file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that may be used for training (**Train a model** module) or performance evaluation (**Set parameters of a model through accuracy estimation** module)
 
 ## Set parameters of a model through accuracy estimation
 
