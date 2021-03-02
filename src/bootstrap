@@ -1,2 +1,2 @@
 ./monte0dg 6 peaks.fasta peaks.mnt
-./andy0bsn2 peaks.mnt 80 80 160 20 -1 1 >peak.log
+./andy0bsn2 peaks.mnt 80 80 160 20 -1 2 >peak.log
