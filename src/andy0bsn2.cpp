@@ -2262,14 +2262,14 @@ int main(int argc, char *argv[])
 	n_cntrl = new int[iteration];
 	if (n_cntrl == NULL){ puts("Out of memory..."); exit(1); }
 	int iter;
-	if(ratio_train_to_control==0)
+	if(ratio_train_to_control==0) //Leave-one-out cross-validation
 	{
 		int nseq1=nseq-1;
 		for(i=0;i<iteration;i++){n_train[i]=nseq1;n_cntrl[i]=1;}		
 	}	
 	else
 	{
-		if (ratio_train_to_control > 0)
+		if (ratio_train_to_control > 0)// random splits cross-validation
 		{
 			int n_cnt = (int)(nseq / ratio_train_to_control);
 			int n_trn = nseq - n_cnt;
@@ -2279,7 +2279,10 @@ int main(int argc, char *argv[])
 				n_cntrl[iter] = n_cnt;
 			}
 		}
-		else for (iter = 0; iter < iteration; iter++)n_train[iter] = n_cntrl[iter] = nseq / 2;
+		else //two-fold cross-validation
+		{
+			for (iter = 0; iter < iteration; iter++)n_train[iter] = n_cntrl[iter] = nseq / 2;
+		}
 	}
 	int n_cnt_tot=0;
 	for(i=0;i<iteration;i++)n_cnt_tot+=n_cntrl[i];	
@@ -2324,7 +2327,7 @@ int main(int argc, char *argv[])
 	det1.mem_in(nseq);
 	for(iter=0;iter<iteration;iter++)
 	{
-		if(ratio_train_to_control!=0)// random splits cross-validation
+		if(ratio_train_to_control>0)// random splits cross-validation
 		{			
 			for (k = 0; k < n_cntrl[iter]; k++)xport[k] = 0;
 			for (k = n_cntrl[iter]; k < nseq; k++)xport[k] = 1;
