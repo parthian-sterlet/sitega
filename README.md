@@ -1,7 +1,7 @@
 # SiteGA - binding Sites recognition by Genetic Algorithm
 
 # Description
-The current SiteGA version (Levitsky et al., in preparation) represented the algorithm of [Levitsky et al. (2007)](https://doi.org/10.1186/1471-2105-8-481) adopted for *de novo* motif search in a ChIP-seq dataset. SiteGA is stochastic algorithm that searches in input sequences the pattern of mutually dependent locally positioned dinucleotides (LPDs) that simulates short- and long-range intractions of nucleotide context within transcription factor binding sites. Hence, SiteGA approach is drastically different from that of traditional Position Weight Matrix (PWM), which searches for the most conserved motifs based on additive impacts of nucleotide frequencies from various site positions.
+The current SiteGA version (Levitsky et al., in preparation) represented the algorithm of [Levitsky et al. (2007)](https://doi.org/10.1186/1471-2105-8-481) adopted for *de novo* motif search in a single ChIP-seq dataset. SiteGA is stochastic algorithm that searches in input sequences the pattern of mutually dependent locally positioned dinucleotides (LPDs) that simulates short- and long-range intractions of nucleotide context within transcription factor binding sites. Hence, SiteGA approach is drastically different from that of traditional Position Weight Matrix (PWM), which searches for the most conserved motifs based on additive impacts of nucleotide frequencies from various site positions.
 
 # Requirements
 SiteGA source code was written in C++ language. Hence, to compile exetubables from source code you need:
@@ -14,7 +14,7 @@ Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) con
 ## 1. Preparation
 [monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that are required to perform the bootsrap cross validation test (**Set parameters of a model through accuracy estimation** module) and to train a model (**Train a model** module). 'Common settings of models' are diaganal elements of the covariation matrix for LPDs of all dinucleotide types and all allowed lengths for the background dataset [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481)
 ## 2. Set parameters of a model through accuracy estimation
-[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to select parameters of a model: the optimial length and the number of LPDs providing the best performance. The maximal partial area under curve (pAUC) is used to estimate the accuracy of a model, i.e. the receiver operating characteristic (ROC) curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR). The term partial means that the criterion FPR < 0.001 is impied for pAUC computation. 
+[andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to select parameters of a model: the optimial length and the number of LPDs providing the best performance. The maximal partial area under curve (pAUC) is used to estimate the accuracy of a model, i.e. the receiver operating characteristic (ROC) curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR). The term partial means that only the part of a ROC curve respecting the criterion FPR < 0.001 is impied for pAUC computation. 
 ## 3. Train a model
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) trains a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with selected parameters of the motif length and the number of LPDs for a given train ChIP-seq dataset (peaks)
 ## 4. Set threshold for a model
@@ -56,7 +56,7 @@ Lists of command line arguments for all modules are described below
 
 [monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp)
 1. int reg = maximal length of region of one locally positioned dinucleotide (default value 6)
-2. file seq = input [Fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa), each peak should consist of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' is forbidden
+2. file seq = input [Fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa), each peak should consist of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' are forbidden
 3. file out = output file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt)
 
 ## Set parameters of a model through accuracy estimation
