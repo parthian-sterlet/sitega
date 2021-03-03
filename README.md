@@ -63,10 +63,10 @@ Lists of command line arguments for all modules are described below
 
 [andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp)
 1. char file_cor = input file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
-2. int motif_len = length of motif (integer value respecting to the optimal length L, default value is optimized in the range from 40 to 100 bp)
-3. int size_start = start value for the number of LPDs (default value the optimal length of motif, L)
-4. int size_end = end value for the number of LPDs (default value twice larger than the optimal length of motif, 2L)
-5. int size_dif = variation value for the number of LPDs (default value a quarter of the optimal length, L/4), one run implies consequetive tests for size_start, size_start+size_dif, ... up to size_end
+2. int motif_len = length of motif (integer value respecting to a tested length L, this value is optimized in the range from 40 to 100 bp, i.e. several runs with various lengths are recomended)
+3. int size_start = start value for the number of LPDs (default value is equal to the length of motif, L)
+4. int size_end = end value for the number of LPDs (default value twice larger than the length of motif, 2L)
+5. int size_dif = variation value for the number of LPDs (default value a quarter of the length of motif, L/4), one run includes consecutive tests for size_start, size_start+size_dif, ... up to size_end
 6. double ratio_cnt_of_all  = cross-validation approach, positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
 7. int num_iterations = number of iterations in bootatrap (default 2)
 
