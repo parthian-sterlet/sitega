@@ -734,9 +734,9 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 	FILE *out;
 	char tatabuf[10], addsite[300];
 	strcpy(addsite, sitename);
-	sprintf(tatabuf, "%d", sta.len);
-	strcat(addsite, "_");
-	strcat(addsite, tatabuf);
+//	sprintf(tatabuf, "%d", sta.len);
+//	strcat(addsite, "_");
+//	strcat(addsite, tatabuf);
 	char file3[300];
 	strcpy(file3, "freq_");
 	strcat(file3, addsite);
@@ -1467,7 +1467,7 @@ int main(int argc, char *argv[])
 				{
 					for (j = 0; j < rec_total; j++)
 					{
-						fprintf(out, "%d\t%.12f\t%c\t", cur[cur_in][j].sta, cur[cur_in][j].sco, dir[cur[cur_in][j].cep]);
+						fprintf(out, "%d\t%.18f\t%c\t", cur[cur_in][j].sta, cur[cur_in][j].sco, dir[cur[cur_in][j].cep]);
 						int n1, posc1, posc2;
 						int dprint = 4;//Max(10,len1/2);
 						char d3[200];
