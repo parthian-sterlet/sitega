@@ -86,23 +86,24 @@ void EvalLen(char *file, int nseq, int *len, double mo[4])
 			{
 				int lenx = strlen(d);
 				len[n] = lenx;
+				for (i = 0; i < len[n]; i++)
+				{
+					char c = d[i];
+					switch (c) {
+					case 'a': {mo[0]++; all++; break; }
+					case 'c': {mo[1]++; all++; break; }
+					case 'g': {mo[2]++; all++; break; }
+					case 't': {mo[3]++; all++; break; }
+					default: break;
+					}
+				}
 			}
 			else
 			{
 				printf("Bad sequence N %d\n%s\n", n + 1, d);
-				exit(1);
-			}
-			for (i = 0; i < len[n]; i++)
-			{
-				char c = d[i];
-				switch (c) {
-				case 'a': {mo[0]++; all++; break; }
-				case 'c': {mo[1]++; all++; break; }
-				case 'g': {mo[2]++; all++; break; }
-				case 't': {mo[3]++; all++; break; }
-				default: break;
-				}
-			}
+				len[n] = 0;				
+				//exit(1);
+			}			
 			n++;
 			if (fl == -1)
 			{
@@ -168,7 +169,7 @@ void DelChar(char *str, char c)
 	}
 	str[size] = '\0';
 }
-void ReadSeq(char *file, int nseq, int *len, char **seq)
+void ReadSeq(char *file, int &nseq, int *len, char **seq)
 {
 	char l[SEQLEN], d[SEQLEN], head[400];
 	int fl = 0;
@@ -201,6 +202,7 @@ void ReadSeq(char *file, int nseq, int *len, char **seq)
 			if (fl == -1)
 			{
 				fclose(in);
+				nseq = n;
 				break;
 			}
 		}
