@@ -716,15 +716,15 @@ char *TransStr(char *d)
 	}
 	return(d);
 }
-int CheckStr(char *file, char *d, int n)
+int CheckStr(char *file, char *d, int n, int print)
 {
 	int i, len, ret;
 	len = strlen(d);
 	ret = 1;
-	for (i = 0; i<len; i++)
+	for (i = 0; i < len; i++)
 	{
 		if (strchr("atgcATGC\n", (int)d[i]) != NULL)continue;
-		printf("File %s; sequence %d position %d (%c) bad. Sequence deleted!\n", file, n, i + 1, d[i]);
+		if (print == 1)printf("File %s; sequence %d position %d (%c) bad. Sequence deleted!\n", file, n, i + 1, d[i]);
 		ret = -1;
 		break;
 	}
@@ -1390,7 +1390,7 @@ int MutRegShift(town *a, int nseq, int *len, int olen, int &npeak, int &nori, in
 		//printf("Out2 Peak %d Pos %d Ori %d",npeak, npos,nori);
 		return 1;
 	}
-}
+}/*
 int MutRegShiftWei(town *a, int nseq, int *len, int olen, int ***peak_wei_pos, int *peak_wei, int &npeak, int &nori, int &npos, int peak_wei_sum)
 {
 	int sum = 0, i, rr2;
@@ -1441,12 +1441,12 @@ int MutRegShiftWei(town *a, int nseq, int *len, int olen, int ***peak_wei_pos, i
 		if (sum <= 0 || sum >= 1000000)
 		{
 			return -1;
-			/*		printf("Sum error! %d\n",sum);
-			for(i=0;i<npos;i++)printf("%d %d  ",peak_wei_pos[0][npeak][i]+peak_wei_pos[1][npeak][i]);
-			printf("\n%d %d\n",peak_wei_pos[0][npeak][npos]+peak_wei_pos[1][npeak][npos]);
-			for(i=npos+1;i<lenr;i++)printf("%d %d  ",peak_wei_pos[0][npeak][i]+peak_wei_pos[1][npeak][i]);
-			printf("\n");
-			exit(1);*/
+			//		printf("Sum error! %d\n",sum);
+			//for(i=0;i<npos;i++)printf("%d %d  ",peak_wei_pos[0][npeak][i]+peak_wei_pos[1][npeak][i]);
+			//printf("\n%d %d\n",peak_wei_pos[0][npeak][npos]+peak_wei_pos[1][npeak][npos]);
+			//for(i=npos+1;i<lenr;i++)printf("%d %d  ",peak_wei_pos[0][npeak][i]+peak_wei_pos[1][npeak][i]);
+			//printf("\n");
+			//exit(1);
 		}
 		int r3 = rand() % sum;
 		if (r3<peak_wei_pos[0][npeak][npos])nori = a->ori[npeak] = 0;
@@ -1454,7 +1454,7 @@ int MutRegShiftWei(town *a, int nseq, int *len, int olen, int ***peak_wei_pos, i
 		//printf("aaa4b %d %d %d\n",npeak,nori,npos);
 		return 1;
 	}
-}
+}*/
 int RecFeat(town a1, town a2, int(*cop)[2], int max)
 {
 	int ret = 0;
@@ -1952,7 +1952,7 @@ void EvalSeq(char *file, int &nseq, int olen)
 		if (((*l == symbol) || (fl == -1)) && (fl != 0))
 		{
 			int lenx = strlen(d);
-			int check = CheckStr(file, d, n);
+			int check = CheckStr(file, d, n,1);
 			if (lenx >= olen && check == 1)nseq++;
 			if (fl == -1)
 			{
@@ -1977,8 +1977,8 @@ void EvalSeq(char *file, int &nseq, int olen)
 		if (strlen(d) + strlen(l) > sizeof(d))
 		{
 			printf("Size is large...");
-			printf("l:%s\nstrlen(l):%lu\n", l, strlen(l));
-			printf("d:%s\nstrlen(d):%lu\n", d, strlen(d));
+			printf("l:%s\nstrlen(l):%zu\n", l, strlen(l));
+			printf("d:%s\nstrlen(d):%zu\n", d, strlen(d));
 			exit(1);
 		}
 		DelHole(l);
@@ -1998,7 +1998,7 @@ void EvalLen(char *file, int *len, int olen)
 	}
 	char symbol = fgetc(in);
 	rewind(in);
-	int n = 0;
+	int nn=0,n = 0;
 	while (n >= 0)
 	{
 		if (fgets(l, sizeof(l), in) == NULL) fl = -1;
@@ -2006,8 +2006,9 @@ void EvalLen(char *file, int *len, int olen)
 		if (((*l == symbol) || (fl == -1)) && (fl != 0))
 		{
 			int lenx = strlen(d);
-			int check = CheckStr(file, d, n);
-			if(lenx>=olen && check==1)len[n++] = lenx;			
+			int check = CheckStr(file, d, n,0);
+			if(lenx>=olen && check==1)len[n++] = lenx;	
+			nn++;
 			if (fl == -1)
 			{
 				fclose(in);
@@ -2031,8 +2032,8 @@ void EvalLen(char *file, int *len, int olen)
 		if (strlen(d) + strlen(l) > sizeof(d))
 		{
 			printf("Size is large...");
-			printf("l:%s\nstrlen(l):%lu\n", l, strlen(l));
-			printf("d:%s\nstrlen(d):%lu\n", d, strlen(d));
+			printf("l:%s\nstrlen(l):%zu\n", l, strlen(l));
+			printf("d:%s\nstrlen(d):%zu\n", d, strlen(d));
 			exit(1);
 		}
 		DelHole(l);
@@ -2052,7 +2053,7 @@ void ReadSeq(char *file, int nseq, int *len, int ***seq_real, char ***peak_real,
 	}
 	char symbol = fgetc(in);
 	rewind(in);
-	int n = 0;
+	int nn=0, n = 0;
 	while (n >= 0)
 	{
 		if (fgets(l, sizeof(l), in) == NULL) fl = -1;
@@ -2060,7 +2061,8 @@ void ReadSeq(char *file, int nseq, int *len, int ***seq_real, char ***peak_real,
 		if (((*l == symbol) || (fl == -1)) && (fl != 0))
 		{
 			int lenx = strlen(d[0]);
-			int check = CheckStr(file, d[0], n);
+			int check = CheckStr(file, d[0], n,0);
+			nn++;
 			if (lenx >= olen && check == 1)
 			{
 				TransStr(d[0]);
@@ -2091,7 +2093,7 @@ void ReadSeq(char *file, int nseq, int *len, int ***seq_real, char ***peak_real,
 			}		
 			else
 			{
-				if (lenx >= olen)printf("Short peak %d (Len %d) ignored\n", n + 1, lenx);
+				if (lenx < olen)printf("Short peak %d (Len %d) ignored\n", n + 1, lenx);
 				if(check == -1)printf("Unusual symbol, peak %d ignored\n%s\n", n + 1, d[0]);
 			}
 			if (fl == -1)
@@ -2117,8 +2119,8 @@ void ReadSeq(char *file, int nseq, int *len, int ***seq_real, char ***peak_real,
 		if (strlen(d[0]) + strlen(l)>sizeof(d[0]))
 		{
 			printf("Size is large...");
-			printf("l:%s\nstrlen(l):%lu\n", l, strlen(l));
-			printf("d:%s\nstrlen(d):%lu\n", d[0], strlen(d[0]));
+			printf("l:%s\nstrlen(l):%zu\n", l, strlen(l));
+			printf("d:%s\nstrlen(d):%zu\n", d[0], strlen(d[0]));
 			exit(1);
 		}
 		DelHole(l);
@@ -2134,7 +2136,7 @@ int main(int argc, char *argv[])
 	int ***seq_real;
 	char ***peak_real;
 //	int ***peak_wei_pos;
-	int  *peak_wei, ***peak_wei_pos;
+//	int  *peak_wei, ***peak_wei_pos;
 	int wei_bit = 1;
 	double **mono, **best_sco, **fp_rate;
 	FILE *outq;
@@ -2218,8 +2220,8 @@ int main(int argc, char *argv[])
 	EvalSeq(file, nseq,olen);
 	len = new int[nseq];
 	if (len == NULL){ puts("Out of memory..."); exit(1); }
-	peak_wei = new int[nseq];
-	if (peak_wei == NULL){ puts("Out of memory..."); exit(1); }
+//	peak_wei = new int[nseq];
+//	if (peak_wei == NULL){ puts("Out of memory..."); exit(1); }
 	int dnseq = 0;
 	EvalLen(file, len, olen);
 	mono = new double*[nseq];
@@ -2255,7 +2257,7 @@ int main(int argc, char *argv[])
 			if (seq_real[i][j] == NULL){ puts("Out of memory..."); exit(1); }
 		}
 	}
-	peak_wei = new int[nseq];
+/*	peak_wei = new int[nseq];
 	if (peak_wei == NULL) { puts("Out of memory..."); exit(1); }
 	peak_wei_pos = new int**[2];
 	if (peak_wei_pos == NULL) { puts("Out of memory..."); exit(1); }
@@ -2267,7 +2269,7 @@ int main(int argc, char *argv[])
 			peak_wei_pos[i][j] = new int[len[j] - olen1];
 			if (peak_wei_pos[i][j] == NULL) { puts("Out of memory..."); exit(1); }
 		}
-	}
+	}*/
 	peak_real = new char**[2];
 	if (peak_real == NULL){ puts("Out of memory..."); exit(1); }
 	for (i = 0; i<2; i++)
@@ -3106,12 +3108,12 @@ int main(int argc, char *argv[])
 	}
 	{
 		char ext2best[20], extmat[20];
-		char ext2best0[] = "_end2_";
-		char extmat0[] = "_mat_";
+		char ext2best0[] = "_end2";
+		char extmat0[] = "_mat";
 		strcpy(ext2best, ext2best0);
 		strcpy(extmat, extmat0);
-		strcat(ext2best, argv[2]);
-		strcat(extmat, argv[2]);
+	//	strcat(ext2best, argv[2]);
+	//	strcat(extmat, argv[2]);
 		best_selected[isize_selected].fprint_allfi(file, ext2best, olen, best_selected_ext[isize_selected].c0, best_selected_ext[isize_selected].buf);
 		best_selected[isize_selected].fprint_allfi_mat(file, extmat, name, olen, best_selected_ext[isize_selected].c0, best_selected_ext[isize_selected].buf);
 	}
