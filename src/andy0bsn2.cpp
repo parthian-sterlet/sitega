@@ -2287,12 +2287,20 @@ int main(int argc, char *argv[])
 		}
 		else //two-fold cross-validation
 		{
-			int n_cnt = nseq / 2;
-			int n_trn = nseq - n_cnt;
+			int n_less = nseq / 2;
+			int n_more = nseq - n_less;
 			for (iter = 0; iter < iteration; iter++)
 			{
-				n_train[iter] = n_trn;
-				n_cntrl[iter] = n_cnt;
+				if (iter % 2 == 0)
+				{
+					n_train[iter] = n_less;
+					n_cntrl[iter] = n_more;
+				}
+				else
+				{
+					n_train[iter] = n_more;
+					n_cntrl[iter] = n_less;
+				}
 			}
 		}
 	}
@@ -2357,11 +2365,11 @@ int main(int argc, char *argv[])
 				
 				if (iter % 2 == 0) 
 				{ 
-					xport[0] = 0;
+					xport[0] = 0;//control
 				}
 				else 
 				{ 
-					xport[0] = 1;
+					xport[0] = 1;//train
 				}
 				for (k = 1; k < nseq; k++)
 				{
