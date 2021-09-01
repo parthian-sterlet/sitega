@@ -1925,7 +1925,7 @@ void EvalSeq(char *file, int &nseq, int olen)
 
 	if ((in = fopen(file, "rt")) == NULL)
 	{
-		printf("Input file %s can't be opened!\n", file);
+		printf("EvalSeq! Input file %s can't be opened!\n", file);
 		exit(1);
 	}
 	char symbol = fgetc(in);
@@ -1981,7 +1981,7 @@ void EvalLen(char *file, int *len, int olen)
 
 	if ((in = fopen(file, "rt")) == NULL)
 	{
-		printf("Input file %s can't be opened!\n", file);
+		printf("EvalLen! Input file %s can't be opened!\n", file);
 		exit(1);
 	}
 	char symbol = fgetc(in);
@@ -2037,7 +2037,7 @@ void ReadSeq(char *file, int nseq, int *len, int ***seq_real, char ***peak_real,
 
 	if ((in = fopen(file, "rt")) == NULL)
 	{
-		printf("Input file %s can't be opened!\n", file);
+		printf("ReadSeq! Input file %s can't be opened!\n", file);
 		exit(1);
 	}
 	char symbol = fgetc(in);
@@ -2166,20 +2166,21 @@ int main(int argc, char *argv[])
 	{
 		printf("Wring train to control ratio %f\n",ratio_train_to_control);
 		exit(1);
-	}*/	
+	}*/		
 	int olen1=olen-1;
 	int reg_max;		
 	FILE *in;
 	{
 		if((in=fopen(file_ksi,"rt"))==NULL)
 		{
-   			printf("Input file %s can't be opened!\n", file_ksi);
+   			printf("Mnt open! Input file %s can't be opened!\n", file_ksi);
    			exit(1);
 		}	
 		srand( (unsigned)time( NULL ) );	
 		memset(file,0,sizeof(file));
 		if(fgets(file,sizeof(file),in)!=NULL){DelHole(file);}
 		else exit(1);	
+	//	printf("1Do %s\n", file);
 		if(fgets(d,sizeof(d),in)==NULL)exit(1);
 		int n_par=atoi(d);//4islo ksey - par rayonov
 		if(fgets(d,sizeof(d),in)==NULL)exit(1);
@@ -2207,6 +2208,7 @@ int main(int argc, char *argv[])
 		fclose(in);	
 	}		
 	nseq = 0;
+	printf("2Do %s\n", file);
 	EvalSeq(file, nseq, olen);
 	len = new int[nseq];
 	if (len == NULL){ puts("Out of memory..."); exit(1); }	
@@ -2726,14 +2728,15 @@ int main(int argc, char *argv[])
 							}
 						}
 					}
-				} while (mdo == 1);
+				} 
+				while (mdo == 1);
+				qsort((void*)(&pop[iter][0]), mege_h, sizeof(pop[iter][0]), compare_pop);
 				if (stop_pi[0] == 1)
 				{
 					rec_first_only = 1;
 					//	printf("Rec First only!\n");
 				}
-				if (restart == 0)success_m /= (step_max_tot / step_max);
-				qsort((void*)(&pop[iter][0]), mege_h, sizeof(pop[iter][0]), compare_pop);
+				if (restart == 0)success_m /= (step_max_tot / step_max);				
 				if (restart == 0)ratio_thr_r = (double)(asuccess[0] + asuccess[1]) / (atry[0] + atry[1]);
 				else
 				{
@@ -2979,7 +2982,7 @@ int main(int argc, char *argv[])
 				}						
 				fit_prev = pop[iter][0].fit;
 				if (restart == 0)for(i=0;i<2;i++)pop[iter][i].print_all(reg_max,nseq);
-				if (stop_pi[0] == 1)
+				if (stop_pi[0] == 1 && gen > 1)
 				{							
 					big_exit1=1;									
 					printf("Go out %d iteration\n",iter+1);													
