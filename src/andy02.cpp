@@ -2656,13 +2656,13 @@ int main(int argc, char *argv[])
 				}
 			}
 			while (mdo == 1);
+			qsort((void*)(&pop[0]), mege_h, sizeof(pop[0]), compare_pop);
 			if (stop_pi[0] == 1)
 			{
 				rec_first_only = 1;
 		//		printf("Rec First only!\n");
 			}
-			if(restart==0)success_m /= (step_max_tot / step_max);						
-			qsort((void*)(&pop[0]), mege_h, sizeof(pop[0]), compare_pop);
+			if(restart==0)success_m /= (step_max_tot / step_max);									
 			if (restart == 0)ratio_thr_r = (double)(asuccess[0] + asuccess[1]) / (atry[0] + atry[1]);
 			else
 			{	
@@ -2990,7 +2990,7 @@ int main(int argc, char *argv[])
 			}
 			fit_prev = pop[0].fit;
 			if (restart == 0)for (i = 0; i<2; i++)pop[i].print_all(reg_max, nseq);
-			if (stop_pi[0] == 1)
+			if (stop_pi[0] == 1 && gen > 1)
 			{				
 				big_exit1 = 1;
 				printf("Go out ");
