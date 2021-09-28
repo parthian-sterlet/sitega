@@ -56,12 +56,12 @@ Lists of command line arguments for all modules are described below
 
 [background_genome.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/background_genome.cpp)
 1. file input fasta
-2, 3, 4 & 5. - files output fasta files with genome sequences adopted by mono-, di-, tri- & tetranucleotide measures (see Karlin & Campbell, 1994 https://doi.org/10.1073/pnas.91.26.12842)
+2, 3, 4 & 5. - files output fasta files with genome sequences adopted by mono-, di-, tri- & tetranucleotide measures (see [Karlin & Campbell, 1994]( https://doi.org/10.1073/pnas.91.26.12842)
 6. int maximal number of background sequences per one peak
 7. double deviation of mononucleitide content of a background sequence from that for a foreground sequence
 8, 9 & 10. - double thresholds for deviation by di-, tri- & tetranucleotide measures
 11. int maximal number of iterations per one a foreground sequence (average total number of attemtps to get a background sequence from genome
-12. char genome release at10 mm10 hg38
+12. char genome release (default values are at10, mm10 and hg38 for Arabidopsis, human and moose genomes)
 
 ## Set parameters of a model through accuracy estimation
 
