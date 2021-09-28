@@ -12,7 +12,7 @@ SiteGA source code was written in C++ language. Hence, to compile exetubables fr
 # Source code
 Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains files with SiteGA source codes, they respect to decribed below separate modules of pipeline.
 ## 1. Preparation
-[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) prepares [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that are required to perform the bootsrap cross validation test (**Set parameters of a model through accuracy estimation** module) and to train a model (**Train a model** module). 'Common settings of models' are diaganal elements of the covariation matrix for LPDs of all dinucleotide types and all allowed lengths for the background dataset [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481)
+Common settings of models are required to perform the bootsrap cross validation test (**Set parameters of a model through accuracy estimation** module) and to train a model (**Train a model** module). 'Common settings of models' are diaganal elements of the covariation matrix for LPDs of all dinucleotide types and all allowed lengths for the background dataset [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481). These common settings are computed with the background sequence dataset. We propose the special propgram background_genome.cpp to generate this dataset for certain genome (hg38, mm10, at10). Any custom sequence set may be used instead, but it is recomended that this dataset was notably larger that the foreground one.
 ## 2. Set parameters of a model through accuracy estimation
 [andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to select parameters of a model: the optimial length and the number of LPDs providing the best performance. The maximal partial area under curve (pAUC) is used to estimate the accuracy of a model, i.e. the receiver operating characteristic (ROC) curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR). The term partial means that only the part of a ROC curve respecting the criterion FPR < 0.001 is impied for pAUC computation. 
 ## 3. Train a model
@@ -40,7 +40,7 @@ Scheme of modules fucntioning is given below
 
 ![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega5.jpg)
 
-Modules **Set parameters of a model through accuracy estimation** and **Train a model** must run with file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) which previously computed by **Preparation** module
+Modules **Set parameters of a model through accuracy estimation** and **Train a model** must run with file of the background sequence dataset which previously computed by **Preparation** module
 
 Module **Set parameters of a model through accuracy estimation** is required for functionality of **Train a model** and all consequent modules since only the bootstrap procedure correctly selects parameters of a model (see output data block **Table FPR vs. TPR, ROC curve & pAUC**)
 
@@ -54,30 +54,37 @@ Lists of command line arguments for all modules are described below
 
 ## Preparation
 
-[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp)
-1. int reg = maximal length of region of one locally positioned dinucleotide (default value 6)
-2. file seq = input [Fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa), each peak should consist of only four types of letters respecting to nucleotides ('a', 'c', 'g' and 't'), i.e. 'n' are forbidden
-3. file out = output file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt)
+[background_genome.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/background_genome.cpp)
+1. file input fasta
+2, 3, 4 & 5. - files output fasta files with genome sequences adopted by mono-, di-, tri- & tetranucleotide measures (see Karlin & Campbell, 1994 https://doi.org/10.1073/pnas.91.26.12842)
+6. int maximal number of background sequences per one peak
+7. double deviation of mononucleitide content of a background sequence from that for a foreground sequence
+8, 9 & 10. - double thresholds for deviation by di-, tri- & tetranucleotide measures
+11. int maximal number of iterations per one a foreground sequence (average total number of attemtps to get a background sequence from genome
+12. char genome release at10 mm10 hg38
 
 ## Set parameters of a model through accuracy estimation
 
 [andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp)
-1. char file_cor = input file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
-2. int motif_len = length of motif (integer value respecting to a tested length L, this value is optimized in the range from 40 to 100 bp, i.e. several runs with various lengths are recomended)
-3. int size_start = start value for the number of LPDs (default value is equal to the length of motif, L)
-4. int size_end = end value for the number of LPDs (default value twice larger than the length of motif, 2L)
-5. int size_dif = step value for the number of LPDs (default value a quarter of the length of motif, L/4), one run includes consecutive tests for size_start, size_start+size_dif, ... up to size_end
-6. double ratio_cnt_of_all  = cross-validation approach, positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
-7. int num_iterations = number of iterations in bootatrap (default 2)
+1. path to files with foreground and background sequences
+2. file with foreground sequences
+3. file with background sequences
+4. int maximal length of LPD (default value 6)
+5. int motif_min_len = minimal length of motif (integer value respecting to a tested length L, default value is 8)
+6. int motif_max_len = maximal length of motif (default value is 40)
+7. int motif_step_len = step length (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
+8. double ratio_cnt_of_all  = cross-validation approach, positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
+9. int num_iterations = number of iterations in bootatrap (default 2)
 
 ## Train a model
 
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp)
-1. char file_cor = input file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) from **Preparation** module
-2. int motif_len = length of motif (integer value L respecting to the optimal length of a respective traditional PWM model is recommended, default values from 40 to 100 are recommended, the optimal length is selected according the accuracy estimate pAUC, the partial area under curve, which is estimated in the bootstrap crossvaliation test, see the previous paragraph)
-3. int size_start = start value for the number of LPDs (a value is estimated in the bootstrap crossvaliation test, see the previous paragraph)
-4. int size_end = end value for the number of LPDs (default value is equal to the previous parameter size_start)
-5. int size_dif = step value for the number of LPDs (default value 10), one run implies consecutive tests for size_start, size_start+size_dif, ... up to size_end
+1. path to files with foreground and background sequences
+2. file with foreground sequences
+3. file with background sequences
+4. int maximal length of LPD (default value 6)
+5. int motif_len = length of motif (integer value respecting to a tested length L, this value is selected by the bootstrap crossvaliation test, see the previous paragraph)
+6. int size = the number of LPDs (a value is estimated in the bootstrap crossvaliation test, see the previous paragraph)
 
 ## Set threshold for a model
 
