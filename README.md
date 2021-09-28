@@ -79,7 +79,7 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 5. minimal length of motif (integer value respecting to a tested length L, default value is 8)
 6. maximal length of motif (default value is 40)
 7. step length (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
-8. ratio, positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
+8. cross-validation type specification: positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
 9. number of iterations in bootatrap (default 2)
 
 ## Train a model
