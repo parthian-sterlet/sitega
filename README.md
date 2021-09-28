@@ -55,13 +55,13 @@ Lists of command line arguments for all modules are described below
 
 [background_genome.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/background_genome.cpp)
 1. file input fasta
-2, 3, 4 & 5. - files output fasta files with genome sequences adopted by mono-, di-, tri- & tetranucleotide measures, see [Karlin & Campbell, 1994]( https://doi.org/10.1073/pnas.91.26.12842)
+2, 3, 4 & 5. - files output fasta with genome sequences adopted by mono-, di-, tri- & tetranucleotide measures, see [Karlin & Campbell, 1994]( https://doi.org/10.1073/pnas.91.26.12842)
 6. int maximal number of background sequences per one peak
 7. double deviation of mononucleitide content of a background sequence from that for a foreground sequence
 8, 9 & 10. - double thresholds for deviations between foreground and background sequences by di-, tri- & tetranucleotide measures
 11. int maximal number of iterations per one foreground sequence (average total number of attemtps to get a background sequence from genome)
 12. char genome release (default values are at10, mm10 and hg38 for Arabidopsis, human and moose genomes)
-Whole chromosome sequences in plain format are required to run the program, i.e. headers lines >... should be deleted from the whole chromosome files in fasta format. These plain files should contain only nucleotide letters, IUPAC nucleotides codes N,W,S etc. are ignored by program, all other symbols like ' ', '\t' etc. should deleted, e.g. for Arabidopsis five files are required: chr1.plain, chr2.plain, chr3.plain, chr4.plain, chr5.plain, for human/mouse respective whole chromosome files are required (1-22,X,Y / 1-19,X,Y).
+Whole chromosome sequences in plain format are required to run the program, i.e. headers lines >... should be deleted from the whole chromosome files in fasta format. These plain files should contain only nucleotide letters, IUPAC nucleotides codes N,W,S etc. are ignored by program, all other symbols like ' ', '\t' etc. should deleted, e.g. for Arabidopsis five files are required: chr1.plain, chr2.plain, chr3.plain, chr4.plain, chr5.plain, for human/mouse respective whole chromosome files are required (1-22,X,Y / 1-19,X,Y). To see example unzip chr4.plain file from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes)
 
 ## Set parameters of a model through accuracy estimation
 
@@ -90,7 +90,7 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp)
 1. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
-2. file_profile_fasta = input Whole-genome promoters dataset in fasta format (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs* & mm* files for human & mouse data, respectively)
+2. file_profile_fasta = input Whole-genome promoters dataset in fasta format (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs*, mm* and at* files for human, mouse and Arabidopsis data, respectively)
 3. char output file [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
 4. double pvalue_large = maximal FPR (default value 0.0005)
 5. double score_min = lowest threshold of SiteGA model (default value 0.995)
