@@ -62,18 +62,18 @@ Lists of command line arguments for all modules are described below
 11. int maximal number of iterations per one foreground sequence (average total number of attemtps to get a background sequence from genome)
 12. char genome release (default values are at10, mm10 and hg38 for Arabidopsis, human and moose genomes)
 
-Whole chromosome sequences in plain format are required to run the program, i.e. headers lines >... should be deleted from the whole chromosome files in fasta format. These plain files should contain only nucleotide letters, IUPAC nucleotides codes N,W,S etc. are ignored by program, all other symbols like ' ', '\t' etc. should deleted, e.g. for Arabidopsis five files are required: chr1.plain, chr2.plain, chr3.plain, chr4.plain, chr5.plain, for human/mouse respective whole chromosome files are required (1-22,X,Y / 1-19,X,Y). To see example unzip chr4.plain file from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes). Either output fasta file with genome sequences adopted by mononucleotide content, di-, tri-, or tetranucleotide measures can be used as the background dataset in consequent analysis.
+Whole chromosome sequences in plain format are required to run the program, i.e. headers lines >... should be deleted from the whole chromosome files in fasta format. These plain files should contain only nucleotide letters, IUPAC nucleotides codes N,W,S etc. are ignored by program, all other symbols like ' ', '\t' etc. should deleted, e.g. for Arabidopsis five files are required: chr1.plain, chr2.plain, chr3.plain, chr4.plain, chr5.plain, for human/mouse respective whole chromosome files are required (1-22,X,Y / 1-19,X,Y). To see example unzip chr4.plain file from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes). Any one of the four output fasta files can be used as the background dataset in consequent analysis (see 2, 3, 4 & 5 parameters of command line, genome sequences adopted by mononucleotide content, di-, tri-, or tetranucleotide measures, respectively).
 
 ## Set parameters of a model through accuracy estimation
 
 [andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp)
-1. path to files with foreground and background sequences
-2. file with foreground sequences
-3. file with background sequences
-4. int maximal length of LPD (default value 6)
-5. int motif_min_len = minimal length of motif (integer value respecting to a tested length L, default value is 8)
-6. int motif_max_len = maximal length of motif (default value is 40)
-7. int motif_step_len = step length (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
+1. path to files with datasets of foreground and background sequences
+2. file with dataset of foreground sequences
+3. file with dataset of background sequences
+4. int maximal length of one LPD (default value 6)
+5. int minimal length of motif (integer value respecting to a tested length L, default value is 8)
+6. int maximal length of motif (default value is 40)
+7. int step length (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
 8. double ratio_cnt_of_all  = cross-validation approach, positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
 9. int num_iterations = number of iterations in bootatrap (default 2)
 
@@ -83,8 +83,8 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 1. path to files with foreground and background sequences
 2. file with foreground sequences
 3. file with background sequences
-4. int maximal length of LPD (default value 6)
-5. int motif_len = length of motif (integer value respecting to a tested length L, this value is selected by the bootstrap crossvaliation test, see the previous paragraph)
+4. int maximal length of one LPD (default value 6)
+5. int length of motif (integer value respecting to a tested length L, this value is selected by the bootstrap crossvaliation test, see the previous paragraph)
 6. int size = the number of LPDs (a value is estimated in the bootstrap crossvaliation test, see the previous paragraph)
 
 ## Set threshold for a model
