@@ -62,6 +62,8 @@ Lists of command line arguments for all modules are described below
 8, 9 & 10. - double thresholds for deviations between foreground and background sequences by di-, tri- & tetranucleotide measures
 11. int maximal number of iterations per one foreground sequence (average total number of attemtps to get a background sequence from genome)
 12. char genome release (default values are at10, mm10 and hg38 for Arabidopsis, human and moose genomes)
+Whole chromosome sequences in plain format are required, i.e. headers lines >... should deleted from the whole chromosome files in fasta format. These plain files should contain only nucleotide letters, IUPAC nucleotides codes N,W,S etc. are ignored by program, all other symbols like ' ', '\t' etc. should deleted, e.g. for Arabidopsis five files are required: chr1.plain, chr2.plain, chr3.plain, chr4.plain, chr5.plain, for human/mouse respective whole chromosome files are required (1-22,X,Y / 1-19,X,Y).
+
 
 ## Set parameters of a model through accuracy estimation
 
