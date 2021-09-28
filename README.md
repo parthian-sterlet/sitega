@@ -118,7 +118,7 @@ These scripts implement various pipelines for Linux:
 
 ## Preparation
 
-[background_genome.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/background_genome.cpp) prepare the background dataset that may be used for training (**Train a model** module) or performance evaluation (**Set parameters of a model through accuracy estimation** module)
+[background_genome.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/background_genome.cpp) prepares the background dataset that may be used for training (**Train a model** module) or performance evaluation (**Set parameters of a model through accuracy estimation** module)
 
 ## Set parameters of a model through accuracy estimation
 
