@@ -56,9 +56,9 @@ Lists of command line arguments for all modules are described below
 [background_genome.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/background_genome.cpp)
 1. input fasta file
 2. output fasta file with genome sequences adopted by mononucleotide content
-3. output fasta file with genome sequences adopted by dinucleotide measures
-4. output fasta file with genome sequences adopted by trinucleotide measures
-5. output fasta file with genome sequences adopted by tetranucleotide measures
+3. output fasta file with genome sequences adopted by dinucleotide measure
+4. output fasta file with genome sequences adopted by trinucleotide measure
+5. output fasta file with genome sequences adopted by tetranucleotide measure
 6. maximal number of background sequences per one peak (default value 50)
 7. deviation of mononucleitide content of a background sequence from that for a foreground sequence (default value 0.01)
 8. percentile threshold for deviation between foreground and background sequences by the dinucleotide measure (default value 0.1)
