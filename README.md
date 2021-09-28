@@ -59,13 +59,13 @@ Lists of command line arguments for all modules are described below
 3. output fasta file with genome sequences adopted by dinucleotide measures
 4. output fasta file with genome sequences adopted by trinucleotide measures
 5. output fasta file with genome sequences adopted by tetranucleotide measures
-6. int maximal number of background sequences per one peak (default value 50)
-7. double deviation of mononucleitide content of a background sequence from that for a foreground sequence (default value 0.01)
-8. double percentile threshold for deviation between foreground and background sequences by the dinucleotide measure (default value 0.1)
-9. double percentile threshold for deviation between foreground and background sequences by the trinucleotide measure (default value 0.33)
-10. double percentile threshold for deviation between foreground and background sequences by the tetranucleotide measure (default value 0.5)
-11. int average total number of attemtps to get a background sequence from genome per one foreground sequence (default value 300)
-12. char genome release (default values are at10, mm10 and hg38 for Arabidopsis, human and moose genomes)
+6. maximal number of background sequences per one peak (default value 50)
+7. deviation of mononucleitide content of a background sequence from that for a foreground sequence (default value 0.01)
+8. percentile threshold for deviation between foreground and background sequences by the dinucleotide measure (default value 0.1)
+9. percentile threshold for deviation between foreground and background sequences by the trinucleotide measure (default value 0.33)
+10. percentile threshold for deviation between foreground and background sequences by the tetranucleotide measure (default value 0.5)
+11. average total number of attemtps to get a background sequence from genome per one foreground sequence (default value 300)
+12. genome release (default values are at10, mm10 and hg38 for Arabidopsis, human and moose genomes)
 
 Whole chromosome sequences in plain format are required to run the program, i.e. headers lines >... should be deleted from the whole chromosome files in fasta format. These plain files should contain only nucleotide letters, IUPAC nucleotides codes N,W,S etc. are ignored by program, all other symbols like ' ', '\t' etc. should deleted, e.g. for Arabidopsis five files are required: chr1.plain, chr2.plain, chr3.plain, chr4.plain, chr5.plain, for human/mouse respective whole chromosome files are required (1-22,X,Y / 1-19,X,Y). To see example unzip chr4.plain file from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes). Any one of the four output fasta files can be used as the background dataset in consequent analysis (see parameters 2, 3, 4 & 5 of the command line, genome sequences adopted by mononucleotide content, di-, tri-, or tetranucleotide measures, respectively).
 
@@ -75,11 +75,11 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 1. path to fasta files with datasets of foreground and background sequences
 2. fasta file with dataset of foreground sequences
 3. fasta file with dataset of background sequences
-4. int maximal length of one LPD (default value 6)
-5. int minimal length of motif (integer value respecting to a tested length L, default value is 8)
-6. int maximal length of motif (default value is 40)
-7. int step length (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
-8. double ratio_cnt_of_all  = cross-validation approach, positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
+4. maximal length of one LPD (default value 6)
+5. minimal length of motif (integer value respecting to a tested length L, default value is 8)
+6. maximal length of motif (default value is 40)
+7. step length (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
+8. ratio_cnt_of_all  = cross-validation approach, positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
 9. int num_iterations = number of iterations in bootatrap (default 2)
 
 ## Train a model
@@ -88,27 +88,27 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 1. path to fasta files with datasets of foreground and background sequences
 2. fasta file with dataset of foreground sequences
 3. fasta file with dataset of background sequences
-4. int maximal length of one LPD (default value 6)
-5. int length of motif (integer value respecting to a tested length L, this value is selected by the bootstrap crossvaliation test, see the previous paragraph)
-6. int size = the number of LPDs (a value is estimated in the bootstrap crossvaliation test, see the previous paragraph)
+4. maximal length of one LPD (default value 6)
+5. length of motif (integer value respecting to a tested length L, this value is selected by the bootstrap crossvaliation test, see the previous paragraph)
+6. size = the number of LPDs (a value is estimated in the bootstrap crossvaliation test, see the previous paragraph)
 
 ## Set threshold for a model
 
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp)
 1. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
 2. file_profile_fasta = input Whole-genome promoters dataset in fasta format (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs*, mm* and at* files for human, mouse and Arabidopsis data, respectively)
-3. char output file [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
-4. double pvalue_large = maximal FPR (default value 0.0005)
-5. double score_min = lowest threshold of SiteGA model (default value 0.995)
-6. double dpvalue = granulation value for FPR compaction in [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), the default value 0.0000000005 implies the absence of compaction
+3. output file [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
+4. pvalue_large = maximal FPR (default value 0.0005)
+5. score_min = lowest threshold of SiteGA model (default value 0.995)
+6. dpvalue = granulation value for FPR compaction in [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), the default value 0.0000000005 implies the absence of compaction
 
 ## Scan test sequences with a model
 
 [andy1_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy1_mat.cpp)
 1. file.seq = input file of test sequences, it has the same format as [Fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa), non ('a', 'c', 'g' and 't') nucleotides are ignored
-2. char sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
-3. int site_description_mode = 0 or 1. 0 means default mode, 1 means computation of frequencies of all LPDs for all tested sequences (option is used for the train fasta file to describe a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat))
-4. double FPR threshold = threshold for FPR of [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) is used to select the SiteGA threshold according to input file [Table Threshold vs FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) from **Set threshold for a model** module
+2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
+3. site_description_mode = 0 or 1. 0 means default mode, 1 means computation of frequencies of all LPDs for all tested sequences (option is used for the train fasta file to describe a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat))
+4. FPR threshold = threshold for FPR of [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) is used to select the SiteGA threshold according to input file [Table Threshold vs FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) from **Set threshold for a model** module
 5. input file [Threshold vs FPR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr) for [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) threshold selection by FPR threshold
 6. output file [Profile with recognized hits](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile)
 
