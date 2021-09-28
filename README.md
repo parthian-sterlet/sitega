@@ -90,7 +90,7 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 3. fasta file with dataset of background sequences
 4. maximal length of one LPD (default value 6)
 5. length of motif (integer value respecting to a tested length L, this value is selected by the bootstrap cross-valiation test, see the previous paragraph)
-6. size, the number of LPDs (a value is estimated in the bootstrap crossvaliation test, see the previous paragraph)
+6. size, the number of LPDs (a value is estimated in the bootstrap cross-valiation test, see the previous paragraph)
 
 ## Set threshold for a model
 
