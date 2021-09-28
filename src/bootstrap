@@ -1,2 +1,2 @@
-./background_genome peaks.fasta peaks_gb1.fasta peaks_gb2.fasta peaks_gb1.fasta peaks_gb3.fasta peaks_gb4.fasta 50 0.01 0.2 0.33 0.5 300 at10
-./andy0bsn2 /data/work/ peaks.fasta peaks_gb1.fasta 6 8 40 4 -1 2 >peak.log
+./background_genome peaks.fasta peaks_gb1.fasta peaks_gb2.fasta peaks_gb1.fasta peaks_gb3.fasta peaks_gb4.fasta 50 0.01 0.2 0.33 0.5 300 at10 >background_genome.log
+./andy0bsn2 /data/work/ peaks.fasta peaks_gb1.fasta 6 8 40 4 -1 2 >bootstrap.log
