@@ -61,7 +61,7 @@ Lists of command line arguments for all modules are described below
 8, 9 & 10. - double thresholds for deviations between foreground and background sequences by di-, tri- & tetranucleotide measures
 11. int maximal number of iterations per one foreground sequence (average total number of attemtps to get a background sequence from genome)
 12. char genome release (default values are at10, mm10 and hg38 for Arabidopsis, human and moose genomes)
-Whole chromosome sequences in plain format are required, i.e. headers lines >... should deleted from the whole chromosome files in fasta format. These plain files should contain only nucleotide letters, IUPAC nucleotides codes N,W,S etc. are ignored by program, all other symbols like ' ', '\t' etc. should deleted, e.g. for Arabidopsis five files are required: chr1.plain, chr2.plain, chr3.plain, chr4.plain, chr5.plain, for human/mouse respective whole chromosome files are required (1-22,X,Y / 1-19,X,Y).
+Whole chromosome sequences in plain format are required to run the program, i.e. headers lines >... should be deleted from the whole chromosome files in fasta format. These plain files should contain only nucleotide letters, IUPAC nucleotides codes N,W,S etc. are ignored by program, all other symbols like ' ', '\t' etc. should deleted, e.g. for Arabidopsis five files are required: chr1.plain, chr2.plain, chr3.plain, chr4.plain, chr5.plain, for human/mouse respective whole chromosome files are required (1-22,X,Y / 1-19,X,Y).
 
 ## Set parameters of a model through accuracy estimation
 
@@ -117,7 +117,7 @@ These scripts implement various pipelines for Linux:
 
 ## Preparation
 
-[monte0dg.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/monte0dg.cpp) creates file of [Common settings of models](https://github.com/parthian-sterlet/sitega/blob/master/examples/diagonal_cov.mnt) that may be used for training (**Train a model** module) or performance evaluation (**Set parameters of a model through accuracy estimation** module)
+[background_genome.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/background_genome.cpp) prepare the background dataset that may be used for training (**Train a model** module) or performance evaluation (**Set parameters of a model through accuracy estimation** module)
 
 ## Set parameters of a model through accuracy estimation
 
@@ -125,7 +125,7 @@ These scripts implement various pipelines for Linux:
 
 ## Train a model
 
-[andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) constructs one sitega model, with the numbers of locally positioned dinucleotides (LPDs) assigned according to 3rd, 4th and 5th parameters of the command line (size_start, size_end and size_dif), their values deduced from the bootstrap cross validation test (see the next paragraph). The selected model respecting the maximal pAUC in the bootstrap cross validation test, this model is written in output file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with *.mat* extension
+[andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp) constructs one sitega model, with the numbers of locally positioned dinucleotides (LPDs) assigned according the parameter of the command line, this value deduced from the bootstrap cross validation test (see the previous paragraph). The selected model respecting the maximal pAUC in the bootstrap cross validation test, this model is written in output file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with *.mat* extension
 
 ## Set threshold for a model
 
