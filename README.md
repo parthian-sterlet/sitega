@@ -67,9 +67,9 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 ## Set parameters of a model through accuracy estimation
 
 [andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp)
-1. path to files with datasets of foreground and background sequences
-2. file with dataset of foreground sequences
-3. file with dataset of background sequences
+1. path to fasta files with datasets of foreground and background sequences
+2. fasta file with dataset of foreground sequences
+3. fasta file with dataset of background sequences
 4. int maximal length of one LPD (default value 6)
 5. int minimal length of motif (integer value respecting to a tested length L, default value is 8)
 6. int maximal length of motif (default value is 40)
@@ -80,9 +80,9 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 ## Train a model
 
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp)
-1. path to files with foreground and background sequences
-2. file with foreground sequences
-3. file with background sequences
+1. path to fasta files with datasets of foreground and background sequences
+2. fasta file with dataset of foreground sequences
+3. fasta file with dataset of background sequences
 4. int maximal length of one LPD (default value 6)
 5. int length of motif (integer value respecting to a tested length L, this value is selected by the bootstrap crossvaliation test, see the previous paragraph)
 6. int size = the number of LPDs (a value is estimated in the bootstrap crossvaliation test, see the previous paragraph)
