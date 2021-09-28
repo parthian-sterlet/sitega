@@ -1,2 +1,2 @@
-./monte0dg 6 peaks.fasta peaks.mnt
-./andy0bsn2 peaks.mnt 80 80 160 20 -1 2 >peak.log
+./background_genome peaks.fasta peaks_gb1.fasta peaks_gb2.fasta peaks_gb1.fasta peaks_gb3.fasta peaks_gb4.fasta 50 0.01 0.2 0.33 0.5 300 at10
+./andy0bsn2 /data/work/ peaks.fasta peaks_gb1.fasta 6 8 40 4 -1 2 >peak.log
