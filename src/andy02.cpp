@@ -14,7 +14,7 @@
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
 #define MEGE 20//population size 1st stage
-#define ELIT 4//population size 2nd stage
+#define ELIT 10//population size 2nd stage
 #define NMUT 3
 #define NREC 5
 #define POPSIZE 200
@@ -2384,7 +2384,7 @@ int main(int argc, char *argv[])
 			fit_prev = pop[0].fit;
 			//pop[0].print_all(reg_max,nseq);													
 			success_o = success_l = success_p = success_m = 0;
-			double ratio_thr = 0.005, ratio_thr_r = ratio_thr;
+			double ratio_thr = 0.004, ratio_thr_r = ratio_thr;
 			int step;
 			int step_max, step_max_tot = 0;
 			if (restart == 0)
@@ -2396,7 +2396,7 @@ int main(int argc, char *argv[])
 			else
 			{
 				//step_max = 10000 * (int)(nseq / 20);
-				step_max = 200000;//10000 * (int)(nseq / 20);
+				step_max = 100000;//10000 * (int)(nseq / 20);
 				step = 10000;
 				mege_h = ELIT;
 			}
@@ -2537,7 +2537,7 @@ int main(int argc, char *argv[])
 									if (ratio[2] <= ratio_thr)
 									{
 										stop_pi[i] = 1;
-										step_max = m_iter*step;
+										//step_max = m_iter*step;
 										//step_max = n_mut_tot;
 									}
 									for (k = 0; k < 3; k++)atry[k] += step_try[k];
@@ -2612,10 +2612,15 @@ int main(int argc, char *argv[])
 			for (m = 0; m<NREC; m++)success_r1[m] = 0;
 			pair_all = 0;
 			int jmax;
-			if (rec_first_only == 0)jmax = mege_h - 2;
+			if (rec_first_only == 0)
+			{
+				if (gen > 0)jmax = mege_h / 2 - 1;
+				else jmax = mege_h -2;
+			}
 			else
 			{
-				jmax = 0;
+				if (gen > 1)jmax = mege_h / 4;
+				else jmax = mege_h / 2;
 				/*	jmax = mege_h1;
 				for (j = mege_h1; j > 0; j--)
 				{
@@ -2625,10 +2630,6 @@ int main(int argc, char *argv[])
 				break;
 				}
 				}*/
-			}
-			if (gen > 1)
-			{
-				int yy = 0;
 			}
 			{
 				int multw = 1;
@@ -2819,6 +2820,7 @@ int main(int argc, char *argv[])
 					loc_rec_tot += loc_rec;
 					if (restart == 0)printf("L%d", loc_rec_tot);
 					printf("\n");
+					if (gen > 0 && loc_rec == 0)break;
 					if (ratio_r < ratio_thr_r)
 					{
 						if (restart == 0)

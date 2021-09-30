@@ -13,7 +13,7 @@
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
 #define MEGE 20//population size 1st stage
-#define ELIT 4//population size 2nd stage
+#define ELIT 10//population size 2nd stage
 #define NMUT 3
 #define NREC 5
 #define POPSIZE 210
@@ -2424,7 +2424,7 @@ int main(int argc, char *argv[])
 	char file_out_cnt[500];
 	for (olen = olen_min; olen <= olen_max; olen += olen_dif)
 	{
-		int size0, size_start = olen, size_end = 2 * olen, size_dif = olen / 4;			
+		int size0, size_start = 3*olen/2, size_end = 5 * olen/2, size_dif = olen / 4;			
 		//int size0, size_dif = olen / 4, size_start = 2 * olen - size_dif, size_end = 2 * olen;
 		int size_len = size_start;
 		double auc_len = 0;
@@ -2560,7 +2560,7 @@ int main(int argc, char *argv[])
 					}*/
 					fit_prev = pop[iter][0].fit;
 					success_o = success_l = success_p = success_m = 0;
-					double ratio_thr = 0.005, ratio_thr_r = ratio_thr;
+					double ratio_thr = 0.004, ratio_thr_r = ratio_thr;
 					int step;
 					int step_max, step_max_tot = 0;
 					if (restart == 0)
@@ -2571,7 +2571,7 @@ int main(int argc, char *argv[])
 					}
 					else
 					{
-						step_max = 200000;//10000 * (int)(nseq / 20);
+						step_max = 100000;//10000 * (int)(nseq / 20);
 						step = 10000;
 						mege_h = ELIT;
 					}
@@ -2706,7 +2706,7 @@ int main(int argc, char *argv[])
 										if (ratio[2] <= ratio_thr)
 										{
 											stop_pi[i] = 1;
-											step_max = m_iter * step;
+											//step_max = m_iter * step;
 										}
 										for (k = 0; k < 3; k++)atry[k] += step_try[k];
 										for (k = 0; k < 3; k++)asuccess[k] += step_success[k];
@@ -2778,10 +2778,15 @@ int main(int argc, char *argv[])
 					for (m = 0; m < NREC; m++)success_r1[m] = 0;
 					pair_all = 0;
 					int jmax;
-					if (rec_first_only == 0)jmax = mege_h - 2;
+					if (rec_first_only == 0)
+					{
+						if (gen> 0)jmax = mege_h / 2 -1; 
+						else jmax = mege_h - 2;
+					}
 					else
 					{
-						jmax = 0;
+						if(gen > 1)jmax =  mege_h / 4;
+						else jmax = mege_h / 2;
 						/*	jmax = mege_h1;
 						for (j = mege_h1; j > 0; j--)
 						{
@@ -2952,6 +2957,7 @@ int main(int argc, char *argv[])
 							loc_rec_tot += loc_rec;
 							if (restart == 0)printf("L%d", loc_rec_tot);
 							printf("\n");
+							if (gen > 0 && loc_rec == 0)break;
 							if (ratio_r < ratio_thr_r)
 							{
 								if (restart == 0)
@@ -3017,10 +3023,21 @@ int main(int argc, char *argv[])
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
 			strcpy(file_out_cnt, file_for);
 			strcat(file_out_cnt, add_roc);
-			if ((outq = fopen(file_out_cnt, "at")) == NULL)
+			if (olen == olen_min && size0 == size_start)
 			{
-				printf("Output file can't be opened!\n");
-				exit(1);
+				if ((outq = fopen(file_out_cnt, "wt")) == NULL)
+				{
+					printf("Output file can't be opened!\n");
+					exit(1);
+				}
+			}
+			else
+			{
+				if ((outq = fopen(file_out_cnt, "at")) == NULL)
+				{
+					printf("Output file can't be opened!\n");
+					exit(1);
+				}
 			}
 			if (size0 == size_start)
 			{
@@ -3043,10 +3060,21 @@ int main(int argc, char *argv[])
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
 			strcpy(file_out_cnt, file_for);
 			strcat(file_out_cnt, add_auc);
-			if ((outq = fopen(file_out_cnt, "at")) == NULL)
+			if (olen == olen_min && size0 == size_start)
 			{
-				printf("Output file can't be opened!\n");
-				exit(1);
+				if ((outq = fopen(file_out_cnt, "wt")) == NULL)
+				{
+					printf("Output file can't be opened!\n");
+					exit(1);
+				}
+			}
+			else
+			{
+				if ((outq = fopen(file_out_cnt, "at")) == NULL)
+				{
+					printf("Output file can't be opened!\n");
+					exit(1);
+				}
 			}
 			int k_step = 0;
 			for (n = 1; n <= n_cnt_tot; n++)
@@ -3087,11 +3115,22 @@ int main(int argc, char *argv[])
 		strcat(file_out_cnt, "_len");
 		strcat(file_out_cnt, add_auc);
 		FILE *outq;
-		if ((outq = fopen(file_out_cnt, "at")) == NULL)
+		if (olen == olen_min)
 		{
-			printf("Output file can't be opened!\n");
-			exit(1);
-		}		
+			if ((outq = fopen(file_out_cnt, "wt")) == NULL)
+			{
+				printf("Output file can't be opened!\n");
+				exit(1);
+			}
+		}
+		else		
+		{
+			if ((outq = fopen(file_out_cnt, "at")) == NULL)
+			{
+				printf("Output file can't be opened!\n");
+				exit(1);
+			}
+		}
 		fprintf(outq, "%s\t%d\t%d\t%f\n", file_for, olen, size_len, auc_len);
 		fclose(outq);
 	}
@@ -3101,7 +3140,7 @@ int main(int argc, char *argv[])
 		strcpy(file_out_cnt, file_for);
 		strcat(file_out_cnt, "_best");
 		strcat(file_out_cnt, add_roc);
-		if ((outq = fopen(file_out_cnt, "at")) == NULL)
+		if ((outq = fopen(file_out_cnt, "wt")) == NULL)
 		{
 			printf("Output file can't be opened!\n");
 			exit(1);
@@ -3127,7 +3166,7 @@ int main(int argc, char *argv[])
 		strcpy(file_out_cnt, file_for);
 		strcat(file_out_cnt, "_best");
 		strcat(file_out_cnt, add_auc);
-		if ((outq = fopen(file_out_cnt, "at")) == NULL)
+		if ((outq = fopen(file_out_cnt, "wt")) == NULL)
 		{
 			printf("Output file can't be opened!\n");
 			exit(1);
