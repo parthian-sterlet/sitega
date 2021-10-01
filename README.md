@@ -54,20 +54,21 @@ Lists of command line arguments for all modules are described below
 ## Preparation
 
 [background_genome.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/background_genome.cpp)
-1. input fasta file
-2. output fasta file with genome sequences adopted by mononucleotide content
-3. output fasta file with genome sequences adopted by mononucleotide content and dinucleotide measure
-4. output fasta file with genome sequences adopted by mononucleotide content, di- and trinucleotide measures
-5. output fasta file with genome sequences adopted by mononucleotide content, di-, tri- and tetranucleotide measures
-6. maximal number of background sequences per one peak (default value 10)
-7. deviation of mononucleitide content of a background sequence from that for a foreground sequence (default value 0.01)
-8. percentile threshold for deviation between foreground and background sequences by the dinucleotide measure (default value 0.1)
-9. percentile threshold for deviation between foreground and background sequences by the trinucleotide measure (default value 0.33)
-10. percentile threshold for deviation between foreground and background sequences by the tetranucleotide measure (default value 0.5)
-11. average total number of attemtps to get a background sequence from genome per one foreground sequence (default value 200)
-12. genome release (default values are at10, mm10 and hg38 for Arabidopsis, human and mouse genomes)
+1. path to whole genome sequences of chromosomes in plain format (see the paragraph below)
+2. input fasta file
+3. output fasta file with genome sequences adopted by mononucleotide content
+4. output fasta file with genome sequences adopted by mononucleotide content and dinucleotide measure
+5. output fasta file with genome sequences adopted by mononucleotide content, di- and trinucleotide measures
+6. output fasta file with genome sequences adopted by mononucleotide content, di-, tri- and tetranucleotide measures
+7. maximal number of background sequences per one peak (default value 10)
+8. deviation of mononucleitide content of a background sequence from that for a foreground sequence (default value 0.01)
+9. percentile threshold for deviation between foreground and background sequences by the dinucleotide measure (default value 0.1)
+10 percentile threshold for deviation between foreground and background sequences by the trinucleotide measure (default value 0.33)
+11. percentile threshold for deviation between foreground and background sequences by the tetranucleotide measure (default value 0.5)
+12. average total number of attemtps to get a background sequence from genome per one foreground sequence (default value 200)
+13. genome release (default values are at10, mm10 and hg38 for Arabidopsis, human and mouse genomes)
 
-Whole chromosome sequences in plain format are required to run the program, i.e. headers lines >... should be deleted from the whole chromosome files in fasta format. These plain files should contain only nucleotide letters, IUPAC nucleotides codes N,W,S etc. are ignored by program, all other symbols like ' ', '\t' etc. should deleted, e.g. for Arabidopsis five files are required: chr1.plain, chr2.plain, chr3.plain, chr4.plain, chr5.plain, for human/mouse respective whole chromosome files are required (1-22,X,Y / 1-19,X,Y). To see example unzip chr4.plain file from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes). Any one of the four output fasta files can be used as the background dataset in consequent analysis (see parameters 2, 3, 4 and 5 of the command line, genome sequences adopted by mononucleotide content, di-, tri-, or tetranucleotide measures, respectively).
+Whole chromosome sequences in plain format are required to run the program, i.e. headers lines >... should be deleted from the whole chromosome files in fasta format. These plain files should contain only nucleotide letters, IUPAC nucleotides codes N,W,S etc. are ignored by program, all other symbols like ' ', '\t' etc. should deleted, e.g. for Arabidopsis five files are required: chr1.plain, chr2.plain, chr3.plain, chr4.plain, chr5.plain, for human/mouse respective files refer to whole chromosomes 1-22,X,Y / 1-19,X,Y. To see example unzip chr4.plain file from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes). Any one of the four output fasta files can be used as the background dataset in consequent analysis (see parameters 2, 3, 4 and 5 of the command line, genome sequences adopted by mononucleotide content, di-, tri-, or tetranucleotide measures, respectively).
 
 ## Set parameters of a model through accuracy estimation
 
