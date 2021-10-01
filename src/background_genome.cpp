@@ -477,11 +477,11 @@ int main(int argc, char *argv[])
 {
 	int i, j, k;
 	char d[SEQLEN], filesta[10], fileend[10], genome[5];
-	char filei[500], fileo1[500], fileo2[500], fileo3[500], fileo4[500], filechr[NCHR][500];
+	char filei[500], fileo1[500], fileo2[500], fileo3[500], fileo4[500], filechr[NCHR][500], path_fasta[500];
 	FILE *out, *in_seq[NCHR], *out2, *out3, *out4;
-	if (argc != 13)
+	if (argc != 14)
 	{
-		puts("Sintax: 1 file in_fa, 2file out_fa 3file oufatDI_fa 4file out_faTRI 5file out_faTETRA 6int height 7double mono prec 8double fract_di 9double fract_tri 10double fract_tetra 11int back_iter 12 char genome (at10 hg38 mm10)");
+		puts("Sintax: 1 path_genome 2file in_fa, 3file out_fa 456files out_fasta_DI_TRI_TETRA 7int height 8double mono prec 9-11double fract_di_tri_tetra 12int back_iter 13 char genome (at10 hg38 mm10)");
 		exit(1);
 	}
 	strcpy(filesta, "chr");
@@ -508,18 +508,19 @@ int main(int argc, char *argv[])
 	
 	int sizelo1[NCHR], sizelo2[NCHR];//lengths in bp, Mb
 	int n_chr;
-	strcpy(filei, argv[1]);//in_file
-	strcpy(fileo1, argv[2]);//out_file
-	strcpy(fileo2, argv[3]);//out_file
-	strcpy(fileo3, argv[4]);//out_file
-	strcpy(fileo4, argv[5]);//out_file
-	int height = atoi(argv[6]);
-	double mono_prec= atof(argv[7]);//best by Karlin measure 0.05
-	double di_fract = atof(argv[8]);//best by Karlin measure 0.05
-	double tri_fract = atof(argv[9]);//best by Karlin measure 0.05
-	double tetra_fract = atof(argv[10]);//best by Karlin measure 0.05
-	int back_iter = atoi(argv[11]);
-	strcpy(genome, argv[12]);
+	strcpy(path_fasta, argv[1]);
+	strcpy(filei, argv[2]);//in_file
+	strcpy(fileo1, argv[3]);//out_file
+	strcpy(fileo2, argv[4]);//out_file
+	strcpy(fileo3, argv[5]);//out_file
+	strcpy(fileo4, argv[6]);//out_file
+	int height = atoi(argv[7]);
+	double mono_prec= atof(argv[8]);//best by Karlin measure 0.05
+	double di_fract = atof(argv[9]);//best by Karlin measure 0.05
+	double tri_fract = atof(argv[10]);//best by Karlin measure 0.05
+	double tetra_fract = atof(argv[11]);//best by Karlin measure 0.05
+	int back_iter = atoi(argv[12]);
+	strcpy(genome, argv[13]);
 	if (strcmp(genome, "at10") == 0)
 	{
 		n_chr = 5;
@@ -559,7 +560,7 @@ int main(int argc, char *argv[])
 	srand((unsigned)time(NULL));
 	for (i = 0; i < n_chr; i++)
 	{
-		memset(filechr[i], '\0', 30);
+		strcpy(filechr[i],path_fasta);
 		strcat(filechr[i], filesta);		
 		strcat(filechr[i], name_chr[i]);
 		strcat(filechr[i], fileend);
