@@ -629,7 +629,7 @@ int main(int argc, char *argv[])
 	int fl = 0;
 	int trys = nseq * back_iter/5;
 	int iter = 0;	
-	int height0 = 10;
+	int height0 = 2*height;
 	int nseqb = nseq * height0;
 	oliq *sele;
 	sele = new oliq[nseqb];
@@ -733,7 +733,7 @@ int main(int argc, char *argv[])
 				}
 			}
 		}								
-		if (iter % 10000 == 0)
+		if (iter % 1000 == 0)
 		{
 			double rat = double(good) / nseq;			
 			printf("Iterations %5d\t Nseq_Background %5d\tFraction_Done %5f\tHomol %d\n", iter, pr_tot, rat,gomol);
@@ -926,7 +926,7 @@ int main(int argc, char *argv[])
 				}					
 			}					
 		}		
-		if (iter % 10000 == 0)
+		if (iter % 1000 == 0)
 		{					
 			printf("Iterations %5d\t Nseq_Background %5d\tFraction_Done %5f %5f %5f %5f\tSizes %d %d %d %d\tHomol %d\n", iter, pr_tot, (double)heis[0] / nseq, (double)heis[1] / nseq, (double)heis[2] / nseq,(double)heis[3]/nseq,size[0],size[1],size[2],size[3],gomol);
 			int exiti = 1;
