@@ -54,7 +54,7 @@ Lists of command line arguments for all modules are described below
 ## Preparation
 
 [background_genome.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/background_genome.cpp)
-1. path to whole genome sequences of chromosomes in plain format (see the paragraph below)
+1. path to whole genome sequences of chromosomes in plain format (see the paragraph below, the last symbol of path must be '/' and '\' for Linux and Windows OS, respectively)
 2. input fasta file
 3. output fasta file with genome sequences adopted by mononucleotide content
 4. output fasta file with genome sequences adopted by mononucleotide content and dinucleotide measure
@@ -73,20 +73,20 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 ## Set parameters of a model through accuracy estimation
 
 [andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp)
-1. path to fasta files with datasets of foreground and background sequences
+1. path to fasta files with datasets of foreground and background sequences (the last symbol of path must be '/' and '\' for Linux and Windows OS, respectively)
 2. fasta file with dataset of foreground sequences
 3. fasta file with dataset of background sequences
 4. maximal length of one LPD (default value 6)
 5. minimal length of motif (integer value respecting to a tested length L, default value is 8)
 6. maximal length of motif (default value is 28)
-7. step length (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
+7. step of length of motif (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
 8. cross-validation type specification: positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
 9. number of iterations in bootatrap (default 2)
 
 ## Train a model
 
 [andy02.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy02.cpp)
-1. path to fasta files with datasets of foreground and background sequences
+1. path to fasta files with datasets of foreground and background sequences (the last symbol of path must be '/' and '\' for Linux and Windows OS, respectively)
 2. fasta file with dataset of foreground sequences
 3. fasta file with dataset of background sequences
 4. maximal length of one LPD (default value 6)
