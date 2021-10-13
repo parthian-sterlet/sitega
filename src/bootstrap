@@ -1,2 +1,2 @@
-./background_genome peaks.fasta peaks_gb1.fasta peaks_gb2.fasta peaks_gb1.fasta peaks_gb3.fasta peaks_gb4.fasta 10 0.01 0.2 0.33 0.5 200 at10 >background_genome.log
-./andy0bsn2 /data/work/ peaks.fasta peaks_gb1.fasta 6 8 32 4 -1 2 >bootstrap.log
+./background_genome PEAKS046132_ARR14_Q8L9Y3_MACS2_2168.fa	PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_gb1.fa	PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_gb2.fa	PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_gb3.fa	PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_gb4.fa 5 0.01	0.2	0.33	0.5 500 at10 >PEAKS046132_ARR14_Q8L9Y3_MACS2_2168.log >background_genome.log
+./andy0bsn2 /data/work/ PEAKS046132_ARR14_Q8L9Y3_MACS2_2168.fa	PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_gb1.fa 6 8 28 4 -1 2 >bootstrap.log
