@@ -84,7 +84,7 @@ struct town{
 	void sort_all(void);
 	int sum(int j);
 	void fprint_all(char *file, char *add);
-	void fprint_allfi(char *file, char *add, int len, double c0, double *buf);
+	void fprint_allfi(char *file, char *add, int len, double c0, double *buf,int reg_max);
 	void fprint_allfi_mat(char *file, char *add, char *name, int len, double c0, double *buf);
 	void fprint_seq(char *file, int len, int nseq, char ***seq, double *best_sco);
 	int check(int min, int max);
@@ -570,7 +570,7 @@ void town::fprint_all(char *file, char *add)
 	}
 	fclose(out);
 }
-void town::fprint_allfi(char *file, char *add, int len, double c0, double *buf)
+void town::fprint_allfi(char *file, char *add, int len, double c0, double *buf,int reg_max)
 {
 	int i;
 	FILE *out;
@@ -586,7 +586,7 @@ void town::fprint_allfi(char *file, char *add, int len, double c0, double *buf)
 	fprintf(out, "{\n\tcity a1 = {");
 	fprintf(out, "\n\t//site,size,len,c0\n\t\"%s\",%d,%d,%f,0.05,\n\t", file, size, len, c0);
 	fprintf(out, "{//buf,sta,end,num\t");
-	for (i = 0; odg[i] != -1; i++)fprintf(out, "%d ", odg[i]); fprintf(out, "\n\t");
+	for (i = 0; i< reg_max; i++)fprintf(out, "%d ", odg[i]); fprintf(out, "\n\t");
 	for (i = 0; i<size; i++)
 	{
 		fprintf(out, "{%9f,%d,%d,%d}", buf[i], tot[i].sta, tot[i].end, tot[i].num);
@@ -982,7 +982,7 @@ double EvalMahFIT(town *a, int n_train, int ***seq, double **dav, double **dcv, 
 	frp = NULL;
 	return a->fit;
 }
-double EvalMahFITTrain(town *a, int nseq, int ***seq, char *file, int olen, int *len, char ***peak_real, town_ext *best_sel_ext, double *best_sco, double **dav, double **dcv)
+double EvalMahFITTrain(town *a, int nseq, int ***seq, char *file, int olen, int reg_max, int *len, town_ext *best_sel_ext, double *best_sco, double **dav, double **dcv)
 {
 	int k, n, m;
 	double ret = 0;
@@ -1062,8 +1062,8 @@ double EvalMahFITTrain(town *a, int nseq, int ***seq, char *file, int olen, int 
 		buf[k] /= a->fit;
 		c0 -= av[k] * buf[k];
 	}
-	char ext2[] = "_end2";
-	a->fprint_allfi(file, ext2, olen, c0, buf);
+	//char ext2[] = "_end2";
+	//a->fprint_allfi(file, ext2, olen, c0, buf,reg_max);
 	best_sel_ext->get_copy(c0, buf, a->size);
 	int b, o;
 	for (b = 0; b<nseq; b++)
@@ -2742,6 +2742,7 @@ int main(int argc, char *argv[])
 						if (pop[m].fit > pop[0].fit)
 						{
 							mbe = m;
+							break;
 						}
 					}					
 					//					printf("Rcycle %d: %d %d,%d,%d,%d,%d %d %f %f\n", sr, success_r, success_r1[0], success_r1[1], success_r1[2], success_r1[3], success_r1[4], success_r_cycle, ratio_r, pop[0].fit);
@@ -2751,7 +2752,7 @@ int main(int argc, char *argv[])
 					printf("Rec %d: %d %d,%d,%d,%d,%d %d %f M %f A %f S %f F %f ", sr*pair_all, success_r, success_r1[0], success_r1[1], success_r1[2], success_r1[3], success_r1[4], success_r_cycle, ratio_r, pop[mbe].mah, pop[mbe].ave, pop[mbe].std, pop[mbe].fit);
 					if (restart == 0)printf("L%d", loc_rec_tot);
 					printf("\n");
-					if (gen > 0 && loc_rec == 0)break;
+					//if (gen > 0 && loc_rec == 0)break;
 					if (ratio_r < ratio_thr_r)
 					{
 						if (restart == 0)
@@ -2813,7 +2814,7 @@ int main(int argc, char *argv[])
 				printf("Go out ");
 			}
 		} while (big_exit1 == 0);
-		EvalMahFITTrain(&pop[0], nseq, seq_real, file_for, olen, len, peak_real, &pop_ext, best_sco, dav, dcv);
+		EvalMahFITTrain(&pop[0], nseq, seq_real, file_for, olen, reg_max,len, &pop_ext, best_sco, dav, dcv);
 		printf("Go out big cycle ");
 		big_exit1 = 1;
 	}
@@ -2833,7 +2834,7 @@ int main(int argc, char *argv[])
 		strcpy(extmat, extmat0);
 		//	strcat(ext2best, argv[2]);
 		//	strcat(extmat, argv[2]);
-		pop[0].fprint_allfi(file_for, ext2best, olen, pop_ext.c0, pop_ext.buf);
+		pop[0].fprint_allfi(file_for, ext2best, olen, pop_ext.c0, pop_ext.buf,reg_max);
 		pop[0].fprint_allfi_mat(file_for, extmat, name, olen, pop_ext.c0, pop_ext.buf);
 	}
 	char file_train_seq[500];
