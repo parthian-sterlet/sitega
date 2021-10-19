@@ -12,8 +12,8 @@
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
-#define MEGE 40//population size 1st stage
-#define ELIT 15//population size 2nd stage
+#define MEGE 50//population size 1st stage
+#define ELIT 10//population size 2nd stage
 #define NMUT 3
 #define NREC 5
 #define POPSIZE 150
@@ -66,7 +66,7 @@ struct town {
 	double mah;
 	double std;
 	double ave;
-	int odg[MOTLEN+1];
+	int odg[MOTLEN + 1];
 	void get_copy(town *a, int nseq, int reg_max);
 	void init_rand(int nseq, int *len, int oln, int rsize, int reg_max);
 	void init_rand_part(int nseq, int *len, int oln, int nind);
@@ -308,9 +308,9 @@ void town::get_copy(town *a, int nseq, int reg_max)
 	for (i = 0; i < size; i++)tot[i].get_copy(&a->tot[i]);
 	for (i = 0; i < 16; i++)a->deg[i] = deg[i];
 	i = 0;
-	for (i = 0;i<reg_max; i++)
+	for (i = 0; i < reg_max; i++)
 	{
-		a->odg[i] = odg[i];		
+		a->odg[i] = odg[i];
 	}
 	for (i = 0; i < nseq; i++)
 	{
@@ -411,12 +411,12 @@ void town::init_rand(int nseq, int *len, int oln, int rsize, int reg_max)
 	fit = 0;
 	size = rsize;
 	int oln1 = oln - 1;
-	int oln2 = oln - 2;	
+	int oln2 = oln - 2;
 	for (j = 0; j < reg_max; j++)odg[j] = 0;
 	odg[reg_max] = -1;
 	//for (i = 0; i < nseq; i++)printf("%d ",len[i]);
 	for (i = 0; i < nseq; i++)
-	{		
+	{
 		int lenp = len[i] - oln1;
 		pos[i] = rand() % lenp;
 		ori[i] = rand() % 2;
@@ -429,8 +429,7 @@ void town::init_rand(int nseq, int *len, int oln, int rsize, int reg_max)
 		if (deg[r] == oln2)continue;
 		deg[r]++;
 		i++;
-	} 
-	while (i < size);
+	} while (i < size);
 	int t = 0;
 	for (i = 0; i < 16; i++)
 	{
@@ -452,7 +451,7 @@ void town::init_rand(int nseq, int *len, int oln, int rsize, int reg_max)
 					tot[t].sta = tot[t].end = j;
 					t++;
 				}
-			}				
+			}
 			t -= deg[i];
 			int jend = deg[i] - 1;
 			for (j = 0; j < deg[i]; j++)
@@ -464,9 +463,9 @@ void town::init_rand(int nseq, int *len, int oln, int rsize, int reg_max)
 					int prev_pos;
 					if (j == 0)prev_pos = -1;
 					else prev_pos = tot[t - 1].end;
-					int spac = tot[t].sta - prev_pos;					
+					int spac = tot[t].sta - prev_pos;
 					if (spac > 1)
-					{      
+					{
 						if (spac > rlen)spac = rlen;
 						int sh = rand() % spac;
 						tot[t].sta -= sh;
@@ -487,7 +486,7 @@ void town::init_rand(int nseq, int *len, int oln, int rsize, int reg_max)
 				}
 				odg[tot[t].end - tot[t].sta]++;
 				t++;
-			}			
+			}
 		}
 	}
 }
@@ -858,12 +857,12 @@ int ComplStr(char *d)
 	}
 	return 1;
 }
-int EvalMahControl(town *a, int nseq, int nseqb, int n_train, int n_cntrl, int *xporti, int *xportj, double *fp_rate,  int &n_cntrl_tot, int ***seq, int ***seq_back, int olen, int *len, int *lenb, double **dav, double **dcv, double *qp)
+int EvalMahControl(town *a, int nseq, int nseqb, int n_train, int n_cntrl, int *xporti, int *xportj, double *fp_rate, int &n_cntrl_tot, int ***seq, int ***seq_back, int olen, int *len, int *lenb, double **dav, double **dcv, double *qp)
 {
 	int k, n, m, o, b, u;
 	double av[POPSIZE], buf[POPSIZE];
 	double df[POPSIZE];
-	
+
 	for (k = 0; k < a->size; k++)
 	{
 		for (n = 0; n < a->size; n++)uw[k][n] = 0;
@@ -913,11 +912,11 @@ int EvalMahControl(town *a, int nseq, int nseqb, int n_train, int n_cntrl, int *
 		av[k] = (df[k] + dav[a->tot[k].end - a->tot[k].sta][a->tot[k].num]) / 2;
 		df[k] = df[k] - dav[a->tot[k].end - a->tot[k].sta][a->tot[k].num];
 	}
-	if (BackMat(a->size) == -1) 
-	{ 
-		a->fit = 0; 
+	if (BackMat(a->size) == -1)
+	{
+		a->fit = 0;
 		for (k = 0; k < n_cntrl; k++)fp_rate[n_cntrl_tot + k] = 0.5;
-		return 0; 
+		return 0;
 	}
 	a->mah = 0;
 	for (k = 0; k < a->size; k++)
@@ -931,8 +930,8 @@ int EvalMahControl(town *a, int nseq, int nseqb, int n_train, int n_cntrl, int *
 	{
 		buf[k] /= fit2;
 		c0 -= av[k] * buf[k];
-	}	
-	for (b = 0; b < n_cntrl; b++)fp_rate[n_cntrl_tot+b] = 0;
+	}
+	for (b = 0; b < n_cntrl; b++)fp_rate[n_cntrl_tot + b] = 0;
 	int n_cnt = 0;
 	for (b = 0; b < n_cntrl; b++)//control
 	{
@@ -1004,7 +1003,7 @@ int EvalMahControl(town *a, int nseq, int nseqb, int n_train, int n_cntrl, int *
 					{
 						if (sco >= qp[k])
 						{
-							fp_rate[n_cntrl_tot +k]++;
+							fp_rate[n_cntrl_tot + k]++;
 						}
 						else break;
 					}
@@ -1014,20 +1013,25 @@ int EvalMahControl(town *a, int nseq, int nseqb, int n_train, int n_cntrl, int *
 	}
 	for (k = 0; k < n_cntrl; k++)
 	{
-		int kk = n_cntrl_tot + k;			
+		int kk = n_cntrl_tot + k;
 		//fp_rate[kk] = 0.0001;
 		if (fp_rate[kk] > 0)fp_rate[kk] /= nseqn;
 		else fp_rate[kk] = 0.5 / (double)nseqn;
 	}
-	n_cntrl_tot += n_cntrl;	
+	n_cntrl_tot += n_cntrl;
 	return 1;
 }
 double EvalMahFIT(town *a, int n_train, int *xporti, int ***seq, double **dav, double **dcv, double **frp)
 {
-	int k, n, m, b;	
+	int k, n, m, b;
 	double f1[POPSIZE];//av[POPSIZE] buf[POPSIZE],
-	double df[POPSIZE];
+	double df[POPSIZE], f2[POPSIZE], df2[POPSIZE];
 
+	for (k = 0; k < a->size; k++)
+	{
+		f2[k] = dav[a->tot[k].end - a->tot[k].sta][a->tot[k].num];
+		df2[k] = sqrt(dcv[a->tot[k].end - a->tot[k].sta][a->tot[k].num]);
+	}
 	for (k = 0; k < a->size; k++)
 	{
 		for (n = 0; n < a->size; n++)uw[k][n] = 0;
@@ -1035,7 +1039,7 @@ double EvalMahFIT(town *a, int n_train, int *xporti, int ***seq, double **dav, d
 	for (k = 0; k < a->size; k++)df[k] = 0;
 	for (b = 0; b < n_train; b++)
 	{
-		m = xporti[b];	
+		m = xporti[b];
 		int ori = a->ori[m];
 		int pos = a->pos[m];
 		double fs[POPSIZE];
@@ -1075,10 +1079,10 @@ double EvalMahFIT(town *a, int n_train, int *xporti, int ***seq, double **dav, d
 	}
 	for (k = 0; k < a->size; k++)for (n = 0; n < a->size; n++)uw[k][n] /= 2;
 	for (k = 0; k < a->size; k++)
-	{		
-		df[k] = df[k] - dav[a->tot[k].end - a->tot[k].sta][a->tot[k].num];
+	{
+		df[k] = df[k] - f2[k];
 	}
-	if (BackMat(a->size) == -1) { a->fit = 0; return 0; }	
+	if (BackMat(a->size) == -1) { a->fit = 0; return 0; }
 	a->mah = 0;
 	for (k = 0; k < a->size; k++)
 	{
@@ -1086,24 +1090,10 @@ double EvalMahFIT(town *a, int n_train, int *xporti, int ***seq, double **dav, d
 		for (n = 0; n < a->size; n++)buf += uw[k][n] * df[n];
 		a->mah += buf * df[k];
 	}
-	//a->ave = a->std = 1;	
+	//a->ave = a->std = 1;		
 	double xtr = 0, xtr2 = 0;
 	for (b = 0; b < n_train; b++)
 	{
-		/*m = xporti[b];
-		int ori = a->ori[m];
-		int pos = a->pos[m];
-		double fs[POPSIZE];
-		for (k = 0; k < a->size; k++)
-		{
-			int rlenk = (a->tot[k].end - a->tot[k].sta + 1);
-			fs[k] = 0;
-			for (n = a->tot[k].sta; n <= a->tot[k].end; n++)
-			{
-				if (a->tot[k].num == seq[ori][m][n + pos])fs[k]++;
-			}
-			fs[k] /= rlenk;			
-		}*/
 		double mah1 = 0;
 		for (k = 0; k < a->size; k++)
 		{
@@ -1112,13 +1102,38 @@ double EvalMahFIT(town *a, int n_train, int *xporti, int ***seq, double **dav, d
 			mah1 += buf1 * (frp[b][k] - f1[k]);
 		}
 		xtr += mah1;
-		xtr2 += mah1*mah1;
+		xtr2 += mah1 * mah1;
 	}
 	xtr /= n_train;
-	xtr2 /= n_train;
+	xtr2 /= n_train;	
+	a->std = xtr2 - xtr * xtr;
+	xtr = 0;
+	for (b = 0; b < n_train; b++)
+	{
+		double mah1 = 0;
+		for (k = 0; k < a->size; k++)
+		{
+			double buf1 = 0;
+			for (n = 0; n < a->size; n++)buf1 += uw[k][n] * (frp[b][n] - f2[n]);
+			mah1 += buf1 * (frp[b][k] - f2[k]);
+		}
+		xtr += mah1;
+	}
+	xtr /= n_train;	
 	a->ave = xtr;
-	a->std = xtr2 - xtr*xtr;
-	if (a->std <= 0.001 || a->std > 1000)
+	xtr2=0;
+	{
+		double mah1 = 0;
+		for (k = 0; k < a->size; k++)
+		{
+			double buf1 = 0;
+			for (n = 0; n < a->size; n++)buf1 += uw[k][n] * df2[n];
+			mah1 += buf1 * df2[k];
+		}
+		xtr2 += mah1 * mah1;
+	}
+	a ->std += xtr2;
+	if (a->std <= 0.00001 || a->std > 1000000)
 	{
 		a->fit = 0;
 		return 0;
@@ -2284,7 +2299,7 @@ int main(int argc, char *argv[])
 	{
 		det2[i].mem_in(nseq);
 	}
-	det1.mem_in(nseq);	
+	det1.mem_in(nseq);
 	int n_decil[CENT];
 	{
 		n_decil[0] = 1;
@@ -2304,12 +2319,16 @@ int main(int argc, char *argv[])
 	//	double dtp = 1 / (double)nseq;
 	char add_roc[500], add_auc[500];
 	strcpy(add_roc, "_roc_bs.txt");
-	strcpy(add_auc, "_auc_bs.txt");		
+	strcpy(add_auc, "_auc_bs.txt");
 	char file_out_cnt[500];
-	double k_size_start = 1.5;
-	double k_size_end = 3.5;
-	double k_size_dif = 0.5;
-	int n_train_max = 0;
+	double k_size_start = 2;
+	double k_size_end = 5;
+	double k_size_dif = 1;
+	int n_train_max = 0;	
+	int olenf_max = 20;
+	int sizef_start = (int)(k_size_start*olenf_max);
+	int sizef_end = (int)(k_size_end*olenf_max);
+	int sizef_dif = (int)(k_size_dif*olenf_max);
 	for (iter = 0; iter < iteration; iter++)
 	{
 		if (n_train[iter] > n_train_max)n_train_max = n_train[iter];
@@ -2323,22 +2342,26 @@ int main(int argc, char *argv[])
 			frp[k] = new double[psize_max];
 			if (frp[k] == NULL) { puts("Out of memory..."); exit(1); }
 		}
-		qp = new double [n_train_max];
+		qp = new double[n_train_max];
 		if (qp == NULL) { puts("Out of memory..."); exit(1); }
 		for (i = 0; i < n_train_max; i++)qp[i] = 0;
 		for (i = 0; i < n_train_max; i++)
 		{
-			for (j = 0; j < psize_max; j++)frp[i][j] = 0;			
+			for (j = 0; j < psize_max; j++)frp[i][j] = 0;
 		}
 	}
 	for (olen = olen_min; olen <= olen_max; olen += olen_dif)
 	{
 		int size0, size_start = (int)(k_size_start * olen), size_end = (int)(k_size_end * olen), size_dif = (int)(k_size_dif * olen);
+		if (size_start > sizef_start || size_end > sizef_end)
+		{
+			size_start = sizef_start, size_end = sizef_end, size_dif = sizef_dif;
+		}
 		//int size0, size_dif = olen / 4, size_start = 2 * olen - size_dif, size_end = 2 * olen;
 		int size_len = size_start;
 		double auc_len = 0;
-		for (size0 = size_start; size0<=size_end; size0 += size_dif)
-		{			
+		for (size0 = size_start; size0 <= size_end; size0 += size_dif)
+		{
 			for (k = 0; k < n_cnt_tot; k++)fp_rate[k] = 0;
 			int big_exit1 = 1;// local exit (separ +-) global exit (separation do not exceeded the previous run)
 			double fit_prev, fit_after_mut;
@@ -2382,7 +2405,7 @@ int main(int argc, char *argv[])
 					i = 0;//train
 					for (k = 0; k < nseq; k++)
 					{
-						if (xport[k] == 1)xporti[i++] = k;						
+						if (xport[k] == 1)xporti[i++] = k;
 					}
 				}
 				//initiation		
@@ -2442,7 +2465,7 @@ int main(int argc, char *argv[])
 												}
 											}
 										} while (gom == -1);
-										EvalMahFIT(&ini, n_train[iter], xporti, seq_real, dav, dcv,frp);
+										EvalMahFIT(&ini, n_train[iter], xporti, seq_real, dav, dcv, frp);
 										ini.print_sta(reg_max);
 										if (gom == 0)
 										{
@@ -2471,7 +2494,7 @@ int main(int argc, char *argv[])
 					}*/
 					fit_prev = pop[iter][0].fit;
 					success_o = success_l = success_p = success_m = 0;
-					double ratio_thr = 0.004, ratio_thr_r = ratio_thr;
+					double ratio_thr = 0.005, ratio_thr_r = ratio_thr;
 					int step;
 					int step_max, step_max_tot = 0;
 					if (restart == 0)
@@ -2487,6 +2510,7 @@ int main(int argc, char *argv[])
 						mege_h = ELIT;
 					}
 					int step2 = 2 * step;
+					int mege_h1 = mege_h - 1;
 					//mutations									
 					int n_mut_tot = 0, success_m_tot = 0, mdo = 1;
 					int asuccess[NMUT], atry[NMUT];
@@ -2582,7 +2606,7 @@ int main(int argc, char *argv[])
 									if (gom != -1)
 									{
 										n_mut_here++;
-										EvalMahFIT(&det1, n_train[iter], xporti, seq_real, dav, dcv,frp);
+										EvalMahFIT(&det1, n_train[iter], xporti, seq_real, dav, dcv, frp);
 										dd = det1.fit / pop[iter][i].fit;
 										if (dd > 1)
 										{
@@ -2691,16 +2715,17 @@ int main(int argc, char *argv[])
 					fit_after_mut = pop[iter][0].fit;
 					for (m = 0; m < NREC; m++)success_r1[m] = 0;
 					pair_all = 0;
+					int elit_rec = ELIT/2;
 					int jmax;
 					if (rec_first_only == 0)
 					{
-						if (gen> 0)jmax = mege_h / 3 - 1;
-						else jmax = mege_h / 2 - 1;
+						if (gen > 0) { jmax = Min(4, mege_h1); }
+						else { jmax = ELIT-1; }
 					}
 					else
 					{
-						if (gen > 1)jmax = mege_h / 3 - 1;
-						else jmax = mege_h / 2 - 1;
+						if (gen > 1) { jmax = Min(3, mege_h1); }
+						else jmax = Min(4, mege_h1);
 					}
 					{
 						int multw = 1;
@@ -2738,10 +2763,9 @@ int main(int argc, char *argv[])
 					int step_rtry[NREC], step_rsuccess[NREC];
 					for (k = 0; k < NREC; k++)step_rtry[k] = step_rsuccess[k] = 0;
 					int success_r_cycle = 0;
-					printf("Rec %d cycles of %d tries\tStep %d\tRatioThr %.4f RecOsob 0..%d\n", n_rec_cycle, pair_all, step_max_tot, ratio_thr_r, jmax);
-					int elit_rec = ELIT;
+					printf("Rec %d cycles of %d tries\tStep %d\tRatioThr %.4f RecOsob 0..%d\n", n_rec_cycle, pair_all, step_max_tot, ratio_thr_r, jmax);					
 					double fit_rec_prev = pop[iter][elit_rec].fit;
-					loc_rec = 0;					
+					loc_rec = 0;
 					for (i = 0; i < mege_h; i++)success_ri[i] = 0;
 					for (sr = 1; sr <= n_rec_cycle; sr++)
 					{
@@ -2767,27 +2791,27 @@ int main(int argc, char *argv[])
 							}
 							switch (r_cy)
 							{
-							case(0) :
+							case(0):
 							{
 								if (Reco2_Original(&det2[0], &det2[1], nsi, num) == -1)continue;
 								else break;
 							}
-							case(1) :
+							case(1):
 							{
 								if (Reco2_Economic(&det2[0], &det2[1], nsi, num) == -1)continue;
 								else break;
 							}
-							case(2) :
+							case(2):
 							{
 								if (Reco2_One_dinucleotide_local(&det2[0], &det2[1], olen, reg_max) == -1)continue;
 								else break;
 							}
-							case(3) :
+							case(3):
 							{
 								if (Reco2_One_dinucleotide_full(&det2[0], &det2[1]) == -1)continue;
 								else break;
 							}
-							case(4) :
+							case(4):
 							{
 								if (Reco2Peak(&det2[0], &det2[1], n_train[iter], xporti) == -1)continue;
 								else break;
@@ -2823,7 +2847,7 @@ int main(int argc, char *argv[])
 							{
 								for (m = 0; m < 2; m++)
 								{
-									det2[m].fit = EvalMahFIT(&det2[m], n_train[iter], xporti, seq_real, dav, dcv,frp);
+									det2[m].fit = EvalMahFIT(&det2[m], n_train[iter], xporti, seq_real, dav, dcv, frp);
 								}
 								double fit_det_max = Max(det2[0].fit, det2[1].fit);
 								step_rtry[r_cy]++;
@@ -2857,20 +2881,23 @@ int main(int argc, char *argv[])
 								else ratio_r = 0;
 							}
 							{
-								int mbe = 0;
+								/*int mbe = 0;
 								for (m = 1; m < mege_h; m++)
 								{
 									if (pop[iter][m].fit > pop[iter][0].fit)
 									{
 										mbe = m;
+										break;
 									}
-								}								
-								if (mbe != 0)qsort((void*)(&pop[iter][0]), mege_h, sizeof(pop[iter][0]), compare_pop);
-								printf("Rec %d: %d %d,%d,%d,%d,%d %d %f M %f A %f S %f F %f ", sr*pair_all, success_r, success_r1[0], success_r1[1], success_r1[2], success_r1[3], success_r1[4], success_r_cycle, ratio_r, pop[iter][mbe].mah, pop[iter][mbe].ave, pop[iter][mbe].std, pop[iter][mbe].fit);
+								}
+								if (mbe != 0)
+								*/
+								qsort((void*)(&pop[iter][0]), mege_h, sizeof(pop[iter][0]), compare_pop);
+								printf("Rec %d: %d %d,%d,%d,%d,%d %d %f M %f A %f S %f F %f ", sr*pair_all, success_r, success_r1[0], success_r1[1], success_r1[2], success_r1[3], success_r1[4], success_r_cycle, ratio_r, pop[iter][0].mah, pop[iter][0].ave, pop[iter][0].std, pop[iter][0].fit);
 								fit_rec_prev = pop[iter][elit_rec].fit;
 							}
 							loc_rec_tot += loc_rec;
-							if (restart == 0)printf("L%d", loc_rec_tot);
+							if (restart == 0)printf("L%d RE %f", loc_rec_tot, fit_rec_prev);
 							printf("\n");
 							//if (gen > 0 && loc_rec == 0)break;
 							if (ratio_r < ratio_thr_r)
@@ -2902,7 +2929,7 @@ int main(int argc, char *argv[])
 						for (i = 0; i < ELIT; i++)
 						{
 							pop[iter][i].init_rand_part(nseq, len, olen, 20);
-							EvalMahFIT(&pop[iter][i], n_train[iter], xporti, seq_real, dav, dcv,frp);
+							EvalMahFIT(&pop[iter][i], n_train[iter], xporti, seq_real, dav, dcv, frp);
 						}
 						qsort((void*)(&pop[iter][0]), ELIT, sizeof(pop[iter][0]), compare_pop);
 					}
@@ -2932,14 +2959,14 @@ int main(int argc, char *argv[])
 					i = 0;
 					for (k = 0; k < nseq; k++)
 					{
-						if (xport[k] == 0)xportj[i++] = k;						
+						if (xport[k] == 0)xportj[i++] = k;
 					}
 				}
-				EvalMahControl(&pop[iter][0], nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, fp_rate, cnt_count, seq_real, seq_back, olen, len, lenb, dav, dcv,qp);
+				EvalMahControl(&pop[iter][0], nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, fp_rate, cnt_count, seq_real, seq_back, olen, len, lenb, dav, dcv, qp);
 				//for (k = 0; k < n_cntrl[iter]; k++){ fp_rate[cnt_count] = 0.0001; sco_pos[cnt_count] = 0.9; cnt_count++; }
 				big_exit1 = 1;
-			}			
-			qsort(fp_rate, n_cnt_tot, sizeof(double), compare_qq);			
+			}
+			qsort(fp_rate, n_cnt_tot, sizeof(double), compare_qq);
 			FILE *outq;
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
 			strcpy(file_out_cnt, file_for);
@@ -3011,8 +3038,8 @@ int main(int argc, char *argv[])
 					k_step++;
 				}
 			}
-		//	for (n = 0; n < k_step; n++)printf("%d %.2g\n", tp_rate[n], fp_rate_step[n]);
-		//	printf("\n");
+			//	for (n = 0; n < k_step; n++)printf("%d %.2g\n", tp_rate[n], fp_rate_step[n]);
+			//	printf("\n");
 			double auc2 = 0;
 			for (n = 1; n < k_step; n++)
 			{
@@ -3020,7 +3047,7 @@ int main(int argc, char *argv[])
 				double dauc = (tp_rate[n] + tp_rate[n1]) * (fp_rate_step[n] - fp_rate_step[n1]) / 2 / n_cnt_tot;
 				auc2 += dauc;
 			}
-			fprintf(outq, "%s\t%d\t%d\t%f\n", file_for, olen,size0, auc2);
+			fprintf(outq, "%s\t%d\t%d\t%f\n", file_for, olen, size0, auc2);
 			fclose(outq);
 			if (auc2 > auc_max)
 			{
@@ -3048,7 +3075,7 @@ int main(int argc, char *argv[])
 				exit(1);
 			}
 		}
-		else		
+		else
 		{
 			if ((outq = fopen(file_out_cnt, "at")) == NULL)
 			{
@@ -3145,7 +3172,7 @@ int main(int argc, char *argv[])
 		}
 		delete[] seq_real[k];
 	}
-	delete[] seq_real;	
+	delete[] seq_real;
 	for (i = 0; i < reg_max; i++)
 	{
 		delete[] dcv[i];
