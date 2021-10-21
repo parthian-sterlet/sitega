@@ -17,7 +17,7 @@
 #define ELIT 10//population size 2nd stage
 #define NMUT 3
 #define NREC 5
-#define POPSIZE 200
+#define POPSIZE 150
 #define CENT 100
 
 double  uw[POPSIZE][POPSIZE], uw0[POPSIZE];
@@ -86,7 +86,7 @@ struct town {
 	void fprint_all(char *file, char *add);
 	void fprint_allfi(char *file, char *add, int len, double c0, double *buf, int reg_max);
 	void fprint_allfi_mat(char *file, char *add, char *name, int len, double c0, double *buf);
-	void fprint_seq(char *file, int len, int nseq, char ***seq, double *best_sco);
+	void fprint_seq(char *file, int olen, int nseq, char ***seq, double *best_sco);
 	int check(int min, int max);
 	int mem_in(int nseq);
 	void mem_out(void);
@@ -551,7 +551,7 @@ void town::fprint_all(char *file, char *add)
 	char file_out[500];
 	strcpy(file_out, file);
 	strcat(file_out, add);
-	if ((out = fopen(file_out, "at")) == NULL)
+	if ((out = fopen(file_out, "wt")) == NULL)
 	{
 		printf("Ouput file can't be opened!\n");
 		exit(1);
@@ -577,7 +577,7 @@ void town::fprint_allfi(char *file, char *add, int len, double c0, double *buf, 
 	char file_out[500];
 	strcpy(file_out, file);
 	strcat(file_out, add);
-	if ((out = fopen(file_out, "at")) == NULL)
+	if ((out = fopen(file_out, "wt")) == NULL)
 	{
 		printf("Ouput file can't be opened!\n");
 		exit(1);
@@ -609,7 +609,7 @@ void town::fprint_allfi_mat(char *file, char *add, char *name, int len, double c
 	strcpy(file_out, file);
 	strcat(file_out, add);
 
-	if ((out = fopen(file_out, "at")) == NULL)
+	if ((out = fopen(file_out, "wt")) == NULL)
 	{
 		printf("Ouput file can't be opened!\n");
 		exit(1);
@@ -625,29 +625,23 @@ void town::fprint_allfi_mat(char *file, char *add, char *name, int len, double c
 	}
 	fclose(out);
 }
-void town::fprint_seq(char *file, int len, int nseq, char ***seq, double *best_sco)
+void town::fprint_seq(char *file, int olen, int nseq, char ***seq, double *best_sco)
 {
-	int i, j, k;
+	int i, j, k, x1, x2;
 	char d[POPSIZE], dir[] = "+-";
 	FILE *out;
-	if ((out = fopen(file, "at")) == NULL)
+	if ((out = fopen(file, "wt")) == NULL)
 	{
 		printf("Ouput file can't be opened!\n");
 		exit(1);
-	}
+	}	
 	for (i = 0; i < nseq; i++)
 	{
+		x1 = pos[i], x2 = pos[i] + olen;
+		int cep = ori[i];
 		k = 0;
-		int x1 = pos[i], x2 = pos[i] + len - 1;
-		if (ori[i] == 0)
-		{
-			for (j = x1; j <= x2; j++)d[k++] = seq[0][i][j];
-		}
-		else
-		{
-			for (j = x2; j >= x1; j--)d[k++] = seq[1][i][j];
-		}
-		d[len] = '\0';
+		for (j = x1; j < x2; j++)d[k++] = seq[cep][i][j];
+		d[olen] = '\0';
 		fprintf(out, "%d\t%d\t%d\t%c\t%f\t%s\n", i + 1, x1, x2, dir[ori[i]], best_sco[i], d);
 	}
 	fclose(out);
@@ -1692,7 +1686,7 @@ void MixPop(town *a, town *b)
 }
 int GomTown(town a, town b, int nseq, int check_lpd)
 {
-	int i, j;
+	int i;
 	for (i = 0; i < nseq; i++)
 	{		
 		if (b.pos[i] != a.pos[i])return 0;
@@ -1709,7 +1703,7 @@ int GomTown(town a, town b, int nseq, int check_lpd)
 }
 int GomTown2(town a, town b)
 {
-	int i, j;
+	int i;
 	for (i = 0; i < a.size; i++)
 	{
 		if (b.tot[i].sta != a.tot[i].sta)return 0;
