@@ -11,8 +11,8 @@ SiteGA source code is written in C++ language. To compile exetubables from the s
 
 # Source code
 Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains files with SiteGA source codes, they respect to decribed below separate modules of pipeline.
-## 1. Preparation of the background dataset
-Common settings of models are required to perform the bootsrap cross validation test (**Set parameters of a model through accuracy estimation** module) and to train a model (**Train a model** module). These settings includes (1) frequencies of dinucleitides and (2) diaganal elements of the covariation matrix for LPDs of all dinucleotide types and all allowed lengths [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481) for the background dataset. These settings are computed with the background sequence dataset. The main purpose of the background dataset is to exclude in the results of de novo motif search artifact motifs related to a genome-specific sequence content bias, e.g. polyA. The background sequences notably influence the excpected false positive rate for various motifs in the consequent bootstrap cross-validation procedure (see next parargraph). Any custom sequence set may be used as a background dataset, but it is recommended that this dataset (1) reflected the bias of a genome, i.e. the expected distribution of short oligonucleotide frequencies (at least of lentghs 6-10 bp) and (2) was notably larger that the foreground dataset. We propose the propgram [background_genome.cpp](https://github.com/parthian-sterlet/sitega/blo/master/src/background_genome.cpp) to generate the background dataset for de novo motif search for certain genome (hg38, mm10, at10). The program generates four output fasta files respecting datasets of genome sequences adopted by mononucleotide content, the relative abundance measures of di-, tri- and tetranucleotides, see [Karlin & Campbell (1994)](https://doi.org/10.1073/pnas.91.26.12842). The analysis of longer oligonucleotide measures implies application of addition criteria on the shorter one, i.e. the dinucleotide measure is applied only to a genomic sequence meeting the criterion on the content of mononicleotides,  the trinucleotide measure is applied only to a sequence meeting the criteria on mono- and dinucleotides, etc. The most simple approach presumes the application of only mononucleotide  content conservation for the background dataset generation.
+## 1. Background dataset generation
+The background dataset is required to select the two parameters of the SiteGA model: the length of motif and the number of LPDs. The main purpose of the background dataset is to exclude in the results of de novo motif search artifact motifs related to a genome-specific sequence content bias, e.g. polyA. The background sequences notably influence the excpected false positive rate for various motifs in the consequent bootstrap cross-validation procedure (see next parargraph). Any custom sequence set may be used as a background dataset, but it is recommended that this dataset (1) reflected the bias of a genome, i.e. the expected distribution of short oligonucleotide frequencies (at least of lentghs 6-10 bp) and (2) was notably larger that the foreground dataset. We propose the propgram [background_genome.cpp](https://github.com/parthian-sterlet/sitega/blo/master/src/background_genome.cpp) to generate the background dataset for de novo motif search for certain genome (hg38, mm10, at10). The program generates four output fasta files respecting datasets of genome sequences adopted by mononucleotide content, the relative abundance measures of di-, tri- and tetranucleotides, see [Karlin & Campbell (1994)](https://doi.org/10.1073/pnas.91.26.12842). The analysis of longer oligonucleotide measures implies application of addition criteria on the shorter one, i.e. the dinucleotide measure is applied only to a genomic sequence meeting the criterion on the content of mononicleotides,  the trinucleotide measure is applied only to a sequence meeting the criteria on mono- and dinucleotides, etc. CurrentlyThe most simple approach presumes the application of only mononucleotide  content conservation for the background dataset generation.
 ## 2. Set parameters of a model through accuracy estimation
 [andy0bsn2.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn2.cpp) performs the bootsrap cross-validation test to select parameters of a model providing the best performance for given foreground (positive, ChIP-seq peaks) and background (negative) datasets. A model have parameters of the optimal length of motif and the number of LPDs. Source code implies the consecutive run with various combinations of the motif length and the number of LPDs. The range and step of the motif length are parameters of command line, so that for each length several various numbers of LPDs are checked. Currently, the fixed numbers of LPDs equal to 20, 40, 60 and 80 are checked for each motif length. The bootsrap cross-validation test denotes the partitioning of the foreground into subsets of training and control sequence sets, the former is used to train a model, while the latter is applied to measure its accuracy. The maximal partial area under curve (pAUC) is used to estimate the accuracy of a model for certain motif length and the number of LPDs. The receiver operating characteristic (ROC) curve with dependence of True Positive Rate (TPR) from False Positive Rate (FPR) allows to compute pAUC. The term partial means that only the part of a ROC curve respecting the criterion FPR < 0.001 is impied for pAUC computation. The background dataset is used to compute FPR for each sequence from the positive control set.
 ## 3. Train a model
@@ -38,9 +38,9 @@ separate compilation of all source files in VC++
 
 Scheme of modules functioning is given below
 
-![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega7.jpg)
+![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega8.jpg)
 
-Modules **Set parameters of a model through accuracy estimation** and **Train a model** should run with file of the background sequence dataset, e.g. it was previously computed by **Preparation** module
+Modules **Set parameters of a model through accuracy estimation** and **Train a model** should run with file of the background sequence dataset, e.g. it was previously computed by **Background dataset generation** module
 
 Module **Set parameters of a model through accuracy estimation** is required for functionality of **Train a model** and all consequent modules since only the bootstrap procedure correctly selects parameters of a model (see output data block **Table FPR vs. TPR, ROC curve & pAUC**)
 
@@ -51,7 +51,7 @@ Module **Set threshold for a model** is required to select a correct threshold f
 # How to run separate modules
 Lists of command line arguments for all modules are described below
 
-## Preparation
+## Background dataset generation
 
 [background_genome.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/background_genome.cpp)
 1. path to whole genome sequences of chromosomes in plain format (see the paragraph below, the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
@@ -122,7 +122,7 @@ These scripts implement various pipelines for Linux:
 
 # Interpretation of results
 
-## Preparation
+## Background dataset generation
 
 [background_genome.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/background_genome.cpp) prepares the background dataset that may be used for training (**Train a model** module) or performance evaluation (**Set parameters of a model through accuracy estimation** module)
 
