@@ -1,5 +1,4 @@
 #define _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_WARNINGS
 
 #include  <stdio.h>
 #include  <stdlib.h>
@@ -13,15 +12,15 @@
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
-#define MEGE 25//population size 1st stage
-#define ELIT 10//population size 2nd stage
+#define MEGE 40//population size 1st stage
+#define ELIT 20//population size 2nd stage
 #define NMUT 3
 #define NREC 5
 #define POPSIZE 150
 #define CENT 100
+#define GA_EXIT 0.05
 
-double  uw[POPSIZE][POPSIZE], uw0[POPSIZE];
-double df[POPSIZE];
+double  uw[POPSIZE][POPSIZE];
 struct ss {
 	int num;
 	char oli[3];
@@ -617,10 +616,10 @@ void town::fprint_allfi_mat(char *file, char *add, char *name, int len, double c
 	fprintf(out, "%s\n", name);// 0 - one window system	
 	fprintf(out, "%d\tLPD count\n", size);
 	fprintf(out, "%d\tModel length\n", len);
-	fprintf(out, "%f\tCoefficient\n", c0);
+	fprintf(out, "%.12f\tCoefficient\n", c0);
 	for (i = 0; i < size; i++)
 	{
-		fprintf(out, "%d\t%d\t%9f\t", tot[i].sta, tot[i].end, buf[i]);
+		fprintf(out, "%d\t%d\t%.12f\t", tot[i].sta, tot[i].end, buf[i]);
 		fprintf(out, "%d\t%s\n", tot[i].num, s[tot[i].num].oli);
 	}
 	fclose(out);
@@ -634,7 +633,7 @@ void town::fprint_seq(char *file, int olen, int nseq, char ***seq, double *best_
 	{
 		printf("Ouput file can't be opened!\n");
 		exit(1);
-	}	
+	}
 	for (i = 0; i < nseq; i++)
 	{
 		x1 = pos[i], x2 = pos[i] + olen;
@@ -873,7 +872,7 @@ printf("\n");
 */
 double EvalMahFIT(town *a, int n_train, int ***seq, double **dav, double **dcv, double **frp)
 {
-	int k, n, m, b;
+	int k, n, m;
 	double f1[POPSIZE];//av[POPSIZE] buf[POPSIZE],
 	double df[POPSIZE], f2[POPSIZE], df2[POPSIZE];
 
@@ -939,8 +938,8 @@ double EvalMahFIT(town *a, int n_train, int ***seq, double **dav, double **dcv, 
 		for (n = 0; n < a->size; n++)buf += uw[k][n] * df[n];
 		a->mah += buf * df[k];
 	}
-	//a->ave = a->std = 1;	
-	double xtr = 0, xtr2 = 0;
+	a->ave = a->std = 1;	
+	/*double xtr = 0, xtr2 = 0;
 	for (b = 0; b < n_train; b++)
 	{
 		double mah1 = 0;
@@ -988,7 +987,7 @@ double EvalMahFIT(town *a, int n_train, int ***seq, double **dav, double **dcv, 
 		a->fit = 0;
 		return 0;
 	}
-	a->std = sqrt(a->std);
+	a->std = sqrt(a->std);*/
 	a->fit = a->mah * a->ave / a->std;
 	frp = NULL;
 	return a->fit;
@@ -997,12 +996,8 @@ double EvalMahFITTrain(town *a, int nseq, int ***seq, char *file, int olen, int 
 {
 	int k, n, m;
 	double ret = 0;
-	double av[POPSIZE], buf[POPSIZE];
-	for (k = 0; k < a->size; k++)
-	{
-		uw0[k] = dcv[a->tot[k].end - a->tot[k].sta][a->tot[k].num];
-		//printf("%f\t[%d;%d]%s\t[%d;%d]%s\t%d\t%d\t%d\n",uw0[k][n],a->tot[k].sta,a->tot[k].end,s[a->tot[k].num].oli,a->tot[n].sta,a->tot[n].end,s[a->tot[n].num].oli,k1+2,k2+1,k3);			
-	}
+	double av[POPSIZE], buf[POPSIZE], df[POPSIZE];
+
 	for (k = 0; k < a->size; k++)
 	{
 		for (n = 0; n < a->size; n++)uw[k][n] = 0;
@@ -1043,7 +1038,7 @@ double EvalMahFITTrain(town *a, int nseq, int ***seq, char *file, int olen, int 
 	}
 	for (k = 0; k < a->size; k++)
 	{
-		uw[k][k] += uw0[k];
+		uw[k][k] += dcv[a->tot[k].end - a->tot[k].sta][a->tot[k].num];
 	}
 	for (k = 0; k < a->size; k++)for (n = 0; n < a->size; n++)uw[k][n] /= 2;
 	{
@@ -1688,7 +1683,7 @@ int GomTown(town a, town b, int nseq, int check_lpd)
 {
 	int i;
 	for (i = 0; i < nseq; i++)
-	{		
+	{
 		if (b.pos[i] != a.pos[i])return 0;
 		if (b.ori[i] != a.ori[i])return 0;
 	}
@@ -2245,7 +2240,7 @@ int main(int argc, char *argv[])
 	{
 		det2[i].mem_in(nseq);
 	}
-	det1.mem_in(nseq);	
+	det1.mem_in(nseq);
 	int big_exit1 = 1;// local exit (separ +-) global exit (separation do not exceeded the previous run)
 	double fit_prev, fit_after_mut;
 	int cnt_count = 0;
@@ -2253,10 +2248,8 @@ int main(int argc, char *argv[])
 	printf("\n%s\tTrain\t", file_for);
 	printf("Ndi %d\tDeg %d\tEli %d BE1 %d\n", size, MEGE, ELIT, big_exit1);
 	//initiation		
-	int gen = 0;
-	int restart = 0;
-	int check_lpd = 1;
-	int rec_first_only = 0;
+	int gen = 0;	
+	int check_lpd = 1;	
 	int pair_all = MEGE * (MEGE - 1);
 	int pair_d[MEGE*(MEGE - 1)][2];
 	int pair_take[MEGE*(MEGE - 1)];
@@ -2299,7 +2292,7 @@ int main(int argc, char *argv[])
 								{
 									for (m = 0; m < i; m++)
 									{
-										gom = GomTown(ini, pop[m], nseq,1);
+										gom = GomTown(ini, pop[m], nseq, 1);
 										if (gom == -1)
 										{
 											m1 = m;
@@ -2338,27 +2331,37 @@ int main(int argc, char *argv[])
 		fit_prev = pop[0].fit;
 		//pop[0].print_all(reg_max,nseq);													
 		success_o = success_l = success_p = success_m = 0;
-		double ratio_thr = 0.005, ratio_thr_r = ratio_thr, ratio_thr_r0=ratio_thr;
-		int step;
-		int step_max, step_max_tot = 0;
+		double ratio_thr = 0.005, ratio_thr_r[2];
+		for (i = 0; i < 2; i++)ratio_thr_r[i] = ratio_thr;
+		double ratio2_gen0 = 0.05;
+		int step, step_max, step_max_tot = 0;
+		int elit_rec, jmax, sr_step;
 		if (gen == 0)
 		{
-			step_max = 4000;
-			step = 400;
 			mege_h = MEGE;
+			step_max = 10000;
+			step = 2000;
+			elit_rec = Min(2, ELIT / 4);
+			jmax = ELIT - 1;
+			sr_step = 50000;
 		}
 		else
 		{
 			mege_h = ELIT;
-			if (restart == 1)
+			if (gen == 1)
 			{
-				step_max = 100000;//10000 * (int)(nseq / 20);
-				step = 10000;
+				jmax = ELIT - 2;
+				step_max = 50000;
+				step = 5000;
 			}
 			else
 			{
-				step_max = 50000;//10000 * (int)(nseq / 20);
-				step = 5000;
+				step_max = 100000;
+				step = 10000;
+				ratio_thr = 0.002;
+				elit_rec = 0;
+				jmax = ELIT / 2 - 1;
+				sr_step = 20000;
 			}
 		}
 		int mege_h1 = mege_h - 1;
@@ -2369,11 +2372,13 @@ int main(int argc, char *argv[])
 		for (k = 0; k < NMUT; k++)asuccess[k] = atry[k] = 0;
 		int success_mi[MEGE], try_mi[MEGE];
 		int success_ri[MEGE];
+		if (gen == 0)for (i = 0; i < mege_h; i++)success_ri[i] = 1;
 		double exp_rec_rate[MEGE];
 		for (i = 0; i < mege_h; i++)exp_rec_rate[i] = 0;
 		for (i = 0; i < mege_h; i++)success_mi[i] = try_mi[i] = 0;
 		do
 		{
+			asuccess[2] = atry[2] = 0;
 			step_max_tot += step_max;
 			if (gen == 0)printf("Mut cycle %d\n", step_max_tot / step_max);
 			for (i = 0; i < mege_h; i++)
@@ -2443,7 +2448,7 @@ int main(int argc, char *argv[])
 								for (m = 0; m < mege_h; m++)
 								{
 									if (m == i)continue;
-									gom = GomTown(det1, pop[m], nseq,check_lpd);
+									gom = GomTown(det1, pop[m], nseq, check_lpd);
 									if (gom == -1) { break; }
 								}
 							}
@@ -2492,15 +2497,10 @@ int main(int argc, char *argv[])
 								//	double ratio_thr_m1 = (double)(step_success[0] + step_success[1] + step_success[2]) / (step_try[0] + step_try[1] + step_try[2]);									
 								int step_success_tot = step_success[0] + step_success[1] + step_success[2];
 								if (step_success_tot < n_mut_min_cyc)n_mut_min_cyc = step_success_tot;
-								if (gen > 0)printf("Step%d M%d %d Try %d Min %d Mah %f Ave %f Std %f Fit %f Ratio %f\n", m_iter, i + 1, step_success[2], step_try[2], n_mut_min_cyc, pop[i].mah, pop[i].ave, pop[i].std, pop[i].fit, ratio[2]);
+								if (gen > 0)printf("Step%d M%d %d Try %d Min %d Fit %f Ratio %f\n", m_iter, i + 1, step_success[2], step_try[2], n_mut_min_cyc, pop[i].fit, ratio[2]);
 								if (ratio[0] <= ratio_thr)stop_oi[i] = 1;
 								if (ratio[1] <= ratio_thr)stop_li[i] = 1;
-								if (ratio[2] <= ratio_thr)
-								{
-									stop_pi[i] = 1;
-									//step_max = m_iter*step;
-									//step_max = n_mut_tot;
-								}
+								if (ratio[2] <= ratio_thr)stop_pi[i] = 1;
 								for (k = 0; k < 3; k++)atry[k] += step_try[k];
 								for (k = 0; k < 3; k++)asuccess[k] += step_success[k];
 								for (k = 0; k < 3; k++)step_try[k] = step_success[k] = 0;
@@ -2516,8 +2516,8 @@ int main(int argc, char *argv[])
 					success_l += success_l_local;
 					success_p += success_p_local;
 					success_m_tot += success_m_local;
-					printf("M %d %d,%d,%d = %d Try %d Min %d M %f A %f S %f F %f", i + 1, success_o_local, success_l_local, success_p_local, success_m_local, n_mut_here, n_mut_min_cyc, pop[i].mah, pop[i].ave, pop[i].std, pop[i].fit);					
-					printf("\tOLP %d%d%d", stop_oi[i], stop_li[i], stop_pi[i]);
+					printf("M %d %d,%d,%d = %d Try %d Min %d F %f", i + 1, success_o_local, success_l_local, success_p_local, success_m_local, n_mut_here, n_mut_min_cyc, pop[i].fit);
+					if (gen == 0)printf("\tOLP %d%d%d RatioP %f", stop_oi[i], stop_li[i], stop_pi[i], ratio[2]);
 					printf("\n");
 					n_mut_tot += n_mut_here;
 					if (success_m_local != 0)success_m++;
@@ -2539,51 +2539,46 @@ int main(int argc, char *argv[])
 						break;
 					}
 				}
-			}
+				if (atry[2] > 0)
+				{
+					double rat0 = (double)asuccess[2] / atry[2];
+					printf("Common RatioP %f\n", rat0);
+					if (rat0 > ratio2_gen0)mdo = 1;
+				}
+			}			
 		} while (mdo == 1);
 		qsort((void*)(&pop[0]), mege_h, sizeof(pop[0]), compare_pop);
-		if (stop_pi[0] == 1)
+		if (gen == 0)
 		{
-			rec_first_only = 1;
-			//		printf("Rec First only!\n");
+			success_m /= (step_max_tot / step_max);
+			for (i = 0; i < mege_h; i++)stop_pi[i] = 0;
 		}
-		if (gen == 0)success_m /= (step_max_tot / step_max);
-		if (gen == 0)ratio_thr_r = (double)(asuccess[0] + asuccess[1]) / (atry[0] + atry[1]); 
-		else
+		if (gen == 0)
 		{
-			//	if (stop_pi[0] == 1)
+			success_m /= (step_max_tot / step_max);
+			for (i = 0; i < mege_h; i++)stop_pi[i] = 0;
+		}
+		if (gen <= 1)ratio_thr_r[0] = ratio_thr;		//OL			
+		else ratio_thr_r[0] = 1;
+		{//P
+			int recount = 0;
+			double resum = 0;
+			for (i = 0; i < mege_h - 1; i++)
 			{
-				int recount = 0;
-				double resum = 0;
-				for (i = 0; i < mege_h1; i++)
-				{
-					double e1 = Max(ratio_thr, exp_rec_rate[i]);
-					double e2 = Max(ratio_thr, exp_rec_rate[i + 1]);
-					resum += success_ri[i] * (e1 + e2) / 2;
-					recount += success_ri[i];
-				}
-				if (recount != 0)ratio_thr_r = resum / recount;
-				else ratio_thr_r = ratio_thr;
+				double e1 = Max(ratio_thr, exp_rec_rate[i]);
+				double e2 = Max(ratio_thr, exp_rec_rate[i + 1]);
+				resum += success_ri[i] * (e1 + e2) / 2;
+				recount += success_ri[i];
 			}
-			//	else ratio_thr_r = exp_rec_rate[mege_h1];
+			if (recount != 0)ratio_thr_r[1] = resum / recount;
+			else ratio_thr_r[1] = ratio_thr;
 		}
 		//recombinations											
 		printf("Total mut %d\n", n_mut_tot);
 		int loc_rec, loc_rec_tot = 0;
 		fit_after_mut = pop[0].fit;
 		for (m = 0; m < NREC; m++)success_r1[m] = 0;
-		pair_all = 0;
-		int elit_rec = Min(2,ELIT / 2);
-		int jmax;
-		if (rec_first_only == 0)
-		{
-			if (restart == 1) { jmax = Min(4, mege_h1); }
-			else {jmax = ELIT-1;}
-		}
-		else
-		{
-			jmax = Min(3, mege_h1);			
-		}
+		pair_all = 0;		
 		{
 			int multw = 1;
 			for (j = jmax; j >= 0; j--)
@@ -2602,39 +2597,42 @@ int main(int argc, char *argv[])
 						pair_all++;
 					}
 				}
-				if (gen > 1)multw++;
+			//	if (gen > 1)multw++;
 			}
 		}
 		for (k = 0; k < pair_all; k++)pair_take[k] = k;
-		int n_rec_cycle, sr_step;
-		{
+		int n_rec_cycle, sr_step_cycle = sr_step;
+		/*{
 			int max_rec = Max(step_max, n_mut_tot);
 			n_rec_cycle = max_rec / pair_all;
 			if (gen == 0)max_rec = step_max_tot;
 			else max_rec = step;
 			sr_step = max_rec / pair_all;
-		}
-		if (sr_step < 1)sr_step = 1;
+		}*/
+		n_rec_cycle = Max(step_max, n_mut_tot);
+		n_rec_cycle /= pair_all;
 		if (n_rec_cycle < 1)n_rec_cycle = 1;
+		sr_step_cycle /= pair_all;
 		int sr;
-		double ratio_r = 1;
+		double ratio_r[2]={ 1,1 };
 		int step_rtry[NREC], step_rsuccess[NREC];
 		for (k = 0; k < NREC; k++)step_rtry[k] = step_rsuccess[k] = 0;
 		int success_r_cycle = 0;
-		printf("Rec %d cycles of %d tries\tStep %d\tRatioThr %.4f RecOsob 0..%d\t", n_rec_cycle, pair_all, step_max_tot, ratio_thr_r, jmax);	
-		if (restart == 0)printf("RE %d",elit_rec);
+		printf("Rec %d cycles of %d tries\tTotal %d\tRatioThrOL %.4f RatioThrP %.4f StepR %d RecOsob 1..%d\t", n_rec_cycle, pair_all, n_rec_cycle*pair_all, ratio_thr_r[0], ratio_thr_r[1], sr_step_cycle, jmax + 1);
+		printf("RE %d", elit_rec);
 		printf("\n");
+		double fit_pre_rec[MEGE];
+		for (k = 0; k < mege_h; k++)fit_pre_rec[k] = pop[k].fit;
 		double fit_rec_prev = pop[elit_rec].fit;
 		for (i = 0; i < mege_h; i++)success_ri[i] = 0;
 		loc_rec = 0;
 		for (sr = 1; sr <= n_rec_cycle; sr++)
-		{			
+		{
 			BigMixI(pair_take, pair_all);
 			for (k = 0; k < pair_all; k++)
 			{
 				int kk[2];
-				for (m = 0; m < 2; m++)kk[m] = pair_d[pair_take[k]][m];
-				//if (rec_first_only == 1 && kk[1] != 0)continue;
+				for (m = 0; m < 2; m++)kk[m] = pair_d[pair_take[k]][m];				
 				for (m = 0; m < 2; m++)
 				{
 					pop[kk[m]].get_copy(&det2[m], nseq, reg_max);
@@ -2644,35 +2642,35 @@ int main(int argc, char *argv[])
 				int nsn[2], nsi[2], num[2];
 				int sumw = 0, r_cy;
 				int kk01 = pair_take[k];
-				if (restart == 0)r_cy = rand() % 5;
-				else r_cy = 4;	
+				if (gen <= 1)r_cy = rand() % 5;
+				else r_cy = 4;
 				switch (r_cy)
 				{
-					case(0):
-					{
-						if (Reco2_Original(&det2[0], &det2[1], nsi, num) == -1)continue;
-						else break;
-					}
-					case(1):
-					{
-						if (Reco2_Economic(&det2[0], &det2[1], nsi, num) == -1)continue;
-						else break;
-					}
-					case(2):
-					{
-						if (Reco2_One_dinucleotide_local(&det2[0], &det2[1], olen, reg_max) == -1)continue;
-						else break;
-					}
-					case(3):
-					{
-						if (Reco2_One_dinucleotide_full(&det2[0], &det2[1]) == -1)continue;
-						else break;
-					}
-					case(4):
-					{
-						if (Reco2Peak(&det2[0], &det2[1], nseq) == -1)continue;
-						else break;
-					}
+				case(0) :
+				{
+					if (Reco2_Original(&det2[0], &det2[1], nsi, num) == -1)continue;
+					else break;
+				}
+				case(1) :
+				{
+					if (Reco2_Economic(&det2[0], &det2[1], nsi, num) == -1)continue;
+					else break;
+				}
+				case(2) :
+				{
+					if (Reco2_One_dinucleotide_local(&det2[0], &det2[1], olen, reg_max) == -1)continue;
+					else break;
+				}
+				case(3) :
+				{
+					if (Reco2_One_dinucleotide_full(&det2[0], &det2[1]) == -1)continue;
+					else break;
+				}
+				case(4) :
+				{
+					if (Reco2Peak(&det2[0], &det2[1], nseq) == -1)continue;
+					else break;
+				}
 				}
 				//printf("out Rec %d\n",r_cy);
 				if (r_cy <= 1)
@@ -2740,9 +2738,13 @@ int main(int argc, char *argv[])
 						//success_ri[kk[1]]++;
 						success_r1[r_cy]++;
 						step_rsuccess[r_cy]++;
-						if (restart == 0)
+						if (fit_det_max > fit_rec_prev)
 						{
-							if (r_cy <= 3 && fit_det_max > fit_rec_prev)loc_rec++;
+							if (gen <= 1)
+							{
+								if (r_cy <= 3)loc_rec++;
+							}
+							else loc_rec++;
 						}
 						success_r_cycle++;
 						for (m = 0; m < 2; m++)
@@ -2754,82 +2756,71 @@ int main(int argc, char *argv[])
 			}
 			success_r = 0;
 			for (i = 0; i < mege_h; i++)if (success_ri[i] > 0)success_r++;
-			if (sr%sr_step == 0)
+			if (sr%sr_step_cycle == 0)
 			{
-				if (gen > 0)ratio_r = (double)success_r_cycle / pair_all / sr_step;
-				else
+				int stepr;
+				if (gen <= 1)
 				{
-					int stepr = (step_rtry[0] + step_rtry[1] + step_rtry[2]);
-					if (stepr > 0)ratio_r = (double)(step_rsuccess[0] + step_rsuccess[1] + step_rsuccess[2]) / stepr;
-					else ratio_r = 0;
+					stepr = step_rtry[0] + step_rtry[1] + step_rtry[2] + step_rtry[3];
+					if (stepr > 0)ratio_r[0] = (double)(step_rsuccess[0] + step_rsuccess[1] + step_rsuccess[2] + step_rsuccess[3]) / stepr;
+					else ratio_r[0] = 0;
 				}
-				/*
-				int mbe = 0;
-				for (m = 1; m < mege_h; m++)
-				{
-					if (pop[m].fit > pop[0].fit)
-					{
-						mbe = m;
-						break;
-					}
-				}
-				if (mbe != 0)
-				*/
+				else ratio_r[0] = 0;
+				stepr = step_rtry[4];
+				if (stepr > 0)ratio_r[1] = (double)(step_rsuccess[4]) / stepr;
+				else ratio_r[1] = 0;
 				qsort((void*)(&pop[0]), mege_h, sizeof(pop[0]), compare_pop);
+				for (k = 1; k < mege_h; k++)
+				{
+					if (stop_pi[k] == 1 && fit_pre_rec[k] > pop[k].fit)stop_pi[k] = 0;
+				}
 				fit_rec_prev = pop[elit_rec].fit;
 				loc_rec_tot += loc_rec;
-				printf("Rec %d: %d %d,%d,%d,%d,%d %d %f M %f A %f S %f F %f ", sr*pair_all, success_r, success_r1[0], success_r1[1], success_r1[2], success_r1[3], success_r1[4], success_r_cycle, ratio_r, pop[0].mah, pop[0].ave, pop[0].std, pop[0].fit);
-				if (restart == 0)printf("L%d RE %f", loc_rec_tot, fit_rec_prev);
+				printf("Rec %d: %d %d,%d,%d,%d,%d %d OL %f P %f F %f ", sr*pair_all, success_r, success_r1[0], success_r1[1], success_r1[2], success_r1[3], success_r1[4], success_r_cycle, ratio_r[0], ratio_r[1], pop[0].fit);
+				loc_rec_tot += loc_rec;
+				printf("L%d RE %f", loc_rec_tot, fit_rec_prev);
 				printf("\n");
-				if (restart == 0)
-				{
-					if (loc_rec == 0)break;
-					if (ratio_r < ratio_thr_r0)break;
-				}
-				else
-				{
-					if (ratio_r < ratio_thr_r)break;
-				}
+				//if (gen > 0 && loc_rec == 0)break;
+				if (loc_rec == 0)break;
+				if (ratio_r[0] < ratio_thr_r[0] && ratio_r[1] < ratio_thr_r[1])break;
 				for (m = 0; m < NREC; m++)step_rtry[m] = step_rsuccess[m] = 0;
 				success_r_cycle = 0;
 				loc_rec = 0;
 			}
 		}
-		qsort((void*)(&pop[0]), mege_h, sizeof(pop[0]), compare_pop);		
+		qsort((void*)(&pop[0]), mege_h, sizeof(pop[0]), compare_pop);
 		double change_level = pop[0].fit / fit_prev - 1;
 		double change_level_rec = pop[0].fit / fit_after_mut - 1;
 		double change_level_mut = fit_after_mut / fit_prev - 1;
-		if (restart == 0)
+		if (gen <= 1)
 		{
-			if (loc_rec == 0 || gen > 0)
-			{
-				printf("Restart Full\n");
-				restart = 1;
-				check_lpd = 0;
-				for (i = 1; i < ELIT; i++)
-				{
-					if(GomTown2(pop[0], pop[i]) == -1)continue;
-					pop[0].get_copy(&pop[i], nseq, reg_max);
-					pop[i].init_rand_part(nseq, len, olen, 20);
-					EvalMahFIT(&pop[i], nseq, seq_real, dav, dcv, frp);
-				}				
-			}
-			else
+			if(gen==0)
 			{
 				printf("Restart Half\n");
 				int half = ELIT / 2;
 				for (i = half; i < ELIT; i++)
 				{
-					pop[i - half].get_copy(&pop[i], nseq, reg_max);
-				}
-				for (i = half; i < ELIT; i++)
-				{
+					pop[i - half].get_copy(&pop[i], nseq, reg_max);				
 					pop[i].init_rand_part(nseq, len, olen, 20);
 					EvalMahFIT(&pop[i], nseq, seq_real, dav, dcv, frp);
-				}				
+					stop_pi[i] = 0;
+				}
+			}
+			else
+			{
+				printf("Restart Full\n");				
+				check_lpd = 0;
+				for (i = 1; i < ELIT; i++)
+				{
+					if (GomTown2(pop[0], pop[i]) == -1)continue;
+					pop[0].get_copy(&pop[i], nseq, reg_max);
+					pop[i].init_rand_part(nseq, len, olen, 20);
+					EvalMahFIT(&pop[i], nseq, seq_real, dav, dcv, frp);
+					stop_pi[i] = 0;
+				}
 			}
 			qsort((void*)(&pop[0]), ELIT, sizeof(pop[0]), compare_pop);
-		}
+		}		
 		gen++;
 		fit_prev = pop[0].fit;
 		//if (change_level<GA_EXIT)gen1++;
@@ -2845,7 +2836,7 @@ int main(int argc, char *argv[])
 		{
 			int sumr = 0;
 			for (i = 0; i < mege_h; i++)sumr += success_ri[i];
-			for (i = 0; i < mege_h; i++)printf("%.2f ", 100 * (double)success_ri[i] / sumr);
+			if (sumr > 0)for (i = 0; i < mege_h; i++)printf("%.2f ", 100 * (double)success_ri[i] / sumr); 
 		}
 		{
 			time_t tnow;
@@ -2853,16 +2844,16 @@ int main(int argc, char *argv[])
 			printf("%s", ctime(&tnow));
 		}
 		fit_prev = pop[0].fit;
-	//	if (restart == 0)for (i = 0; i < 2; i++)pop[i].print_all(reg_max, nseq);
-		if (stop_pi[0] == 1 && restart == 1)
+		//	if (restart == 0)for (i = 0; i < 2; i++)pop[i].print_all(reg_max, nseq);
+		if ((stop_pi[0] == 1 && gen > 1) && change_level < GA_EXIT)
 		{
 			big_exit1 = 1;
-			printf("Go out ");
+			printf("Go out\n");
 		}
 	} while (big_exit1 == 0);
 	EvalMahFITTrain(&pop[0], nseq, seq_real, file_for, olen, reg_max, len, &pop_ext, best_sco, dav, dcv);
 	printf("Go out big cycle ");
-	big_exit1 = 1;	
+	big_exit1 = 1;
 	char name[500];
 	for (i = 0;; i++)
 	{
