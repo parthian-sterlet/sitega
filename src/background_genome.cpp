@@ -629,7 +629,7 @@ int main(int argc, char *argv[])
 	int fl = 0;
 	int trys = nseq * back_iter/5;
 	int iter = 0;	
-	int height0 = 2*height;
+	int height0 = 10;
 	int nseqb = nseq * height0;
 	oliq *sele;
 	sele = new oliq[nseqb];
@@ -733,7 +733,7 @@ int main(int argc, char *argv[])
 				}
 			}
 		}								
-		if (iter % 1000 == 0)
+		if (iter % 10000 == 0)
 		{
 			double rat = double(good) / nseq;			
 			printf("Iterations %5d\t Nseq_Background %5d\tFraction_Done %5f\tHomol %d\n", iter, pr_tot, rat,gomol);
@@ -744,17 +744,23 @@ int main(int argc, char *argv[])
 	qsort((void*)(&sele[0]), pr_tot, sizeof(sele[0]), compare_sco2);
 	double thr_karl2, thr_karl3, thr_karl4;
 	{
-		int num_karl = (int(pr_tot*di_fract));
+		int num_karl;
+		if (di_fract == 1)num_karl = pr_tot - 1;
+		else num_karl = (int(pr_tot*di_fract));
 		thr_karl2 = sele[num_karl].sco2;
 	}
 	qsort((void*)(&sele[0]), pr_tot, sizeof(sele[0]), compare_sco3);
 	{
-		int num_karl = (int(pr_tot*tri_fract));
+		int num_karl;
+		if (tri_fract == 1)num_karl = pr_tot - 1; 
+		else num_karl = (int(pr_tot*tri_fract));
 		thr_karl3 = sele[num_karl].sco3;
 	}
 	qsort((void*)(&sele[0]), pr_tot, sizeof(sele[0]), compare_sco4);
 	{
-		int num_karl = (int(pr_tot*tetra_fract));
+		int num_karl;
+		if (tetra_fract == 1)num_karl = pr_tot - 1;
+		else num_karl = (int(pr_tot*tetra_fract));
 		thr_karl4 = sele[num_karl].sco4;
 	}
 	printf("Score2 %f\tScore3 %f\tScore4 %f\n", thr_karl2, thr_karl3, thr_karl4);	
@@ -926,7 +932,7 @@ int main(int argc, char *argv[])
 				}					
 			}					
 		}		
-		if (iter % 1000 == 0)
+		if (iter % 10000 == 0)
 		{					
 			printf("Iterations %5d\t Nseq_Background %5d\tFraction_Done %5f %5f %5f %5f\tSizes %d %d %d %d\tHomol %d\n", iter, pr_tot, (double)heis[0] / nseq, (double)heis[1] / nseq, (double)heis[2] / nseq,(double)heis[3]/nseq,size[0],size[1],size[2],size[3],gomol);
 			int exiti = 1;
