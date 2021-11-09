@@ -1,3 +1,2 @@
-./andy02 /path_to_fasta 6 12 20
-./sitega_thr_dist_mat /path_to_fasta peaks.fa_mat hs_ups2kb.seq peaks.dist 0.0005 0.995 0.0000000005
-./andy1_mat test.seq peaks.fa_mat peaks.dist 0.0005 chipseq
+./sitega_thr_dist_mat /path_to_fasta PEAKS046132_ARR14_Q8L9Y3_MACS2_2168.fa_mat at_ups1500.seq PEAKS046132_ARR14_Q8L9Y3_MACS2_2168.dist 0.0005 0.9 0.0000000005
+./andy1_mat test.seq PEAKS046132_ARR14_Q8L9Y3_MACS2_2168.fa_mat PEAKS046132_ARR14_Q8L9Y3_MACS2_2168.dist 0.0005 chipseq
