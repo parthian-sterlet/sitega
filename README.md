@@ -96,12 +96,13 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 ## Set threshold for a model
 
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp)
-1. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
-2. file_profile_fasta = input Whole-genome promoters dataset in fasta format (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs*, mm* and at* files for human, mouse and Arabidopsis data, respectively)
-3. output file [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
-4. pvalue_large = maximal FPR (default value 0.0005)
-5. score_min = lowest threshold of SiteGA model (default value 0.995)
-6. dpvalue = granulation value for FPR compaction in [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), the default value 0.0000000005 implies the absence of compaction
+1. path to file_profile_fasta (see argument #3 below, the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
+2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
+3. file_profile_fasta = input Whole-genome promoters dataset in fasta format (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs*, mm* and at* files for human, mouse and Arabidopsis data, respectively)
+4. output file [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
+5. pvalue_large = maximal FPR (default value 0.0005)
+6. score_min = lowest threshold of SiteGA model (default value 0.9)
+7. dpvalue = granulation value for FPR compaction in [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), the default value 0.0000000005 implies the absence of compaction
 
 ## Scan test sequences with a model
 
