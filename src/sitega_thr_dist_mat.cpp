@@ -211,7 +211,7 @@ int ReadSeq(char *file, int &n, int &len1, int &all_pos)
 		else
 		{
 			printf("Unusual base: sequence N %d, letter position %d\n symbol %c\n%s", n, len, c, head);
-			exit(1);
+			continue;
 		}
 	}
 	if (len > len1)len1 = len;
@@ -394,25 +394,28 @@ void city::sort_all(void)
 int main(int argc, char *argv[])
 {
 	int i, j, k, n;
-	char head[1000], file_out_dist[300], file_sitega[300];
+	char head[1000], file_out_dist[300], file_sitega[300], path_fasta[300], file_fasta[300];
 	FILE *in, *out_dist;
 
-	if (argc != 7)
+	if (argc != 8)
 	{
-		printf("%s 1sitega_matrix_file 2file_profile_fasta 3file out_dist 4double pvalue_large 6double score_min 6double dpvalue", argv[0]);//5file out_cpp_arr 
+		printf("%s 1path_fasta 2sitega_matrix_file 3file_profile_fasta 4file out_dist 5double pvalue_large 6double score_min 7double dpvalue", argv[0]);//5file out_cpp_arr 
 		return -1;
 	}
 	char letter[] = "acgt";
-	strcpy(file_sitega, argv[1]);
-	strcpy(file_out_dist, argv[3]);
-	double pvalue_large = atof(argv[4]);
+	strcpy(path_fasta, argv[1]);
+	strcpy(file_fasta, path_fasta);
+	strcat(file_fasta, argv[3]);
+	strcpy(file_sitega, argv[2]);
+	strcpy(file_out_dist, argv[4]);
+	double pvalue_large = atof(argv[5]);
 	//strcpy(file_out_cpp_arr, argv[5]);
-	double thr_bot = atof(argv[5]);
-	double bin = atof(argv[6]);
+	double thr_bot = atof(argv[6]);
+	double bin = atof(argv[7]);
 
 	int nseq_pro = 0, len_pro = 0;
 	int all_pos = 0;
-	ReadSeq(argv[2], nseq_pro, len_pro, all_pos);
+	ReadSeq(file_fasta, nseq_pro, len_pro, all_pos);
 	int nthr = 2 * (int)(pvalue_large*all_pos*1.05);
 	double *thr;
 	thr = new double[nthr];
@@ -422,9 +425,9 @@ int main(int argc, char *argv[])
 	char *dp;
 	dp = new char[len_pro + 10];
 	if (dp == NULL) { puts("Out of memory..."); return -1; }
-	if ((in = fopen(argv[2], "rt")) == NULL)
+	if ((in = fopen(file_fasta, "rt")) == NULL)
 	{
-		printf("Input file %s can't be opened!", argv[2]);
+		printf("Input file %s can't be opened!", file_fasta);
 		return -1;
 	}
 	double all_pos_rec = 0;
@@ -447,6 +450,17 @@ int main(int argc, char *argv[])
 		DelChar(dp, '\n');
 		TransStr(dp);
 		int len_pro1 = strlen(dp);
+		int gom = 1;
+		for (i = 0; i < len_pro1; i++)
+		{
+			int di = (int)dp[i];
+			if (strchr(letter, di) == NULL)
+			{
+				gom = 0;
+				break;
+			}
+		}
+		if (gom == 0)continue;
 		int len21 = len_pro1 - len1;
 		for (int compl1 = 0; compl1 < 2; compl1++)
 		{
@@ -600,8 +614,10 @@ int main(int argc, char *argv[])
 	fclose(out_cpp_struct_many);
 	*/
 	FILE *out_sta;
-	char file_sta[] = "sitega_dist.txt";
-	if ((out_sta = fopen(file_sta, "at")) == NULL)
+	char file_sta[500];
+	strcpy(file_sta,file_sitega); 
+	strcat(file_sta,"_sta");
+	if ((out_sta = fopen(file_sta, "wt")) == NULL)
 	{
 		printf("Out file %s can't be opened!\n", file_sta);
 		return -1;
