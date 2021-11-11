@@ -562,8 +562,8 @@ void ReadSeq(char *file, char *file1, int &n, int &len1)
 	if (len > len1)len1 = len;
 	fclose(in);
 	fclose(out);
-	printf("\b\b\b\b\b\b\b\b\b%9d", len);
-	printf("\n");
+	//printf("\b\b\b\b\b\b\b\b\b%9d", len);
+	//printf("\n");
 }
 void MinusStr1(int size, int j, int j0, double buf, double b[DIM][DIM])
 {
@@ -1485,11 +1485,12 @@ int main(int argc, char *argv[])
 						if (posc2 > lens)posc2 = lens;
 						memset(d3, 0, sizeof(d3));
 						for (n1 = posc1; n1 < posc2; n1++)d3[n1 - posc1] = d[n1];
+						d3[len0] = '\0';
 						if (cur[cur_in][j].cep == 1)if (ComplStr(d3) != 1) { puts("Out of memory..."); exit(1); }
 						int poscap1 = half0 - dprint, poscap2 = half0 + dprint;
 						//if(poscap1<0)poscap1=0;
 						//if(poscap2>lens-1)poscap2=lens-1;
-						for (n1 = poscap1; n1 <= poscap2; n1++)d3[n1] = (char)((int)(d3[n1] - 32));
+						for (n1 = poscap1; n1 < poscap2; n1++)d3[n1] = (char)((int)(d3[n1] - 32));
 						fprintf(out, "%s", d3);
 						fprintf(out, "\n");
 					}
