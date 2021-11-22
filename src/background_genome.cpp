@@ -586,7 +586,7 @@ int main(int argc, char *argv[])
 				}
 				else
 				{
-					if (strcmp(genome, "ce236") == 0)
+					if (strcmp(genome, "ce235") == 0)
 					{
 						n_chr = n_chr_ce;
 						for (i = 0; i < n_chr; i++)
