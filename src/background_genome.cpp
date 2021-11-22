@@ -490,13 +490,14 @@ int main(int argc, char *argv[])
 
 	//human
 	char name_chr_hg[24][3] = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","X","Y"};
-	//int n_chr=24;
+	int n_chr_hg=24;
 	//hg19
 //	int sizelo[24]={249250621,243199373,198022430,191154276,180915260,171115067,159138663,146364022,141213431,135534747,135006516,133851895,115169878,107349540,102531392,90354753,81195210,78077248,59128983,63025520,48129895,51304566,155270560,59373566};
 	//hg38
 	int sizelo_hg38[24]={248956422, 242193529, 198295559, 190214555, 181538259, 170805979, 159345973, 145138636, 138394717, 133797422, 135086622, 133275309, 114364328, 107043718, 101991189, 90338345, 83257441, 80373285, 58617616, 64444167, 46709983, 50818468, 156040895, 57227415};
-	//mouse 
+	//mouse
 	char name_chr_mm[21][3] = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","X","Y"};
+	int n_chr_mm = 21;
 	//int n_chr=21;
 	//mm9	
 	//int sizelo[21]={197195432,181748087,159599783,155630120,152537259,149517037,152524553,131738871,124076172,129993255,121843856,121257530,120284312,125194864,103494974,98319150,95272651,90772031,61342430,166650296,15902555};	
@@ -505,7 +506,27 @@ int main(int argc, char *argv[])
 	//arabidopsis
 	char name_chr_at[5][3] = { "1","2","3","4","5" };
 	int sizelo_at10[5] = { 30427671, 19698289, 23459830, 18585056, 26975502 };
-	
+	int n_chr_at = 5;
+	//Caenorhabditis elegans WBcel235
+	char name_chr_ce[6][5] = { "I","II","III","IV","V","X" };
+	int sizelo_ce235[6] = { 15072434, 15279421, 13783801, 17493829, 20924180, 17718942 };
+	int n_chr_ce = 6;
+	//Drosophila melanogaster	
+	char name_chr_dm[7][3] = {"2R","2L","3R","3L","X","Y","4"};	
+	//dm5
+	//int sizelo[7]={21146708,23011544,27905053,24543557,22422827,1351857};
+	//int n_chr=6;
+	//dm6
+	int sizelo_dm6[7]={25286936,23513712,32079331,28110227,23542271,3667352,1348131};	
+	int n_chr_dm=7;
+	//yeast Saccharomyces cerevisiae R64-1-1
+	int sizelo_sc64[16] = {230218, 813184, 316620, 1531933, 576874, 270161, 1090940, 562643, 439888, 745751, 666816, 1078177, 924431, 784333, 1091291, 948066};
+	int n_chr_sc=16;
+	char name_chr_sc[16][5] = {"I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI"};
+	//zea mays
+//	int sizelo[10]={301476924,237917468,232245527,242062272,217959525,169407836,176826311,175377492,157038028,149632204};
+//	char name_chr[10][3] = {"1","2","3","4","5","6","7","8","9","10"};
+	//int n_chr=10;
 	int sizelo1[NCHR], sizelo2[NCHR];//lengths in bp, Mb
 	int n_chr;
 	strcpy(path_fasta, argv[1]);
@@ -523,7 +544,7 @@ int main(int argc, char *argv[])
 	strcpy(genome, argv[13]);
 	if (strcmp(genome, "at10") == 0)
 	{
-		n_chr = 5;
+		n_chr = n_chr_at;
 		for (i = 0; i < n_chr; i++)
 		{
 			sizelo1[i] = sizelo_at10[i];
@@ -534,7 +555,7 @@ int main(int argc, char *argv[])
 	{
 		if (strcmp(genome, "hg38") == 0)
 		{
-			n_chr = 24;
+			n_chr = n_chr_hg;
 			for (i = 0; i < n_chr; i++)
 			{
 				sizelo1[i] = sizelo_hg38[i];
@@ -545,16 +566,54 @@ int main(int argc, char *argv[])
 		{
 			if (strcmp(genome, "mm10") == 0)
 			{
-				n_chr = 21;
+				n_chr = n_chr_mm;
 				for (i = 0; i < n_chr; i++)
 				{
 					sizelo1[i] = sizelo_mm10[i];
 					strcpy(name_chr[i], name_chr_mm[i]);
 				}
 			}
+			else
+			{
+				if (strcmp(genome, "dm6") == 0)
+				{
+					n_chr = 21;
+					for (i = 0; i < n_chr; i++)
+					{
+						sizelo1[i] = sizelo_dm6[i];
+						strcpy(name_chr[i], name_chr_dm[i]);
+					}
+				}
+				else
+				{
+					if (strcmp(genome, "ce236") == 0)
+					{
+						n_chr = n_chr_ce;
+						for (i = 0; i < n_chr; i++)
+						{
+							sizelo1[i] = sizelo_ce235[i];
+							strcpy(name_chr[i], name_chr_ce[i]);
+						}
+					}
+					else
+					{
+						if (strcmp(genome, "sc64") == 0)
+						{
+							n_chr = n_chr_sc;
+							for (i = 0; i < n_chr; i++)
+							{
+								sizelo1[i] = sizelo_sc64[i];
+								strcpy(name_chr[i], name_chr_sc[i]);
+							}
+						}
+					}
+				}
+			}
 		}
 	}
-	for (i = 0; i < n_chr; i++)sizelo2[i] = sizelo1[i] / 1000000;
+	int mil = 1000000;
+	if (strcmp(genome, "sc64") == 0)mil = 100000;
+	for (i = 0; i < n_chr; i++)sizelo2[i] = sizelo1[i] / mil;
 	double stop_thr[4] = { 0.99, 0.95, 0.75, 0.67 };// fraction of peaks 100% covered with height background sequences
 	int win_gomol = 50;//to compare homology and min paek length
 	srand((unsigned)time(NULL));
@@ -653,7 +712,7 @@ int main(int argc, char *argv[])
 		int z_len = sizelo2[chr_z];
 		rr = rand();
 		int rb = rr % z_len;
-		rb *= 1000000;
+		rb *= mil;
 		rr = rand();
 		int rb1 = rr % 1000;
 		rb1 *= 1000;
