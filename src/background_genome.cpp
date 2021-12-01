@@ -476,7 +476,7 @@ void ReadSeq(char *file, int nseq, int *len, char ***peak_real, int olen)
 int main(int argc, char *argv[])
 {
 	int i, j, k;
-	char d[SEQLEN], filesta[10], fileend[10], genome[5];
+	char d[SEQLEN], d1[SEQLEN], filesta[10], fileend[10], genome[5];
 	char filei[500], fileo1[500], fileo2[500], fileo3[500], fileo4[500], filechr[NCHR][500], path_fasta[500];
 	FILE *out, *in_seq[NCHR], *out2, *out3, *out4;
 	if (argc != 14)
@@ -760,18 +760,20 @@ int main(int argc, char *argv[])
 				int done = 0;
 				for (i = 0; i < nseq; i++)
 				{
-					if (sort[i].don >= height0)continue;
+					if (sort[i].don >= height0)continue;					
 					for (j = len_cur; j < sort[i].len; j++)
 					{
 						if ((d[j] == 'A' || d[j] == 'T') || (d[j] == 'a' || d[j] == 't'))cat++;
 					}
 					double mono = fabs((double)(cat - sort[i].nat)) / sort[i].len;
 					if (mono < mono_prec)
-					{							
+					{
+						strncpy(d1, d, sort[i].len);
+						d1[sort[i].len] = '\0';
 						sort[i].don++;
 						if (sort[i].don == height0)good++;
 						double fr2[16], fr3[64], fr4[256];
-						GetKarl(d, fr2, fr3, fr4);
+						GetKarl(d1, fr2, fr3, fr4);
 						sele[pr_tot].num = pr_tot;
 						sele[pr_tot].sco4 = sele[pr_tot].sco3 = sele[pr_tot].sco2 = 0;
 						for (j = 0; j < 16; j++)sele[pr_tot].sco2 += fabs(fr2[j] - sort[i].di[j]);
@@ -916,7 +918,7 @@ int main(int argc, char *argv[])
 				int done = 0;
 				for (i = 0; i < nseq; i++)
 				{
-					if (hei[i][3] >= height)continue;
+					if (hei[i][3] >= height)continue;					
 					for (j = len_cur; j < sort[i].len; j++)
 					{
 						if ((d[j] == 'A' || d[j] == 'T') || (d[j] == 'a' || d[j] == 't'))cat++;
@@ -924,8 +926,10 @@ int main(int argc, char *argv[])
 					double mono = fabs((double)(cat - sort[i].nat)) / sort[i].len;
 					if (mono < mono_prec)
 					{
+						strncpy(d1, d, sort[i].len);
+						d1[sort[i].len] = '\0';
 						double fr2[16], fr3[64], fr4[256];
-						GetKarl(d, fr2, fr3, fr4);
+						GetKarl(d1, fr2, fr3, fr4);
 						double sco[3] = { 0, 0, 0 };
 						for (j = 0; j < 16; j++)sco[0] += fabs(fr2[j] - sort[i].di[j]);
 						sco[0] /= 16;
@@ -940,7 +944,7 @@ int main(int argc, char *argv[])
 						{
 							hei[i][0]++;
 							fprintf(out, ">peak%d_%d_Mo_%f_Di_%f_Tri_%f_Tetra_%f\n", sort[i].num, hei[i][0], mono, sco[0], sco[1], sco[2]);
-							fprintf(out, "%s\n", d);
+							fprintf(out, "%s\n", d1);
 							if (hei[i][0] == height)heis[0]++;
 							done = 1;
 							size[0]++;
@@ -951,7 +955,7 @@ int main(int argc, char *argv[])
 							{
 								hei[i][1]++;
 								fprintf(out2, ">peak%d_%d_Mo_%f_Di_%f_Tri_%f_Tetra_%f\n", sort[i].num, hei[i][1], mono, sco[0], sco[1], sco[2]);
-								fprintf(out2, "%s\n", d);
+								fprintf(out2, "%s\n", d1);
 								if (hei[i][1] == height)heis[1]++;
 								done = 1;
 								size[1]++;
@@ -962,7 +966,7 @@ int main(int argc, char *argv[])
 								{
 									hei[i][2]++;
 									fprintf(out3, ">peak%d_%d_Mo_%f_Di_%f_Tri_%f_Tetra_%f\n", sort[i].num, hei[i][2], mono, sco[0], sco[1], sco[2]);
-									fprintf(out3, "%s\n", d);
+									fprintf(out3, "%s\n", d1);
 									if (hei[i][2] == height)heis[2]++;
 									done = 1;
 									size[2]++;
@@ -973,7 +977,7 @@ int main(int argc, char *argv[])
 									{
 										hei[i][3]++;
 										fprintf(out4, ">peak%d_%d_Mo_%f_Di_%f_Tri_%f_Tetra_%f\n", sort[i].num, hei[i][3], mono, sco[0], sco[1], sco[2]);
-										fprintf(out4, "%s\n", d);
+										fprintf(out4, "%s\n", d1);
 										if (hei[i][3] == height)heis[3]++;
 										done = 1;
 										size[3]++;
