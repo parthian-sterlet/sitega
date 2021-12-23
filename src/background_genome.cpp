@@ -476,7 +476,7 @@ void ReadSeq(char *file, int nseq, int *len, char ***peak_real, int olen)
 int main(int argc, char *argv[])
 {
 	int i, j, k;
-	char d[SEQLEN], d1[SEQLEN], filesta[10], fileend[10], genome[5];
+	char d[SEQLEN], d1[SEQLEN], filesta[10], fileend[10], genome[10];
 	char filei[500], fileo1[500], fileo2[500], fileo3[500], fileo4[500], filechr[NCHR][500], path_fasta[500];
 	FILE *out, *in_seq[NCHR], *out2, *out3, *out4;
 	if (argc != 14)
@@ -486,7 +486,7 @@ int main(int argc, char *argv[])
 	}
 	strcpy(filesta, "chr");
 	strcpy(fileend, ".plain");
-	char name_chr[NCHR][3];
+	char name_chr[NCHR][10];
 
 	//human
 	char name_chr_hg[24][3] = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","X","Y"};
@@ -577,7 +577,7 @@ int main(int argc, char *argv[])
 			{
 				if (strcmp(genome, "dm6") == 0)
 				{
-					n_chr = 21;
+					n_chr = n_chr_dm;
 					for (i = 0; i < n_chr; i++)
 					{
 						sizelo1[i] = sizelo_dm6[i];
