@@ -85,9 +85,8 @@ struct town {
 	int odg[MOTLEN + 2];
 	void get_copy(town *a, int nseq, int reg_max);
 	//void init_rand(int nseq, int *len, int oln, int rsize, int reg_max);
-	void init_rand_hoxa(int nseq, int oln, int rsize, int reg_max, int *len_octa, int *len, int **octa_prowb);
-	//void init_rand_part(int nseq, int *len, int oln, int *xporti, int nind);
-	void init_rand_part_hoxa(int nseq, int nind, int olen, int *len_octa, int *len, int **octa_prowb);
+	void init_rand_hoxa(int nseq, int oln, int rsize, int reg_max, int *len_octa, int *len, int **octa_prowb, int **octa_prows);
+	void init_rand_part_hoxa(int nseq, int nind, int olen, int *len_octa, int *len, int **octa_prowb, int **octa_prows);
 	int init_add(uno last);
 	int init_add_split(void);
 	void init_zero(int olen);
@@ -435,51 +434,107 @@ int town::order(int n)
 	printf("\n");*/
 	return ret;
 }
-void town::init_rand_part_hoxa(int nseq, int nind, int olen, int *len_octa, int *len, int **octa_prowb)
+void town::init_rand_hoxa(int nseq, int oln, int rsize, int reg_max, int *len_octa, int *len, int **octa_prowb, int **octa_prows)
 {
-	int i;
+	int i, j;
 
 	fit = 0;
 	fpr = 1;
-	//int oln1 = olen - 1;
+	size = rsize;
+	int oln1 = oln - 1;
+	for (j = 0; j < reg_max; j++)odg[j] = 0;
+	odg[reg_max] = -1;
 	for (i = 0; i < nseq; i++)
-	{		
-		int r = rand() % nind;
-		if (r == 0)
+	{
+		ori[i] = rand() % 2;
+		int inx = octa_prows[i][len_octa[i] - 1];
+		int r2 = rand() % inx;
+		for (j = 0; j < len_octa[i]; j++)
 		{
-			ori[i] = rand() % 2;
-			int lenp = len_octa[i];
-			int r2 = rand() % lenp;
-			pos[i] = octa_prowb[i][r2];
-			//posc[i] = len[i] - olen - pos[i];
+			if (octa_prows[i][j] > r2)
+			{
+				pos[i] = octa_prowb[i][j];
+				break;
+			}
+		}
+	}
+	for (i = 0; i < 16; i++)deg[i] = 0;
+	i = 0;
+	do
+	{
+		int r = rand() % 16;
+		if (deg[r] == oln1)continue;
+		deg[r]++;
+		i++;
+	} while (i < size);
+	int t = 0;
+	for (i = 0; i < 16; i++)
+	{
+		if (deg[i] > 0)
+		{
+			int take_pos[POPSIZE];
+			for (j = 0; j < deg[i]; j++)take_pos[j] = 1;
+			for (j = deg[i]; j < oln1; j++)take_pos[j] = 0;
+			//		printf("DO\t");
+			//	for(j=0;j<oln1;j++)printf("%d\t",take_pos[j]);printf("\n");
+			BigMixI(take_pos, oln1);
+			//	printf("PO\t");
+			//	for(j=0;j<oln1;j++)printf("%d\t",take_pos[j]);printf("\n");
+			for (j = 0; j < oln1; j++)
+			{
+				if (take_pos[j] == 1)
+				{
+					tot[t].num = i;
+					tot[t].sta = tot[t].end = j;
+					t++;
+				}
+			}
+			t -= deg[i];
+			int jend = deg[i] - 1;
+			for (j = 0; j < deg[i]; j++)
+			{
+				int rr = rand() % 2;
+				int rlen = reg_max - tot[t].end + tot[t].sta;
+				if (rr == 0)
+				{
+					int prev_pos;
+					if (j == 0)prev_pos = -1;
+					else prev_pos = tot[t - 1].end;
+					int spac = tot[t].sta - prev_pos;
+					if (spac > 1)
+					{
+						if (spac > rlen)spac = rlen;
+						int sh = rand() % spac;
+						tot[t].sta -= sh;
+					}
+				}
+				else
+				{
+					int next_pos;
+					if (j != jend)next_pos = tot[t + 1].sta;
+					else next_pos = oln1;
+					int spac = next_pos - tot[t].end;
+					if (spac > 1)
+					{
+						if (spac > rlen)spac = rlen;
+						int sh = rand() % spac;
+						tot[t].end += sh;
+					}
+				}
+				odg[tot[t].end - tot[t].sta]++;
+				t++;
+			}
 		}
 	}
 }
-/*void town::init_rand_part(int nseq, int *len, int oln, int nind)
-{
-	int i;
-
-	fit = 0;
-	int oln1 = oln - 1;
-	for (i = 0; i < nseq; i++)
-	{
-		int r = rand() % nind;
-		if (r == 0)
-		{
-			int lenp = len[i] - oln1;
-			pos[i] = rand() % lenp;
-			ori[i] = rand() % 2;
-		}
-	}
-}*/
 /*void town::init_rand(int nseq, int *len, int oln, int rsize, int reg_max)
 {
 	int i, j;
 
 	fit = 0;
+	fpr = 1;
 	size = rsize;
 	int oln1 = oln - 1;
-	//	int oln2 = oln - 2;
 	for (j = 0; j < reg_max; j++)odg[j] = 0;
 	odg[reg_max] = -1;
 	//for (i = 0; i < nseq; i++)printf("%d ",len[i]);
@@ -558,93 +613,50 @@ void town::init_rand_part_hoxa(int nseq, int nind, int olen, int *len_octa, int 
 		}
 	}
 }*/
-void town::init_rand_hoxa(int nseq, int oln, int rsize, int reg_max, int *len_octa, int *len, int **octa_prowb)
+void town::init_rand_part_hoxa(int nseq, int nind, int olen, int *len_octa, int *len, int **octa_prowb, int **octa_prows)
 {
-	int i, j;
+	int i, k;
 
 	fit = 0;
 	fpr = 1;
-	size = rsize;
-	int oln1 = oln - 1;
-	for (j = 0; j < reg_max; j++)odg[j] = 0;
-	odg[reg_max] = -1;
+	//int oln1 = olen - 1;
 	for (i = 0; i < nseq; i++)
-	{
-		ori[i] = rand() % 2;
-		int lenp = len_octa[i];
-		int r2 = rand() % lenp;
-		pos[i] = octa_prowb[i][r2];
-		//	posc[i] = len[i] - oln - pos[i];
-	}
-	for (i = 0; i < 16; i++)deg[i] = 0;
-	i = 0;
-	do
-	{
-		int r = rand() % 16;
-		if (deg[r] == oln1)continue;
-		deg[r]++;
-		i++;
-	} while (i < size);
-	int t = 0;
-	for (i = 0; i < 16; i++)
-	{
-		if (deg[i] > 0)
+	{		
+		int r = rand() % nind;
+		if (r == 0)
 		{
-			int take_pos[POPSIZE];
-			for (j = 0; j < deg[i]; j++)take_pos[j] = 1;
-			for (j = deg[i]; j < oln1; j++)take_pos[j] = 0;
-			//		printf("DO\t");
-			//	for(j=0;j<oln1;j++)printf("%d\t",take_pos[j]);printf("\n");
-			BigMixI(take_pos, oln1);
-			//	printf("PO\t");
-			//	for(j=0;j<oln1;j++)printf("%d\t",take_pos[j]);printf("\n");
-			for (j = 0; j < oln1; j++)
+			ori[i] = rand() % 2;
+			int inx = octa_prows[i][len_octa[i] - 1];
+			int r2 = rand() % inx;
+			for (k = 0; k < len_octa[i]; k++)
 			{
-				if (take_pos[j] == 1)
+				if (octa_prows[i][k] > r2)
 				{
-					tot[t].num = i;
-					tot[t].sta = tot[t].end = j;
-					t++;
+					pos[i] = octa_prowb[i][k];
+					break;
 				}
-			}
-			t -= deg[i];
-			int jend = deg[i] - 1;
-			for (j = 0; j < deg[i]; j++)
-			{
-				int rr = rand() % 2;
-				int rlen = reg_max - tot[t].end + tot[t].sta;
-				if (rr == 0)
-				{
-					int prev_pos;
-					if (j == 0)prev_pos = -1;
-					else prev_pos = tot[t - 1].end;
-					int spac = tot[t].sta - prev_pos;
-					if (spac > 1)
-					{
-						if (spac > rlen)spac = rlen;
-						int sh = rand() % spac;
-						tot[t].sta -= sh;
-					}
-				}
-				else
-				{
-					int next_pos;
-					if (j != jend)next_pos = tot[t + 1].sta;
-					else next_pos = oln1;
-					int spac = next_pos - tot[t].end;
-					if (spac > 1)
-					{
-						if (spac > rlen)spac = rlen;
-						int sh = rand() % spac;
-						tot[t].end += sh;
-					}
-				}
-				odg[tot[t].end - tot[t].sta]++;
-				t++;
 			}
 		}
 	}
 }
+/*void town::init_rand_part(int nseq, int *len, int oln, int *xporti, int nind)
+{
+	int i, j;
+
+	fit = 0;
+	int oln1 = oln - 1;
+	for (j = 0; j < nseq; j++)
+	{
+		i = xporti[j];
+		int r = rand() % nind;
+		if (r == 0)
+		{
+			int lenp = len[i] - oln1;
+			pos[i] = rand() % lenp;
+			ori[i] = rand() % 2;
+		}
+	}
+}*/
 int town::mem_in(int nseq)
 {
 	pos = new int[nseq];
@@ -1451,7 +1463,8 @@ int MutRegShift(town *a, int nseq, int *len, int olen, int &npeak, int &nori, in
 		return 1;
 	}
 }
-int MutRegShiftHoxa(town *a, int n_train, int *xporti, int &npeak, int &nori, int &npos, int *len_octa, int **octa_prowb, int *len, int olen)
+
+/*int MutRegShiftHoxa(town *a, int n_train, int *xporti, int &npeak, int &nori, int &npos, int *len_octa, int **octa_prowb, int *len, int olen)
 {
 	//printf("In Peak %d Ori %d Pos %d ",npeak,nori,npos);
 	int r1, r2, oln1 = olen - 1;
@@ -1479,6 +1492,29 @@ int MutRegShiftHoxa(town *a, int n_train, int *xporti, int &npeak, int &nori, in
 	//printf("Out2 Peak %d Pos %d Ori %d",npeak, npos,nori);
 	return 1;
 
+}*/
+int MutRegShiftHoxaW(town *a, int nseq, int &npeak, int &nori, int &npos, int *len_octa, int **octa_prowb, int **octa_prows)
+{
+	//printf("In Peak %d Ori %d Pos %d ",npeak,nori,npos);
+	int r2, j;
+	npeak = rand() % nseq;
+	int inx = octa_prows[npeak][len_octa[npeak] - 1];
+	r2 = rand() % inx;
+	for (j = 0; j < len_octa[npeak]; j++)
+	{
+		if (octa_prows[npeak][j] > r2)
+		{
+			npos = octa_prowb[npeak][j];
+			break;
+		}
+	}
+	if (npos == a->pos[npeak])nori = 1 - a->ori[npeak];
+	else nori = rand() % 2;
+	a->ori[npeak] = nori;
+	a->pos[npeak] = npos;
+	//a->posc[npeak] = len[npeak] - olen - npos;
+	//printf("Out2 Peak %d Pos %d Ori %d",npeak, npos,nori);
+	return 1;
 }
 int RecFeat(town a1, town a2, int(*cop)[2], int max)
 {
@@ -2361,7 +2397,7 @@ int main(int argc, char *argv[])
 	double *best_sco;
 	//	double **frp;//LPD frequencies
 	double *qp;//train scores	
-	int **octa_prowb, *len_octa;// octa position lists, octa position counts
+	int **octa_prowb, *len_octa, **octa_prows;// octa position lists, octa position counts
 	double **octa_pro1, **octa_prow, *thr_octa;// , *hoxa_wei;
 
 	//qbs *qps;
@@ -2540,31 +2576,19 @@ int main(int argc, char *argv[])
 	if (thr_octa == NULL) { puts("Out of memory..."); exit(1); }
 	len_octa = new int[nseq];
 	if (len_octa == NULL) { puts("Out of memory..."); exit(1); }
-	for (i = 0; i < nseq; i++)
-	{
-		int leni = len[i] - octa + 1;
-		int half = leni / 2 - 1;
-		{
-			for (n = 0; n < leni; n++)octa_pro1p[n] = octa_pro1[i][n];
-			qsort(octa_pro1p, leni, sizeof(double), compare_qq2);
-			if (octa_pro1p[half] < 0)thr_octa[i] = octa_pro1p[half];
-			else thr_octa[i] = 0;
-		}
-		int cou = 0;
-		for (n = 0; n < leni; n++)
-		{
-			if (octa_pro1[i][n] > thr_octa[i])cou++;
-		}
-		len_octa[i] = cou;
-	}
-	//printf("Octa_prowb1\n");	
 	octa_prowb = new int*[nseq];
 	if (octa_prowb == NULL) return -1;
 	for (i = 0; i < nseq; i++)
 	{
 		octa_prowb[i] = new int[len[i]];
-		//octa_prowb[i] = new int[len[i]];
 		if (octa_prowb[i] == NULL) return -1;
+	}
+	octa_prows = new int*[nseq];
+	if (octa_prows == NULL) return -1;
+	for (i = 0; i < nseq; i++)
+	{
+		octa_prows[i] = new int[len[i]];
+		if (octa_prows[i] == NULL) return -1;
 	}
 	for (i = 0; i < nseq; i++)for (n = 0; n < len[i]; n++)octa_prowb[i][n] = -1;
 	for (i = 0; i < nseq; i++)
@@ -2577,16 +2601,33 @@ int main(int argc, char *argv[])
 			for (k = 0; k < odif; k++)octa_prow[i][n] += octa_pro1[i][n + k];
 			octa_prow[i][n] /= odif;
 		}
+		int half = leni / 3 - 1;
+		{
+			for (n = 0; n < leni; n++)octa_pro1p[n] = octa_prow[i][n];
+			qsort(octa_pro1p, leni, sizeof(double), compare_qq2);
+			thr_octa[i] = octa_pro1p[half];
+		}		
+		double maxw = 0;
 		k = 0;
 		for (n = 0; n < leni; n++)
 		{
-			if (octa_prow[i][n] > thr_octa[i])
-			{
+			double dw = octa_prow[i][n] - thr_octa[i];
+			if (dw >= 0)
+			{							
 				octa_prowb[i][k] = n;
 				k++;
+				if (dw > maxw)dw = maxw;
 			}
 		}
 		len_octa[i] = k;
+		double koef;
+		if (maxw > 0) { koef = Max(1, 5 / maxw); }
+		else koef = 1;
+		octa_prows[i][0] = 1 + (int)(koef*(octa_prow[i][octa_prowb[i][0]] - thr_octa[i]));
+		for (n = 1; n < len_octa[i]; n++)
+		{
+			octa_prows[i][n] = octa_prows[i][n - 1] + 1 + (int)(koef*(octa_prow[i][octa_prowb[i][n]] - thr_octa[i]));
+		}
 	}
 	int big_exit1 = 1;// local exit (separ +-) global exit (separation do not exceeded the previous run)
 	double fit_prev, fit_after_mut;
@@ -2620,7 +2661,7 @@ int main(int argc, char *argv[])
 				{
 					err = 1;
 					int gom = 0;
-					det1.init_rand_hoxa(nseq, olen, size, reg_max, len_octa, len, octa_prowb);
+					det1.init_rand_hoxa(nseq, olen, size, reg_max, len_octa, len, octa_prowb, octa_prows);
 					if (det1.check(0, reg_max) == -1)
 					{
 						det1.check(0, reg_max);
@@ -2668,16 +2709,17 @@ int main(int argc, char *argv[])
 		fit_prev = pop[0].fit;
 		//pop[0].print_all(reg_max,nseq);													
 		success_o = success_l = success_p = success_m = 0;
-		double ratio2_gen0 = 0.01, ratio_rec_cycle = 0.005, ratio_mut_cycle = 0.00001;
+		double ratio2_gen0 = 0.01, ratio_rec_cycle = 0.005, ratio_mut_cycle = 0.0001;
 		int step, step_max, step_max_tot = 0;
 		int elit_rec;
-		int sr_step = 200*nseq;//200000 if nseq = 1000
-		int n_rec_cycle_max = 4*sr_step;
+		int knseq = Max(100, nseq);
+		int sr_step = 200 * knseq;//200000 if nseq = 1000		;
+		int n_rec_cycle_max = 1000*knseq;//1000000 if nseq = 1000		
 		double jwei;
 		if (restart == 0)
-		{			
-			step = 4 * nseq;//4000 if nseq = 1000
-			step_max = 5 * step;
+		{
+			step = 2000;
+			step_max = 20 * knseq; //20000 if nseq = 1000			
 			elit_rec = ELIT / 4;
 			jwei = 1.1;
 			mege_h = MEGE;
@@ -2686,20 +2728,21 @@ int main(int argc, char *argv[])
 		{
 			if (restart == 1)
 			{
-				jwei = 1.2;				
-				step = 50*nseq;//50000 if nseq = 1000
-				step_max = 10*step;
+				jwei = 1.2;
+				step = 25000;
+				step_max = 500 * knseq;//500000 if nseq = 500				
 				elit_rec = ELIT / 5;
 				mege_h = ELIT;
 			}
 			else
 			{
-				step = 100 * nseq;//100000 if nseq = 1000
-				step_max = 10 * step;
+				step = 50000;
+				step_max = 1000 * knseq;//100000 if nseq = 500				
 				elit_rec = 0;
 				jwei = 1.3;
 			}
 		}
+		if (step_max < step)step_max = step;
 		double ratio_thr = 1 / (double)step;
 		double ratio_thr_r[2];
 		for (i = 0; i < 2; i++)ratio_thr_r[i] = ratio_thr;
@@ -2774,7 +2817,7 @@ int main(int argc, char *argv[])
 							if (sm == 1)muto = MutCry0(&det1, olen, reg_max);
 							else
 							{
-								muto = MutRegShift(&det1, nseq, len, olen, npeak, nori, npos);
+								muto = MutRegShiftHoxaW(&det1, nseq, npeak, nori, npos,len_octa,octa_prowb,octa_prows);
 							}
 						}
 						int gom = 0;
@@ -2855,7 +2898,12 @@ int main(int argc, char *argv[])
 								success_mi[i] = try_mi[i] = 0;
 								for (k = 0; k < 3; k++)step_try[k] = step_success[k] = 0;
 								if (n_mut_here >= step_max)break;
-								if (ratio_per_cycle <= ratio_mut_cycle)stop_pi[i] = 1;
+								if (ratio_per_cycle <= ratio_mut_cycle)
+								{
+									printf("Too small score growth %f\n", ratio_per_cycle);
+									stop_pi[i] = 1;
+									break;
+								}
 								fit_mut_prev0 = pop[i].fit;
 							}
 							//printf("\n");
@@ -3231,7 +3279,7 @@ int main(int argc, char *argv[])
 				for (i = half; i < ELIT; i++)
 				{
 					pop[i - half].get_copy(&pop[i], nseq, reg_max);
-					pop[i].init_rand_part_hoxa(nseq, 20, olen, len_octa, len, octa_prowb);
+					pop[i].init_rand_part_hoxa(nseq, 20, olen, len_octa, len, octa_prowb, octa_prows);
 					EvalMahFIT(&pop[i], nseq, octa, seq_real, olen, dav, dcv, octa_prow, len);
 				}
 			}
@@ -3247,7 +3295,7 @@ int main(int argc, char *argv[])
 					{
 						if (GomTown2(pop[0], pop[i]) == -1)continue;
 						pop[0].get_copy(&pop[i], nseq, reg_max);
-						pop[i].init_rand_part_hoxa(nseq, 20, olen, len_octa, len, octa_prowb);
+						pop[i].init_rand_part_hoxa(nseq, 20, olen, len_octa, len, octa_prowb,octa_prows);
 						EvalMahFIT(&pop[i], nseq, octa, seq_real, olen, dav, dcv, octa_prow, len);
 					}
 				}
