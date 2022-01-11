@@ -1219,7 +1219,6 @@ double EvalMahFITTrain(town *a, int nseq, int ***seq, char *file, int olen, int 
 	}
 	//	euc_buf=sqrt(euc_buf);
 	//a->fit/=euc_buf;
-	a->fit;
 	double c0 = 0;
 	for (k = 0; k < a->size; k++)
 	{
@@ -2591,6 +2590,7 @@ int main(int argc, char *argv[])
 		if (octa_prows[i] == NULL) return -1;
 	}
 	for (i = 0; i < nseq; i++)for (n = 0; n < len[i]; n++)octa_prowb[i][n] = -1;
+	int len_tot = 0, len_wei = 0;
 	for (i = 0; i < nseq; i++)
 	{
 		int leni = len[i] - olen + 1;
@@ -2601,6 +2601,7 @@ int main(int argc, char *argv[])
 			for (k = 0; k < odif; k++)octa_prow[i][n] += octa_pro1[i][n + k];
 			octa_prow[i][n] /= odif;
 		}
+		len_tot += leni;
 		int half = leni / 3 - 1;
 		{
 			for (n = 0; n < leni; n++)octa_pro1p[n] = octa_prow[i][n];
@@ -2620,6 +2621,7 @@ int main(int argc, char *argv[])
 			}
 		}
 		len_octa[i] = k;
+		len_wei += len_octa[i];
 		double koef;
 		if (maxw > 0) { koef = Max(1, 5 / maxw); }
 		else koef = 1;
@@ -2633,7 +2635,7 @@ int main(int argc, char *argv[])
 	double fit_prev, fit_after_mut;
 	int cnt_count = 0;
 	//Test(peak_real[0],len,0,2);		
-	printf("\n%s\tTrain\t", file_for);
+	printf("\n%s\tTrain\tFractHoxa %f\t", file_for,(double)len_wei/len_tot);
 	printf("Ndi %d\tDeg %d\tEli %d BE1 %d\n", size, MEGE, ELIT, big_exit1);
 	//initiation		
 	int gen = 0;
@@ -2900,7 +2902,7 @@ int main(int argc, char *argv[])
 								if (n_mut_here >= step_max)break;
 								if (ratio_per_cycle <= ratio_mut_cycle)
 								{
-									printf("Too small score growth %f\n", ratio_per_cycle);
+								//	printf("Too small score growth %f\n", ratio_per_cycle);
 									stop_pi[i] = 1;
 									break;
 								}
