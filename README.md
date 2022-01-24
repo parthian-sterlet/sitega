@@ -105,7 +105,7 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 3. file_profile_fasta = input Whole-genome promoters dataset in fasta format (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs*, mm* and at* files for human, mouse and Arabidopsis data, respectively)
 4. output file [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
 5. pvalue_large = maximal FPR (default value 0.0005)
-6. score_min = lowest threshold of SiteGA model (default value 0.9)
+6. score_min = lowest threshold of SiteGA model (default value 0.5)
 7. dpvalue = granulation value for FPR compaction in [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), the default value 0.0000000005 implies the absence of compaction
 
 ## Scan test sequences with a model
