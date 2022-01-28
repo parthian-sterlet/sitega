@@ -275,119 +275,119 @@ int CheckStr(char *d)
 	}
 	return(ret);
 }/*
-void GetSost2(char *d, stru5 a)
-{
-	int l, i, j;
-	int t[5]={10,11,20,21,22};
-	for(i=0;i<a.size;i++)sost[i]=0;
-	int len=strlen(d), word;
-	double x, dx;
-	int left0=0, right, left;
-	for(i=0;i<LEFT_NUM;i++)left0+=sha[i].part;
-//stru sha[40]={{56,0},{13,1},{89,2},{15,3},{95,4},{6,5},{6,6},{14,7},{10,8},{17,9},{35,10},{44,11},{-1,-1}};
-	for(j=0;j<a.size;j++)
-	{
-		left=left0;
-		for(i=0;i<a.wor[j].reg-1;i++)left+=sha[i+LEFT_NUM].part;
-		right=left+sha[LEFT_NUM+a.wor[j].reg-1].part;
-		word=strlen(a.wor[j].oli);
-	//	for(k=LEFT_NUM;sha[k+RIGHT_NUM].num!=-1;k++)
-		{
-		//	if(a.wor[j].reg-1!=sha[k].num)continue;
-			dx=1/(double)word;
-			if(LEFT_NUM+a.wor[j].reg!=0)
-			{
-				x=dx;
-				for(i=left-word+1;i<left;i++)
-				{
-					if(strnicmp(&d[i],a.wor[j].oli,word)==0)
-					{
-						if(strchr("atgc",a.wor[j].oli[0])!=NULL)
-						{
-							sost[j]+=x;
-						}
-						else
-						{
-							for(l=0;l<5;l++)
-							{
-								if(i+t[l]<len)
-								{
-									if(strncmp(&d[i],&d[i+t[l]],word)==0)sost[j]+=x/2;
-								}
-								if(i-t[l]>=0)
-								{
-									if(strncmp(&d[i],&d[i-t[l]],word)==0)sost[j]+=x/2;
-								}
-							}
-						}
-					}
-				}
-				x+=dx;
-			}
-			int left1;
-			int right1;
-			if(LEFT_NUM+sha[a.wor[j].reg].num!=0)left1=left-word+1;
-			else left1=left;
-			if(sha[a.wor[j].reg+1].num!=-1)right1=right-word+1;
-			else right1=right;
-			for(i=left;i<right1;i++)
-			{
-				if(strnicmp(&d[i],a.wor[j].oli,word)==0)
-				{
-					if(strchr("atgc",a.wor[j].oli[0])!=NULL)
-					{
-						sost[j]++;
-					}
-					else
-					{
-						for(l=0;l<5;l++)
-						{
-							if(i+t[l]<len)
-							{
-								if(strncmp(&d[i],&d[i+t[l]],word)==0)sost[j]+=0.5;
-							}
-							if(i-t[l]>=0)
-							{
-								if(strncmp(&d[i],&d[i-t[l]],word)==0)sost[j]+=0.5;
-							}
-						}
-					}
-				}
-			}
-			if(sha[a.wor[j].reg+1].num!=-1)
-			{
-				x=dx;
-				for(i=right-word+1;i<right;i++)
-				{
-					if(strnicmp(&d[i],a.wor[j].oli,word)==0)
-					{
-						if(strchr("atgc",a.wor[j].oli[0])!=NULL)
-						{
-							sost[j]+=x;
-						}
-						else
-						{
-							for(l=0;l<5;l++)
-							{
-								if(i+t[l]<len)
-								{
-									if(strncmp(&d[i],&d[i+t[l]],word)==0)sost[j]+=x/2;
-								}
-								if(i-t[l]>=0)
-								{
-									if(strncmp(&d[i],&d[i-t[l]],word)==0)sost[j]+=x/2;
-								}
-							}
-						}
-					}
-					x+=dx;
-				}
-			}
-		}
-	}
-	for(j=0;j<a.size;j++)sost[j]/=sha[a.wor[j].reg].part;
-}
-*/
+ void GetSost2(char *d, stru5 a)
+ {
+ int l, i, j;
+ int t[5]={10,11,20,21,22};
+ for(i=0;i<a.size;i++)sost[i]=0;
+ int len=strlen(d), word;
+ double x, dx;
+ int left0=0, right, left;
+ for(i=0;i<LEFT_NUM;i++)left0+=sha[i].part;
+ //stru sha[40]={{56,0},{13,1},{89,2},{15,3},{95,4},{6,5},{6,6},{14,7},{10,8},{17,9},{35,10},{44,11},{-1,-1}};
+ for(j=0;j<a.size;j++)
+ {
+ left=left0;
+ for(i=0;i<a.wor[j].reg-1;i++)left+=sha[i+LEFT_NUM].part;
+ right=left+sha[LEFT_NUM+a.wor[j].reg-1].part;
+ word=strlen(a.wor[j].oli);
+ //	for(k=LEFT_NUM;sha[k+RIGHT_NUM].num!=-1;k++)
+ {
+ //	if(a.wor[j].reg-1!=sha[k].num)continue;
+ dx=1/(double)word;
+ if(LEFT_NUM+a.wor[j].reg!=0)
+ {
+ x=dx;
+ for(i=left-word+1;i<left;i++)
+ {
+ if(strnicmp(&d[i],a.wor[j].oli,word)==0)
+ {
+ if(strchr("atgc",a.wor[j].oli[0])!=NULL)
+ {
+ sost[j]+=x;
+ }
+ else
+ {
+ for(l=0;l<5;l++)
+ {
+ if(i+t[l]<len)
+ {
+ if(strncmp(&d[i],&d[i+t[l]],word)==0)sost[j]+=x/2;
+ }
+ if(i-t[l]>=0)
+ {
+ if(strncmp(&d[i],&d[i-t[l]],word)==0)sost[j]+=x/2;
+ }
+ }
+ }
+ }
+ }
+ x+=dx;
+ }
+ int left1;
+ int right1;
+ if(LEFT_NUM+sha[a.wor[j].reg].num!=0)left1=left-word+1;
+ else left1=left;
+ if(sha[a.wor[j].reg+1].num!=-1)right1=right-word+1;
+ else right1=right;
+ for(i=left;i<right1;i++)
+ {
+ if(strnicmp(&d[i],a.wor[j].oli,word)==0)
+ {
+ if(strchr("atgc",a.wor[j].oli[0])!=NULL)
+ {
+ sost[j]++;
+ }
+ else
+ {
+ for(l=0;l<5;l++)
+ {
+ if(i+t[l]<len)
+ {
+ if(strncmp(&d[i],&d[i+t[l]],word)==0)sost[j]+=0.5;
+ }
+ if(i-t[l]>=0)
+ {
+ if(strncmp(&d[i],&d[i-t[l]],word)==0)sost[j]+=0.5;
+ }
+ }
+ }
+ }
+ }
+ if(sha[a.wor[j].reg+1].num!=-1)
+ {
+ x=dx;
+ for(i=right-word+1;i<right;i++)
+ {
+ if(strnicmp(&d[i],a.wor[j].oli,word)==0)
+ {
+ if(strchr("atgc",a.wor[j].oli[0])!=NULL)
+ {
+ sost[j]+=x;
+ }
+ else
+ {
+ for(l=0;l<5;l++)
+ {
+ if(i+t[l]<len)
+ {
+ if(strncmp(&d[i],&d[i+t[l]],word)==0)sost[j]+=x/2;
+ }
+ if(i-t[l]>=0)
+ {
+ if(strncmp(&d[i],&d[i-t[l]],word)==0)sost[j]+=x/2;
+ }
+ }
+ }
+ }
+ x+=dx;
+ }
+ }
+ }
+ }
+ for(j=0;j<a.size;j++)sost[j]/=sha[a.wor[j].reg].part;
+ }
+ */
 int ConvertSym(int &c)
 {
 	char four[5] = "atgc";
@@ -542,9 +542,9 @@ void ReadSeq(char *file, char *file1, int &n, int &len1)
 			if (c < 97) c += 32;
 			fputc(c, out);
 			/*	if(len==3314)
-				{
-					//getch();
-				}*/
+			{
+			//getch();
+			}*/
 			continue;
 		}
 		else
@@ -554,7 +554,7 @@ void ReadSeq(char *file, char *file1, int &n, int &len1)
 				printf("Unusual base: sequence N %d, letter position %d\n symbol %c\n%s", n, len, c, head);
 			}
 			//		printf("Ambiguos base %c replaced at random...", (char)c);
-				//	fputc(c,out);
+			//	fputc(c,out);
 			char cn = 'n';
 			fputc(cn, out);
 		}
@@ -724,8 +724,8 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 	sta.get_file(file);
 	/*if (GetFun(sitename, &sta) == -1)
 	{
-		printf("Site %s function not found!", sitename);
-		exit(1);
+	printf("Site %s function not found!", sitename);
+	exit(1);
 	}*/
 	char sitename[300];
 	strcpy(sitename, sta.site);
@@ -734,9 +734,9 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 	FILE *out;
 	char tatabuf[10], addsite[300];
 	strcpy(addsite, sitename);
-//	sprintf(tatabuf, "%d", sta.len);
-//	strcat(addsite, "_");
-//	strcat(addsite, tatabuf);
+	//	sprintf(tatabuf, "%d", sta.len);
+	//	strcat(addsite, "_");
+	//	strcat(addsite, tatabuf);
 	char file3[300];
 	strcpy(file3, "freq_");
 	strcat(file3, addsite);
@@ -751,7 +751,7 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 			printf("Input file %s can't be opened!\n", file3);
 			exit(1);
 		}
-	//	fprintf(out, "\t\t");
+		//	fprintf(out, "\t\t");
 		for (i = 0; i < sta.size; i++)sost1[i] = 0;
 		for (i = 0; i < sta.size; i++)
 		{
@@ -765,7 +765,7 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 		int tss0 = 11;
 		if (strstr(sitename, "rfam") != NULL)tss0 = -1;
 		int left = 1;
-		{			
+		{
 			for (i = 0; i < sta.size; i++)
 			{
 				legr[i] = left + sta.tot[i].sta;
@@ -777,10 +777,10 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 					else tssr[i] = -(tss0 + 1);
 				}
 				fprintf(out, "[%d;%d] %s", legr[i], regr[i], s[sta.tot[i].num].oli);
-				if(i!=iend)fprintf(out, "\t");
+				if (i != iend)fprintf(out, "\t");
 			}
 		}
-		fprintf(out, "\n");		
+		fprintf(out, "\n");
 		fclose(out);
 	}
 	if (sta.len > len)
@@ -809,7 +809,7 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 		}
 		p[k] = 0;
 		{
-			memset(d1, 0, len+1);
+			memset(d1, 0, len + 1);
 			for (j = 0; j < sta.len; j++)d1[j] = d[k + j]; d1[sta.len] = '\0';
 			{
 				if (strchr(d1, 'n') != 0)
@@ -876,7 +876,7 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 				}
 			}
 			sost1[k] += fm;
-			fprintf(out, "%f", fm); 
+			fprintf(out, "%f", fm);
 			if (k != iend)fprintf(out, "\t");
 		}
 		fprintf(out, "\n");
@@ -941,8 +941,9 @@ int main(int argc, char *argv[])
 	int head_pr = 1;//atoi(argv[7]);
 	int pos_pr = 1;//atoi(argv[8]);
 	cmpl = 2;// atoi(argv[5]);	
+	if (site_desc == 1)cmpl = 0;
 	{
-		
+
 		FILE *in_thr;
 		if ((in_thr = fopen(file_thr_fpr, "rt")) == NULL)
 		{
@@ -950,9 +951,9 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 		char dt[200], sfp[50];
-		double thr_prev=2;
+		double thr_prev = 2;
 		while (fgets(dt, sizeof(dt), in_thr) != NULL)
-		{			
+		{
 			int retu = UnderStol(dt, 1, sfp, sizeof(sfp), '\t');
 			if (retu == -1)
 			{
@@ -982,14 +983,14 @@ int main(int argc, char *argv[])
 	alfabet[4] = '\0';
 
 	int cnt_mode = 0;
-	
-	int cmpl2[2] = { 0,1 };
+
+	int cmpl2[2] = { 0, 1 };
 	int cmpl1;
 	if (cmpl == 0)cmpl2[1] = -1;
 	if (cmpl == 1)cmpl2[0] = -1;
 	GetWords(2, 0, 16, alfabet);
 	memset(mess, 0, sizeof(mess));
-	strcpy(file1, file_out_base);		
+	strcpy(file1, file_out_base);
 	strcat(file1, "_strings1.txt");
 	struct thresh {
 		int sit;
@@ -1007,8 +1008,8 @@ int main(int argc, char *argv[])
 	if (d == NULL) { puts("Out of memory..."); exit(1); }
 	//memset(d,0,sizeof(d));
 	p = new double[len];
-	if (p == NULL) { puts("Out of memory..."); exit(1); }	
-	int nseq1 = nseq;	
+	if (p == NULL) { puts("Out of memory..."); exit(1); }
+	int nseq1 = nseq;
 	nseq = nseq1;
 	if ((in = fopen(file1, "rt")) == NULL)
 	{
@@ -1080,7 +1081,7 @@ int main(int argc, char *argv[])
 	{
 		//printf("%d\n",n);
 		//printf("\tSeq %d\n",n+1);
-		int rec_pos_seq[2] = { 0,0 };
+		int rec_pos_seq[2] = { 0, 0 };
 		for (i = 0; i < bit_count_all; i++)
 		{
 			pl[i] = 0;
@@ -1138,9 +1139,9 @@ int main(int argc, char *argv[])
 			int dprint = Max(0, (len0 - print_size) / 2);
 			char dir[] = "+-";
 			/*		if(head_pr==1)
-					{
-						fprintf(out,"\t%s\t%c\t%s\n",sitename,dir[cmpl2[cmpl1]],head);
-					}*/
+			{
+			fprintf(out,"\t%s\t%c\t%s\n",sitename,dir[cmpl2[cmpl1]],head);
+			}*/
 			if (ret != -1)
 			{
 				bit_count = 0;
@@ -1193,7 +1194,7 @@ int main(int argc, char *argv[])
 						int p_score;
 						if (p[i] < p_zero)p_score = 0;
 						else p_score = (int)((p[i] - p_zero) / step_zero);// from - 1 to 1
-					//	if(p_score<0)p_score=0;
+						//	if(p_score<0)p_score=0;
 						if (p_score > p_score_seq)p_score_seq = p_score;
 						for (k = 0; k < p_score; k++)
 						{
@@ -1234,15 +1235,15 @@ int main(int argc, char *argv[])
 						int j;
 						for (j = -add_flanks; j < 0; j++)
 						{
-							if (i + j >= 0)fprintf(outsite, "%c", d[i + j]);
-							else fprintf(outsite, "%c", 'n');
+						if (i + j >= 0)fprintf(outsite, "%c", d[i + j]);
+						else fprintf(outsite, "%c", 'n');
 						}
 						for (j = i; j < i + len0; j++)fprintf(outsite, "%c", d[j]);
 						int iend = i + len0;
 						for (j = 0; j < add_flanks; j++)
 						{
-							if (iend + j < lens)fprintf(outsite, "%c", d[iend + j]);
-							else fprintf(outsite, "%c", 'n');
+						if (iend + j < lens)fprintf(outsite, "%c", d[iend + j]);
+						else fprintf(outsite, "%c", 'n');
 						}
 						fprintf(outsite, "\n");*/
 						//int p_score=(int)(TEN*(p[i]-thr)/(1-thr));															
@@ -1300,19 +1301,19 @@ int main(int argc, char *argv[])
 				fprintf(out_best, "%.12f", score_best);
 				//fprintf(out_best,"\t");			
 				/*{
-					int n1, posc1, posc2;
-					char d3[200];
-					int ipos;
-					if(cep_best=='+')ipos=pos_best-half0-1;
-					else ipos=pos_best+half0-len0;
-					posc1=ipos+dprint;
-					posc2=ipos+len0-dprint;
-					if(posc1<0)posc1=0;
-					if(posc2>lens-1)posc2=lens-1;
-					memset(d3,0,sizeof(d3));
-					for(n1=posc1;n1<posc2;n1++)d3[n1-posc1]=d[n1];
-					if(cep_best=='-')if(ComplStr(d3)!=1) {puts("Out of memory...");exit(1);}
-					fprintf(out_best,"%s",d3);
+				int n1, posc1, posc2;
+				char d3[200];
+				int ipos;
+				if(cep_best=='+')ipos=pos_best-half0-1;
+				else ipos=pos_best+half0-len0;
+				posc1=ipos+dprint;
+				posc2=ipos+len0-dprint;
+				if(posc1<0)posc1=0;
+				if(posc2>lens-1)posc2=lens-1;
+				memset(d3,0,sizeof(d3));
+				for(n1=posc1;n1<posc2;n1++)d3[n1-posc1]=d[n1];
+				if(cep_best=='-')if(ComplStr(d3)!=1) {puts("Out of memory...");exit(1);}
+				fprintf(out_best,"%s",d3);
 				}*/
 				fprintf(out_best, "\n");
 				if (rec_total > 0)
@@ -1329,11 +1330,11 @@ int main(int argc, char *argv[])
 						//fprintf(outpos,"%.2f\n#\tHead\tSite\tPos+\tPos-\tSeq+\tSeq-\tSco+\tSco-\t",thr);
 						fprintf(outpos, "%.3f\t%s\tSite\tPosition\tStrand\tSequence\tScore\tLength", thr, argv[0]);
 						/*	for(i=bit0;i<bit_count_all-bit0-1;i++)
-							{
-								fprintf(outpos,"\t");
-								fprintf(outpos,"%d",bit*i+bit/2);
+						{
+						fprintf(outpos,"\t");
+						fprintf(outpos,"%d",bit*i+bit/2);
 
-							}*/
+						}*/
 						fprintf(outpos, "\n");
 					}
 					//fprintf(outpos,"%d\t%s\t%s\t",n+1,head1,sitename);
@@ -1369,32 +1370,32 @@ int main(int argc, char *argv[])
 					/*
 					for(j=0;j<rec_total;j++)
 					{
-						if(j==rec_pos_seq[0])fprintf(outpos,"\t");
-						fprintf(outpos,"%d(%c) ",cur[cur_in][j].pos,dir[cur[cur_in][j].cep]);
+					if(j==rec_pos_seq[0])fprintf(outpos,"\t");
+					fprintf(outpos,"%d(%c) ",cur[cur_in][j].pos,dir[cur[cur_in][j].cep]);
 					}
 					if(rec_pos_seq[1]==0)fprintf(outpos,"\t");
 					fprintf(outpos,"\t");
 					int dprint=Max(0,len0/2-5);
 					for(j=0;j<rec_total;j++)
 					{
-						if(j==rec_pos_seq[0])fprintf(outpos,"\t");
-						int n1, posc1, posc2;
-						char d3[200];
-						int ipos;
-						if(cur[cur_in][j].cep==0)ipos=cur[cur_in][j].pos-half0-1;
-						else
-						{
-							ipos=cur[cur_in][j].pos+half0-len0;
-						}
-						posc1=ipos+dprint;
-						posc2=ipos+len0-dprint;
-						if(posc1<0)posc1=0;
-						if(posc2>lens-1)posc2=lens-1;
-						memset(d3,0,sizeof(d3));
-						for(n1=posc1;n1<posc2;n1++)d3[n1-posc1]=d[n1];
-						if(cur[cur_in][j].cep==1)if(ComplStr(d3)!=1) {puts("Out of memory...");exit(1);}
-						fprintf(outpos,"%s",d3);
-						fprintf(outpos," ");
+					if(j==rec_pos_seq[0])fprintf(outpos,"\t");
+					int n1, posc1, posc2;
+					char d3[200];
+					int ipos;
+					if(cur[cur_in][j].cep==0)ipos=cur[cur_in][j].pos-half0-1;
+					else
+					{
+					ipos=cur[cur_in][j].pos+half0-len0;
+					}
+					posc1=ipos+dprint;
+					posc2=ipos+len0-dprint;
+					if(posc1<0)posc1=0;
+					if(posc2>lens-1)posc2=lens-1;
+					memset(d3,0,sizeof(d3));
+					for(n1=posc1;n1<posc2;n1++)d3[n1-posc1]=d[n1];
+					if(cur[cur_in][j].cep==1)if(ComplStr(d3)!=1) {puts("Out of memory...");exit(1);}
+					fprintf(outpos,"%s",d3);
+					fprintf(outpos," ");
 					}
 					if(rec_total==rec_pos_seq[0])fprintf(outpos,"\t");
 					if(rec_pos_seq[1]==0)fprintf(outpos,"\t");
@@ -1512,54 +1513,54 @@ int main(int argc, char *argv[])
 		}
 		/*if (fl_n != 0)
 		{
-			FILE *out1;
-			if ((out1 = fopen("yes.txt", "at")) == NULL)
-			{
-				printf("Input file can't be opened!\n");
-				exit(1);
-			}
-			if (cmpl2[cmpl1] == 1)if (ComplStr(d) != 1) { puts("Out of memory..."); exit(1); }
-			fprintf(out1, "%s\n%s\n", head1, d);
-			fclose(out1);
+		FILE *out1;
+		if ((out1 = fopen("yes.txt", "at")) == NULL)
+		{
+		printf("Input file can't be opened!\n");
+		exit(1);
+		}
+		if (cmpl2[cmpl1] == 1)if (ComplStr(d) != 1) { puts("Out of memory..."); exit(1); }
+		fprintf(out1, "%s\n%s\n", head1, d);
+		fclose(out1);
 		}*/
 		if (cmpl == 2)dall_pos /= 2;
 		all_pos += dall_pos;
 		/*	if(bit_count_all>255)
-			{
-				fprintf(out,"\t%s_(%d,%.2f)\n",file_test,tata,thr);
-				for(bit0=0;i<bit_count_here-bit0;i++)
-				{
-					fprintf(out,"%d",bit*(1+i));
-					fprintf(out,"\t");
-					if(alive[i]!=-1)fprintf(out,"%d",pl[i]);
-					fprintf(out,"\n");
-				}
-			}
-			else*/
+		{
+		fprintf(out,"\t%s_(%d,%.2f)\n",file_test,tata,thr);
+		for(bit0=0;i<bit_count_here-bit0;i++)
+		{
+		fprintf(out,"%d",bit*(1+i));
+		fprintf(out,"\t");
+		if(alive[i]!=-1)fprintf(out,"%d",pl[i]);
+		fprintf(out,"\n");
+		}
+		}
+		else*/
 		int bit0 = len0 / bit / 2;
 		/*
 		if(rec_pos_seq[0]+rec_pos_seq[1]!=0)
 		{
-			if((out1=fopen(plfile,"at"))==NULL)
-			{
-				printf("Input file can't be opened!\n");
-				exit(1);
-			}
-			//int a1=cmpl2[cmpl1]*(bit_count+1)*bit;
-			//int a2=(-2*cmpl2[cmpl1]+1)*bit;
-			int alive_all_here=0;
-			for(i=bit0;i<bit_count_here-bit0-1;i++)
-			{
-				fprintf(out1,"\t");
-				if(alive[i]!=-1)
-				{
-					alive_all_here++;
-					fprintf(out1,"%d",pl[i]);
-				}
-			}
-			fprintf(out1,"\t%d",alive_all_here*bit);
-			fprintf(out1,"\n");
-			fclose(out1);
+		if((out1=fopen(plfile,"at"))==NULL)
+		{
+		printf("Input file can't be opened!\n");
+		exit(1);
+		}
+		//int a1=cmpl2[cmpl1]*(bit_count+1)*bit;
+		//int a2=(-2*cmpl2[cmpl1]+1)*bit;
+		int alive_all_here=0;
+		for(i=bit0;i<bit_count_here-bit0-1;i++)
+		{
+		fprintf(out1,"\t");
+		if(alive[i]!=-1)
+		{
+		alive_all_here++;
+		fprintf(out1,"%d",pl[i]);
+		}
+		}
+		fprintf(out1,"\t%d",alive_all_here*bit);
+		fprintf(out1,"\n");
+		fclose(out1);
 		}*/
 		{
 			if ((out1 = fopen(plfile0, "at")) == NULL)
@@ -1584,17 +1585,17 @@ int main(int argc, char *argv[])
 			fclose(out1);
 		}
 		/*	if((out=fopen("site_table.txt","at"))==NULL)
-			{
-				printf("Input file can't be opened!\n");
-				exit(1);
-			}
-			fprintf(out,"%s\t",head1);
-			for(i=0;i<lenp;i++)
-			{
-				fprintf(out,"%f\t",p[i]);
-			}
-			fprintf(out,"\n");
-			fclose (out);
+		{
+		printf("Input file can't be opened!\n");
+		exit(1);
+		}
+		fprintf(out,"%s\t",head1);
+		for(i=0;i<lenp;i++)
+		{
+		fprintf(out,"%f\t",p[i]);
+		}
+		fprintf(out,"\n");
+		fclose (out);
 		*/	for (i = bit0; i < bit_count_here - bit0; i++)
 		{
 			pl_all[i] += pl[i];
@@ -1606,7 +1607,7 @@ int main(int argc, char *argv[])
 	}
 	fclose(in);
 	fclose(out);
-//	fclose(outsite);
+	//	fclose(outsite);
 	fclose(out_best);
 	fclose(out_nsite);
 	int bit0 = len0 / bit / 2;
@@ -1686,16 +1687,16 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	//	fprintf(out,"\t");
-		/*
-		fprintf(out,"Thr\t");
-		fprintf(out,"SEQ_%s_%s\t",file_test,sitename);
-		fprintf(out,"SITE_%s_%s\n",file_test,sitename);
-		for(i=0;i<TEN;i++)
-		{
-			fprintf(out,"%.6f\t",thr+(1-thr)*i/TEN);
-			fprintf(out,"%d\t",den[i].seq);
-			fprintf(out,"%d\n",den[i].sit);
-		}*/
+	/*
+	fprintf(out,"Thr\t");
+	fprintf(out,"SEQ_%s_%s\t",file_test,sitename);
+	fprintf(out,"SITE_%s_%s\n",file_test,sitename);
+	for(i=0;i<TEN;i++)
+	{
+	fprintf(out,"%.6f\t",thr+(1-thr)*i/TEN);
+	fprintf(out,"%d\t",den[i].seq);
+	fprintf(out,"%d\n",den[i].sit);
+	}*/
 	fprintf(out, "SEQ_%s", file_test);
 	for (i = TEN - 1; i >= 0; i--)
 	{
