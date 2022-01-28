@@ -740,10 +740,12 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 	char file3[300];
 	strcpy(file3, "freq_");
 	strcat(file3, addsite);
+	if (site_desc == 1)sta.sort_all();
+	int iend = sta.size - 1;
 	static int m = 0;
 	if (site_desc == 1 && m == 0)
 	{
-		sta.sort_all();		
+		//sta.sort_all();		
 		if ((out = fopen(file3, "wt")) == NULL)
 		{
 			printf("Input file %s can't be opened!\n", file3);
@@ -762,8 +764,8 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 		// int tss0=-1;
 		int tss0 = 11;
 		if (strstr(sitename, "rfam") != NULL)tss0 = -1;
-		int left = 0;
-		{
+		int left = 1;
+		{			
 			for (i = 0; i < sta.size; i++)
 			{
 				legr[i] = left + sta.tot[i].sta;
@@ -774,7 +776,8 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 					if (regr[i] > tss0)tssr[i] = -tss0;
 					else tssr[i] = -(tss0 + 1);
 				}
-				fprintf(out, "[%d;%d] %s\t", legr[i], regr[i], s[sta.tot[i].num].oli);
+				fprintf(out, "[%d;%d] %s", legr[i], regr[i], s[sta.tot[i].num].oli);
+				if(i!=iend)fprintf(out, "\t");
 			}
 		}
 		fprintf(out, "\n");		
@@ -873,7 +876,8 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 				}
 			}
 			sost1[k] += fm;
-			fprintf(out, "%f\t", fm);
+			fprintf(out, "%f", fm); 
+			if (k != iend)fprintf(out, "\t");
 		}
 		fprintf(out, "\n");
 		fclose(out);
