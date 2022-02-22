@@ -65,7 +65,7 @@ Lists of command line arguments for all modules are described below
 7. maximal number of background sequences per one peak (default value 10)
 8. deviation of mononucleitide content of a background sequence from that for a foreground sequence (default value 0.01)
 9. percentile threshold for deviation between foreground and background sequences by the dinucleotide measure (default value 1, selection is absent)
-10 percentile threshold for deviation between foreground and background sequences by the trinucleotide measure (default value 1, selection is absent)
+10. percentile threshold for deviation between foreground and background sequences by the trinucleotide measure (default value 1, selection is absent)
 11. percentile threshold for deviation between foreground and background sequences by the tetranucleotide measure (default value 1, selection is absent)
 12. average total number of attemtps to get a background sequence from genome per one foreground sequence (default value 500)
 13. genome release (default values are at10, mm10 and hg38 for Arabidopsis, human and mouse genomes)
