@@ -2387,8 +2387,8 @@ void ReadSeqBack(char *file, int nseq, int *len, int olen, int reg_max, double *
 int main(int argc, char *argv[])
 {
 	int *len, nseq, *lenb, nseqb, i, j, k, m, n;
-	char file_for[500], file_back[500], path_fasta[500], pfile_for[500], pfile_back[500];
-	char filef[500], file_out[500];
+	char file_for[500], file_back[500], path_fasta[500], path_out[500], pfile_for[500], pfile_back[500];
+	char file_out[500];
 	int ***seq_real;
 	char ***peak_real;
 	double **dav;//dinucl.content background
@@ -2401,9 +2401,9 @@ int main(int argc, char *argv[])
 
 	//qbs *qps;
 
-	if (argc != 8)
+	if (argc != 9)
 	{
-		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 5int motif_len 6int size 7int olig_background");//  5<pop_size>
+		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 5int motif_len 6int size 7int olig_background 8path_out");//  5<pop_size>
 		exit(1);
 	}
 	strcpy(path_fasta, argv[1]);
@@ -2417,6 +2417,7 @@ int main(int argc, char *argv[])
 	int olen = atoi(argv[5]);// dlina motiva
 	int size = atoi(argv[6]);
 	int octa = atoi(argv[7]); 
+	strcpy(path_out, argv[8]);
 	int olen1 = olen - 1;
 	srand((unsigned)time(NULL));
 	if (size > POPSIZE)
@@ -2555,10 +2556,6 @@ int main(int argc, char *argv[])
 		char word[] = "acgt";
 		GetWords(2, 0, 16, word);
 	}
-	strcpy(filef, file_for);
-	strcat(filef, "_");
-	strcpy(file_out, file_for);
-	strcat(file_out, "_andy");
 	for (i = 0; i < MEGE; i++)
 	{
 		pop[i].mem_in(nseq);
@@ -3352,24 +3349,27 @@ int main(int argc, char *argv[])
 		char extmat0[] = "_mat";
 		strcpy(ext2best, ext2best0);
 		strcpy(extmat, extmat0);
-		pop[0].fprint_allfi(file_for, ext2best, olen, pop_ext.c0, pop_ext.buf, reg_max);
-		pop[0].fprint_allfi_mat(file_for, extmat, name, olen, pop_ext.c0, pop_ext.buf);
-	}
-	char file_train_seq[500];
-	int file_fasta_len = strlen(file_for);
-	k = 0;
-	for (j = 0; j < file_fasta_len; j++)
-	{
-		char cc = file_for[j];
-		if (cc == '.' || cc == '\0')
+		char file_for1[500];
+		strcpy(file_for1, path_out);
+		strcat(file_for1, file_for);
+		pop[0].fprint_allfi(file_for1, ext2best, olen, pop_ext.c0, pop_ext.buf, reg_max);
+		pop[0].fprint_allfi_mat(file_for1, extmat, name, olen, pop_ext.c0, pop_ext.buf);
+		char file_train_seq[500];
+		int file_fasta_len = strlen(file_for1);
+		k = 0;
+		for (j = 0; j < file_fasta_len; j++)
 		{
-			file_train_seq[k++] = '\0';
-			break;
+			char cc = file_for[j];
+			if (cc == '.' || cc == '\0')
+			{
+				file_train_seq[k++] = '\0';
+				break;
+			}
+			file_train_seq[k++] = cc;
 		}
-		file_train_seq[k++] = cc;
-	}
-	strcat(file_train_seq, "_sga_train.seq");
-	pop[0].fprint_seq(file_train_seq, olen, nseq, peak_real, best_sco);
+		strcat(file_train_seq, "_sga_train.seq");
+		pop[0].fprint_seq(file_train_seq, olen, nseq, peak_real, best_sco);
+	}	
 	for (i = 0; i < MEGE; i++)pop[i].mem_out();
 	for (i = 0; i < 2; i++)det2[i].mem_out();
 	det1.mem_out();
