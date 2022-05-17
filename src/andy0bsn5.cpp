@@ -2453,7 +2453,7 @@ void ReadSeqBack(char *file, int nseq, int *len, int ***seq_back, int olen, int 
 int main(int argc, char *argv[])
 {
 	int *len, nseq, nseqb, *lenb, i, j, k, n, m;
-	char file_for[500], file_back[500], path_fasta[500], pfile_for[500], pfile_back[500];
+	char file_for[500], file_back[500], path_fasta[500], path_out[500], pfile_for[500], pfile_back[500];
 	int ***seq_real, ***seq_back;
 	double **dav;//dinucl.content background
 	double **dcv;//self covariations for regions LPD
@@ -2464,9 +2464,9 @@ int main(int argc, char *argv[])
 
 	//qbs *qps;
 
-	if (argc != 11)
+	if (argc != 12)
 	{
-		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 567int motif_min,max,dif 8double ratio_cnt_of_all(0=jk <0=odd) 9int num_iterations 10 int olig_background");//  5<pop_size>
+		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 567int motif_min,max,dif 8double ratio_cnt_of_all(0=jk <0=odd) 9int num_iterations 10 int olig_background 11path_out");//  5<pop_size>
 		exit(1);
 	}
 	//	printf("One ");
@@ -2488,6 +2488,7 @@ int main(int argc, char *argv[])
 	double ratio_train_to_control = atof(argv[8]);
 	int iteration = atoi(argv[9]);//total no. of jack-knife test			
 	int octa = atoi(argv[10]);
+	strcpy(path_out, argv[11]);
 	double fp2 = 0.001;// FPR threshold for pAUC	
 	srand((unsigned)time(NULL));
 	dcv = new double*[reg_max];
@@ -2813,7 +2814,7 @@ int main(int argc, char *argv[])
 			//printf("%d %d\t", i,len_octa[i]);
 			//if (i % 20 == 0)printf("\n");
 		}
-		printf("FractHoxa %.2f\n", (double)len_wei / len_tot);
+		printf("FractHoxa %f\n", (double)len_wei / len_tot);
 		int size0;
 		int size_len = size_start;
 		double auc_len = 0;
@@ -3576,14 +3577,18 @@ int main(int argc, char *argv[])
 					char extmat[20];
 					char extmat0[] = "_mat";
 					strcpy(extmat, extmat0);
-					pop[iter][0].fprint_allfi_mat(file_for, extmat, name, olen, pop_ext.c0, pop_ext.buf, iter, size_start, olen_min);
+					char file_for1[500];
+					strcpy(file_for1, path_out);
+					strcat(file_for1, file_for);
+					pop[iter][0].fprint_allfi_mat(file_for1, extmat, name, olen, pop_ext.c0, pop_ext.buf, iter, size_start, olen_min);
 				}
 				big_exit1 = 1;
 			}
 			qsort(fp_rate, n_cnt_tot, sizeof(double), compare_qq);
 			FILE *outq;
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
-			strcpy(file_out_cnt, file_for);
+			strcpy(file_out_cnt, path_out);
+			strcat(file_out_cnt, file_for);
 			strcat(file_out_cnt, add_roc);
 			if (olen == olen_min && size0 == size_start)
 			{
@@ -3620,7 +3625,8 @@ int main(int argc, char *argv[])
 			fprintf(outq, "\n");
 			fclose(outq);
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
-			strcpy(file_out_cnt, file_for);
+			strcpy(file_out_cnt, path_out);
+			strcat(file_out_cnt, file_for);
 			strcat(file_out_cnt, add_auc);
 			if (olen == olen_min && size0 == size_start)
 			{
@@ -3684,7 +3690,8 @@ int main(int argc, char *argv[])
 			}
 		}
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
-		strcpy(file_out_cnt, file_for);
+		strcpy(file_out_cnt, path_out);
+		strcat(file_out_cnt, file_for);
 		strcat(file_out_cnt, "_len");
 		strcat(file_out_cnt, add_auc);
 		FILE *outq;
@@ -3710,7 +3717,8 @@ int main(int argc, char *argv[])
 	{
 		FILE *outq;
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
-		strcpy(file_out_cnt, file_for);
+		strcpy(file_out_cnt, path_out);
+		strcat(file_out_cnt, file_for);
 		strcat(file_out_cnt, "_best");
 		strcat(file_out_cnt, add_roc);
 		if ((outq = fopen(file_out_cnt, "wt")) == NULL)
@@ -3736,7 +3744,8 @@ int main(int argc, char *argv[])
 		fprintf(outq, "\n");
 		fclose(outq);
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
-		strcpy(file_out_cnt, file_for);
+		strcpy(file_out_cnt, path_out);
+		strcat(file_out_cnt, file_for);
 		strcat(file_out_cnt, "_best");
 		strcat(file_out_cnt, add_auc);
 		if ((outq = fopen(file_out_cnt, "wt")) == NULL)
