@@ -61,7 +61,7 @@ Lists of command line arguments for all modules are described below
 3. output fasta file with genome sequences adopted by mononucleotide content
 4. maximal number of background sequences per one peak (default value 10)
 5. deviation of mononucleitide content of a background sequence from that for a foreground sequence (default value 0.01)
-6. average total number of attempts to get a background sequence from genome per one foreground sequence (default value 500)
+6. total number of attempts to get background sequences from genome per one foreground sequence (default value 500)
 7. genome release (hg38, mm10, dm6, ce235, sc64 and at10 for H.sapiens, M.musculus, D.,melanogaster, C.elehans, S.cerevisiae and A.thaliana  genomes, respectively)
 
 [background_genome.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/background_genome.cpp)
@@ -76,7 +76,7 @@ Lists of command line arguments for all modules are described below
 9. percentile threshold for deviation between foreground and background sequences by the dinucleotide measure (default value 1, selection is absent)
 10. percentile threshold for deviation between foreground and background sequences by the trinucleotide measure (default value 1, selection is absent)
 11. percentile threshold for deviation between foreground and background sequences by the tetranucleotide measure (default value 1, selection is absent)
-12. average total number of attempts to get a background sequence from genome per one foreground sequence (default value 500)
+12. total number of attempts to get background sequences from genome per one foreground sequence (default value 500)
 13. genome release (hg38, mm10, dm6, ce235, sc64 and at10 for H.sapiens, M.musculus, D.,melanogaster, C.elehans, S.cerevisiae and A.thaliana  genomes, respectively)
 
 Whole chromosome sequences in plain format are required to run the program, i.e. headers lines >... should be deleted from the whole chromosome files in fasta format. These plain files should contain only nucleotide letters, IUPAC nucleotides codes N,W,S etc. are ignored by program, all other symbols like ' ', '\t' etc. should deleted, e.g. for Arabidopsis five files are required: chr1.plain, chr2.plain, chr3.plain, chr4.plain, chr5.plain, for human/mouse respective files refer to whole chromosomes 1-22,X,Y / 1-19,X,Y. To see example unzip chr4.plain file from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes). Any one of the four output fasta files can be used as the background dataset in consequent analysis (see parameters 2, 3, 4 and 5 of the command line, genome sequences adopted by mononucleotide content, di-, tri-, or tetranucleotide measures, respectively).
