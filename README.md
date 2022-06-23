@@ -113,7 +113,7 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp)
 1. path to file_profile_fasta (see argument #3 below, the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
-3. file_profile_fasta = input Whole-genome promoters dataset in fasta format (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs*, mm* and at* files for human, mouse and Arabidopsis data, respectively)
+3. file_profile_fasta = input Whole-genome promoters dataset in fasta format (unzip files from folder [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes), use hs*, mm* and at* files for human, mouse and Arabidopsis data, respectively; [additional file](https://github.com/parthian-sterlet/sitega/blob/master/genomes/prom_all_bed.zip) provides promoters in bed format for other species)
 4. output file [Table Threshold_vs_FPR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_fpr), table SiteGA model threshold vs. False Positive Rate (FPR)
 5. pvalue_large = maximal FPR (default value 0.0005)
 6. score_min = lowest threshold of SiteGA model (default value 0.5)
