@@ -83,6 +83,7 @@ void EvalSeq(char *file, int &nseq, int olen, int thresh)
 	rewind(in);
 	nseq = 0;
 	int n = 0;
+	memset(d, 0, sizeof(d));
 	while (n >= 0)
 	{
 		if (fgets(l, sizeof(l), in) == NULL) fl = -1;
@@ -136,6 +137,7 @@ void EvalLen(char *file, int *len, int olen, int thresh)
 	}
 	char symbol = fgetc(in);
 	rewind(in);
+	memset(d, 0, sizeof(d));
 	int nn = 0, n = 0;
 	while (n >= 0)
 	{
@@ -343,6 +345,10 @@ int main(int argc, char *argv[])
 	char name_chr_at[5][3] = { "1", "2", "3", "4", "5" };
 	int sizelo_at10[5] = { 30427671, 19698289, 23459830, 18585056, 26975502 };
 	int n_chr_at = 5;
+	//soybean Glycine_max_v2.1
+	int n_chr_gm = 20;
+	char name_chr_gm[20][3] = { "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20" };
+	int sizelo_gm21[20] = { 56831624, 48577505, 45779781, 52389146, 42234498, 51416486, 44630646, 47837940, 50189764, 51566898, 34766867, 40091314, 45874162, 49042192, 51756343, 37887014, 41641366, 58018742, 50746916, 47904181 };
 	//Caenorhabditis elegans WBcel235
 	char name_chr_ce[6][5] = { "I", "II", "III", "IV", "V", "X" };
 	int sizelo_ce235[6] = { 15072434, 15279421, 13783801, 17493829, 20924180, 17718942 };
@@ -434,6 +440,18 @@ int main(int argc, char *argv[])
 							{
 								sizelo1[i] = sizelo_sc64[i];
 								strcpy(name_chr[i], name_chr_sc[i]);
+							}
+						}
+						else
+						{
+							if (strcmp(genome, "gm21") == 0)
+							{
+								n_chr = n_chr_gm;
+								for (i = 0; i < n_chr; i++)
+								{
+									sizelo1[i] = sizelo_gm21[i];
+									strcpy(name_chr[i], name_chr_gm[i]);
+								}
 							}
 						}
 					}
