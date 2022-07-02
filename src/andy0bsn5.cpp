@@ -42,8 +42,8 @@ int compare_qq2(const void *X1, const void *X2)//decrease
 	return 0;
 }
 struct qbs {
-	double q;
-	int n;
+	double q;//best score
+	int n;// 1 forgr 0 backgr
 };
 int compare_qbs(const void *X1, const void *X2)//decrease
 {
@@ -1047,9 +1047,9 @@ int ComplStr(char *d)
 	}
 	return 1;
 }
-int EvalMahControl(town *a, town_ext *best_sel_ext, int nseq, int nseqb, int n_train, int n_cntrl, int *xporti, int *xportj, double *fp_rate, int &n_cntrl_tot, int ***seq, int ***seq_back, int olen, int *len, int *lenb, double **dav, double **dcv, double *qp)
+int EvalMahControl(town *a, town_ext *best_sel_ext, int nseq, int nseqb, int n_train, int n_cntrl, int *xporti, int *xportj, double *fp_rate, int &n_cntrl_tot, int& n_any_tot, int ***seq, int ***seq_back, int olen, int *len, int *lenb, double **dav, double **dcv, double *qp, qbs *prc)
 {
-	int k, n, m, o, b, u;
+	int k, n, m, o, b, u, z= n_any_tot;
 	double av[POPSIZE], buf[POPSIZE];
 	double df[POPSIZE];
 
@@ -1161,8 +1161,10 @@ int EvalMahControl(town *a, town_ext *best_sel_ext, int nseq, int nseqb, int n_t
 				}
 			}
 		}
-		qp[n_cnt] = sco_pos;
+		qp[n_cnt] = prc[z].q = sco_pos;
+		prc[z].n = 1;
 		n_cnt++;
+		z++;
 	}
 	qsort(qp, n_cntrl, sizeof(double), compare_qq);
 	int nseqn = 0;
@@ -1170,6 +1172,7 @@ int EvalMahControl(town *a, town_ext *best_sel_ext, int nseq, int nseqb, int n_t
 	{
 		int lenp = lenb[b] - olen + 1;
 		nseqn += 2 * lenp;
+		double sco_max = -1000;
 		for (o = 0; o < 2; o++)
 		{
 			for (m = 0; m < lenp; m++)
@@ -1190,6 +1193,7 @@ int EvalMahControl(town *a, town_ext *best_sel_ext, int nseq, int nseqb, int n_t
 					}
 				}
 				sco = 1 - fabs(1 - sco);
+				if (sco_max < sco)sco_max = sco;
 				if (sco >= qp[0])
 				{
 					for (k = 0; k < n_cntrl; k++)
@@ -1203,6 +1207,9 @@ int EvalMahControl(town *a, town_ext *best_sel_ext, int nseq, int nseqb, int n_t
 				}
 			}
 		}
+		prc[z].q = sco_max;
+		prc[z].n = 0;
+		z++;
 	}
 	for (k = 0; k < n_cntrl; k++)
 	{
@@ -2453,20 +2460,18 @@ void ReadSeqBack(char *file, int nseq, int *len, int ***seq_back, int olen, int 
 int main(int argc, char *argv[])
 {
 	int *len, nseq, nseqb, *lenb, i, j, k, n, m;
-	char file_for[500], file_back[500], path_fasta[500], path_out[500], pfile_for[500], pfile_back[500];
+	char file_for[500], file_back[500], path_fasta[500], pfile_for[500], pfile_back[500];
 	int ***seq_real, ***seq_back;
 	double **dav;//dinucl.content background
 	double **dcv;//self covariations for regions LPD
 //	double **frp;//LPD frequencies
 	double *qp;//train scores	
 	int **octa_prowb, *len_octa, **octa_prows;// octa position lists, octa position counts, weight sums
-	double **octa_pro1, **octa_prow, *thr_octa;// , *hoxa_wei;
+	double **octa_pro1, **octa_prow, *thr_octa;// , *hoxa_wei;	
 
-	//qbs *qps;
-
-	if (argc != 12)
+	if (argc != 11)
 	{
-		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 567int motif_min,max,dif 8double ratio_cnt_of_all(0=jk <0=odd) 9int num_iterations 10 int olig_background 11path_out");//  5<pop_size>
+		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 567int motif_min,max,dif 8double ratio_cnt_of_all(0=jk <0=odd) 9int num_iterations 10 int olig_background");//  5<pop_size>
 		exit(1);
 	}
 	//	printf("One ");
@@ -2488,7 +2493,6 @@ int main(int argc, char *argv[])
 	double ratio_train_to_control = atof(argv[8]);
 	int iteration = atoi(argv[9]);//total no. of jack-knife test			
 	int octa = atoi(argv[10]);
-	strcpy(path_out, argv[11]);
 	double fp2 = 0.001;// FPR threshold for pAUC	
 	srand((unsigned)time(NULL));
 	dcv = new double*[reg_max];
@@ -2668,6 +2672,37 @@ int main(int argc, char *argv[])
 	}
 	int n_cnt_tot = 0;
 	for (i = 0; i < iteration; i++)n_cnt_tot += n_cntrl[i];
+	int n_trn_tot = 0;
+	for (i = 0; i < iteration; i++)n_trn_tot += n_train[i];	
+	int n_both_sam = 0;
+	for (i = 0; i < iteration; i++)
+	{
+		n_both_sam += n_cntrl[i];
+		n_both_sam += nseqb;
+	}
+	qbs *prc;
+	prc = new qbs[n_both_sam];
+	if (prc == NULL)
+	{
+		puts("Out of memory..."); exit(1);
+	}
+	for (i = 0; i < n_both_sam; i++)
+	{
+		prc[i].n = 0;
+		prc[i].q = 0;
+	}
+	qbs* prc_best;
+	prc_best = new qbs[n_both_sam];
+	if (prc == NULL)
+	{
+		puts("Out of memory..."); exit(1);
+	}
+	for (i = 0; i < n_both_sam; i++)
+	{
+		prc_best[i].n = 0;
+		prc_best[i].q = 0;
+	}	
+	double auc_prc = 0;
 	double *fp_rate;
 	fp_rate = new double[n_cnt_tot + 10];
 	if (fp_rate == NULL)
@@ -2714,6 +2749,7 @@ int main(int argc, char *argv[])
 	}
 	double auc_max = 0;
 	int size_selected, olen, olen_selected = olen_min;
+	int size_selected2, olen_selected2 = olen_min;
 	double *fp_rate_best;
 	fp_rate_best = new double[n_cnt_tot + 10];
 	if (fp_rate_best == NULL) { puts("Out of memory..."); exit(1); }
@@ -2724,9 +2760,10 @@ int main(int argc, char *argv[])
 	fp_rate_step = new double[n_cnt_tot + 10];
 	if (fp_rate_step == NULL) { puts("Out of memory..."); exit(1); }
 	//	double dtp = 1 / (double)nseq;
-	char add_roc[500], add_auc[500];
+	char add_roc[500], add_auc[500], add_prc[500];
 	strcpy(add_roc, "_roc_bs.txt");
 	strcpy(add_auc, "_auc_bs.txt");
+	strcpy(add_prc, "_prc_bs.txt");
 	char file_out_cnt[500];
 	int n_train_max = 0;
 	int size_start = 40;// (int)(k_size_start*olenf_max);
@@ -2824,6 +2861,7 @@ int main(int argc, char *argv[])
 			int big_exit1 = 1;// local exit (separ +-) global exit (separation do not exceeded the previous run)
 			double fit_prev, fit_after_mut;
 			int cnt_count = 0;
+			int n_any_tot = 0;
 			//Test(peak_real[0],len,0,2);	
 			for (iter = 0; iter < iteration; iter++)
 			{
@@ -3563,8 +3601,9 @@ int main(int argc, char *argv[])
 						if (xport[k] == 0)xportj[i++] = k;
 					}
 				}
-				EvalMahControl(&pop[iter][0], &pop_ext, nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, fp_rate, cnt_count, seq_real, seq_back, olen, len, lenb, dav, dcv, qp);
+				EvalMahControl(&pop[iter][0], &pop_ext, nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, fp_rate, cnt_count, n_any_tot,seq_real, seq_back, olen, len, lenb, dav, dcv, qp, prc);
 				//for (k = 0; k < n_cntrl[iter]; k++){ fp_rate[cnt_count] = 0.0001; sco_pos[cnt_count] = 0.9; cnt_count++; }
+				n_any_tot += (n_train[iter]+ nseqb);
 				{
 					char name[500];
 					for (i = 0;; i++)
@@ -3577,18 +3616,15 @@ int main(int argc, char *argv[])
 					char extmat[20];
 					char extmat0[] = "_mat";
 					strcpy(extmat, extmat0);
-					char file_for1[500];
-					strcpy(file_for1, path_out);
-					strcat(file_for1, file_for);
-					pop[iter][0].fprint_allfi_mat(file_for1, extmat, name, olen, pop_ext.c0, pop_ext.buf, iter, size_start, olen_min);
+					pop[iter][0].fprint_allfi_mat(file_for, extmat, name, olen, pop_ext.c0, pop_ext.buf, iter, size_start, olen_min);
 				}
 				big_exit1 = 1;
 			}
 			qsort(fp_rate, n_cnt_tot, sizeof(double), compare_qq);
+			qsort(prc, n_both_sam, sizeof(prc[0]), compare_qbs);
 			FILE *outq;
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
-			strcpy(file_out_cnt, path_out);
-			strcat(file_out_cnt, file_for);
+			strcpy(file_out_cnt, file_for);
 			strcat(file_out_cnt, add_roc);
 			if (olen == olen_min && size0 == size_start)
 			{
@@ -3625,8 +3661,7 @@ int main(int argc, char *argv[])
 			fprintf(outq, "\n");
 			fclose(outq);
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
-			strcpy(file_out_cnt, path_out);
-			strcat(file_out_cnt, file_for);
+			strcpy(file_out_cnt, file_for);
 			strcat(file_out_cnt, add_auc);
 			if (olen == olen_min && size0 == size_start)
 			{
@@ -3664,7 +3699,7 @@ int main(int argc, char *argv[])
 			{
 				printf("%d\t%g\n", tp_rate[n], fp_rate_step[n]);
 			}
-			printf("\n");
+			printf("\nROC\n");
 			double auc2 = 0;
 			for (n = 1; n < k_step; n++)
 			{
@@ -3673,8 +3708,40 @@ int main(int argc, char *argv[])
 				printf("%d\t%d\t%g\t%g\t%g\n", tp_rate[n], tp_rate[n1], fp_rate_step[n], fp_rate_step[n1], dauc);
 				auc2 += dauc;
 			}
+		//	printf("\nPRC scores\n");			
+			//for (n = 1; n < 100; n++)printf("%f\t%d\n", prc[n].q, prc[n].n);
+			int tpc = 0, fpc = 0;
+			printf("\nPRC\n");
+			double auc22 = 0;//prc
+			n = 0;
+			if (prc[n].n == 0)fpc++;
+			else tpc++;
+			for (n = 1; n < n_both_sam; n++)
+			{
+				int n1 = n - 1;
+				int tpc1 = tpc, fpc1 = fpc;
+				if (prc[n].n == 0)fpc++;
+				else tpc++;
+				if (prc[n].q == prc[n1].q || tpc==tpc1)continue;
+				double prec1 = (double)tpc1 / (tpc1 + fpc1);
+				double prec = (double)tpc / (tpc + fpc);
+				double dauc = (prec + prec1) * (tpc - tpc1) / 2 / n_cnt_tot;
+				printf("%g\t%g\t%d\t%d\t%g\n", prec1, prec, tpc1,tpc, dauc);
+				auc22 += dauc;
+			}
 			printf("\n");
-			fprintf(outq, "%s\t%d\t%d\t%g\n", file_for, olen, size0, auc2);
+			if (auc22 > auc_prc)
+			{
+				auc_prc = auc_prc;
+				for (n = 0; n < n_both_sam; n++)
+				{
+					prc_best[n].n = prc[n].n;
+					prc_best[n].q = prc[n].q;
+				}
+				size_selected2 = size0;
+				olen_selected2 = olen;
+			}
+			fprintf(outq, "%s\t%d\t%d\t%g\t%g\n", file_for, olen, size0, auc2, auc22);
 			fclose(outq);
 			if (auc2 > auc_max)
 			{
@@ -3690,8 +3757,7 @@ int main(int argc, char *argv[])
 			}
 		}
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
-		strcpy(file_out_cnt, path_out);
-		strcat(file_out_cnt, file_for);
+		strcpy(file_out_cnt, file_for);
 		strcat(file_out_cnt, "_len");
 		strcat(file_out_cnt, add_auc);
 		FILE *outq;
@@ -3717,8 +3783,7 @@ int main(int argc, char *argv[])
 	{
 		FILE *outq;
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
-		strcpy(file_out_cnt, path_out);
-		strcat(file_out_cnt, file_for);
+		strcpy(file_out_cnt, file_for);
 		strcat(file_out_cnt, "_best");
 		strcat(file_out_cnt, add_roc);
 		if ((outq = fopen(file_out_cnt, "wt")) == NULL)
@@ -3744,8 +3809,38 @@ int main(int argc, char *argv[])
 		fprintf(outq, "\n");
 		fclose(outq);
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
-		strcpy(file_out_cnt, path_out);
-		strcat(file_out_cnt, file_for);
+		strcpy(file_out_cnt, file_for);
+		strcat(file_out_cnt, "_best");
+		strcat(file_out_cnt, add_prc);
+		if ((outq = fopen(file_out_cnt, "wt")) == NULL)
+		{
+			printf("Output file can't be opened!\n");
+			exit(1);
+		}
+		double auc22 = 0;//prc
+		{
+			int tpc = 0, fpc = 0;			
+			n = 0;
+			if (prc_best[n].n == 0)fpc++;
+			else tpc++;
+			for (n = 1; n < n_both_sam; n++)
+			{
+				int n1 = n - 1;
+				int tpc1 = tpc, fpc1 = fpc;
+				if (prc_best[n].n == 0)fpc++;
+				else tpc++;
+				if (prc_best[n].q == prc_best[n1].q || tpc == tpc1)continue;
+				double prec1 = (double)tpc1 / (tpc1 + fpc1);
+				double prec = (double)tpc / (tpc + fpc);
+				double dauc = (prec + prec1) * (tpc - tpc1) / 2 / n_cnt_tot;
+				fprintf(outq,"%g\t%g\n", prec, (double)tpc / n_cnt_tot);
+				auc22 += dauc;
+			}
+			fprintf(outq, "\n");
+			fclose(outq);
+		}
+		memset(file_out_cnt, 0, sizeof(file_out_cnt));
+		strcpy(file_out_cnt, file_for);
 		strcat(file_out_cnt, "_best");
 		strcat(file_out_cnt, add_auc);
 		if ((outq = fopen(file_out_cnt, "wt")) == NULL)
@@ -3774,7 +3869,8 @@ int main(int argc, char *argv[])
 			double dauc = (tp_rate[n] + tp_rate[n1]) * (fp_rate_step[n] - fp_rate_step[n1]) / 2 / n_cnt_tot;
 			auc2 += dauc;
 		}
-		fprintf(outq, "%s\t%d\t%d\t%g\n", file_for, olen_selected, size_selected, auc2);
+		fprintf(outq, "%s\t%d\t%d\t%g\t", file_for, olen_selected, size_selected, auc2);
+		fprintf(outq, "%d\t%d\t%g\n", olen_selected2, size_selected2, auc22);
 		fclose(outq);
 	}
 	for (iter = 0; iter < iteration; iter++)
@@ -3856,7 +3952,7 @@ int main(int argc, char *argv[])
 	}
 	delete[] frp;*/
 	delete[] qp;
-	//delete[] qps;
+	delete[] prc;
 	//delete[] hoxa_wei;
 	return 0;
 }
