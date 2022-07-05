@@ -12,8 +12,8 @@
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
-#define MEGE 40//population size 1st stage
-#define ELIT 20//population size 2nd stage
+#define MEGE 20//population size 1st stage
+#define ELIT 10//population size 2nd stage
 #define NMUT 3
 #define NREC 5
 #define POPSIZE 110
@@ -2747,7 +2747,7 @@ int main(int argc, char *argv[])
 		n_decil[0] = 1;
 		for (n = 1; n < CENT; n++)n_decil[n] = (int)(n_cnt_tot*n / CENT);
 	}
-	double auc_max = 0;
+	double auc_max = 0, auc_max2=0;
 	int size_selected, olen, olen_selected = olen_min;
 	int size_selected2, olen_selected2 = olen_min;
 	double *fp_rate_best;
@@ -2854,7 +2854,8 @@ int main(int argc, char *argv[])
 		printf("FractHoxa %f\n", (double)len_wei / len_tot);
 		int size0;
 		int size_len = size_start;
-		double auc_len = 0;
+		int size_len2 = size_start;
+		double auc_len = 0, auc_len2=0;
 		for (size0 = size_start; size0 <= size_end; size0 += size_dif)
 		{
 			for (k = 0; k < n_cnt_tot; k++)fp_rate[k] = 0;
@@ -3732,7 +3733,7 @@ int main(int argc, char *argv[])
 			printf("\n");
 			if (auc22 > auc_prc)
 			{
-				auc_prc = auc_prc;
+				auc_prc = auc22;
 				for (n = 0; n < n_both_sam; n++)
 				{
 					prc_best[n].n = prc[n].n;
@@ -3740,6 +3741,11 @@ int main(int argc, char *argv[])
 				}
 				size_selected2 = size0;
 				olen_selected2 = olen;
+			}
+			if (auc22 > auc_len2)
+			{
+				auc_len2 = auc22;
+				size_len2 = size0;
 			}
 			fprintf(outq, "%s\t%d\t%d\t%g\t%g\n", file_for, olen, size0, auc2, auc22);
 			fclose(outq);
@@ -3777,7 +3783,8 @@ int main(int argc, char *argv[])
 				exit(1);
 			}
 		}
-		fprintf(outq, "%s\t%d\t%d\t%g\n", file_for, olen, size_len, auc_len);
+		fprintf(outq, "%s\t%d\t%d\t%g\t", file_for, olen, size_len, auc_len);
+		fprintf(outq, "%d\t%g\n", size_len2, auc_len2);
 		fclose(outq);
 	}
 	{
@@ -3817,6 +3824,11 @@ int main(int argc, char *argv[])
 			printf("Output file can't be opened!\n");
 			exit(1);
 		}
+		for (n = 0; n < n_both_sam; n++)
+		{
+			fprintf(outq, "%d\t%.12f\n", prc_best[n].n, prc_best[n].q);
+		}
+		fprintf(outq, "\t%s_%d_%d\n", file_for, olen_selected2, size_selected2);
 		double auc22 = 0;//prc
 		{
 			int tpc = 0, fpc = 0;			
@@ -3829,12 +3841,17 @@ int main(int argc, char *argv[])
 				int tpc1 = tpc, fpc1 = fpc;
 				if (prc_best[n].n == 0)fpc++;
 				else tpc++;
-				if (prc_best[n].q == prc_best[n1].q || tpc == tpc1)continue;
-				double prec1 = (double)tpc1 / (tpc1 + fpc1);
-				double prec = (double)tpc / (tpc + fpc);
-				double dauc = (prec + prec1) * (tpc - tpc1) / 2 / n_cnt_tot;
-				fprintf(outq,"%g\t%g\n", prec, (double)tpc / n_cnt_tot);
-				auc22 += dauc;
+				if (prc_best[n].q != prc_best[n1].q)
+				{					
+					double prec = (double)tpc / (tpc + fpc);
+					if (tpc > tpc1)
+					{
+						double prec1 = (double)tpc1 / (tpc1 + fpc1);
+						double dauc = (prec + prec1) * (tpc - tpc1) / 2 / n_cnt_tot;
+						auc22 += dauc;
+					}
+					fprintf(outq, "%g\t%g\n", prec, (double)tpc / n_cnt_tot);
+				}
 			}
 			fprintf(outq, "\n");
 			fclose(outq);
@@ -3953,6 +3970,7 @@ int main(int argc, char *argv[])
 	delete[] frp;*/
 	delete[] qp;
 	delete[] prc;
+	delete[] prc_best;
 	//delete[] hoxa_wei;
 	return 0;
 }
