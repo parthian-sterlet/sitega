@@ -3824,10 +3824,10 @@ int main(int argc, char *argv[])
 			printf("Output file can't be opened!\n");
 			exit(1);
 		}
-		for (n = 0; n < n_both_sam; n++)
+		/*for (n = 0; n < n_both_sam; n++)
 		{
 			fprintf(outq, "%d\t%.12f\n", prc_best[n].n, prc_best[n].q);
-		}
+		}*/
 		fprintf(outq, "\t%s_%d_%d\n", file_for, olen_selected2, size_selected2);
 		double auc22 = 0;//prc
 		{
@@ -3841,17 +3841,12 @@ int main(int argc, char *argv[])
 				int tpc1 = tpc, fpc1 = fpc;
 				if (prc_best[n].n == 0)fpc++;
 				else tpc++;
-				if (prc_best[n].q != prc_best[n1].q)
-				{					
-					double prec = (double)tpc / (tpc + fpc);
-					if (tpc > tpc1)
-					{
-						double prec1 = (double)tpc1 / (tpc1 + fpc1);
-						double dauc = (prec + prec1) * (tpc - tpc1) / 2 / n_cnt_tot;
-						auc22 += dauc;
-					}
-					fprintf(outq, "%g\t%g\n", prec, (double)tpc / n_cnt_tot);
-				}
+				if (prc_best[n].q == prc_best[n1].q || tpc == tpc1)continue;													
+				double prec = (double)tpc / (tpc + fpc);								
+				double prec1 = (double)tpc1 / (tpc1 + fpc1);
+				double dauc = (prec + prec1) * (tpc - tpc1) / 2 / n_cnt_tot;
+				auc22 += dauc;				
+				fprintf(outq, "%g\t%g\n", (double)tpc / n_cnt_tot, prec);
 			}
 			fprintf(outq, "\n");
 			fclose(outq);
