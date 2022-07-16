@@ -3701,7 +3701,7 @@ int main(int argc, char *argv[])
 				printf("%d\t%g\n", tp_rate[n], fp_rate_step[n]);
 			}
 			printf("\nROC\n");
-			double auc2 = 0;
+			double auc2 = 0;			
 			for (n = 1; n < k_step; n++)
 			{
 				int n1 = n - 1;
@@ -3711,25 +3711,31 @@ int main(int argc, char *argv[])
 			}
 		//	printf("\nPRC scores\n");			
 			//for (n = 1; n < 100; n++)printf("%f\t%d\n", prc[n].q, prc[n].n);
+		//	double avrec = 0, count_avrec=0;
 			int tpc = 0, fpc = 0;
 			printf("\nPRC\n");
+		//	const double fdr1 = 1 / (double)101, fdr2 = 0.5;
 			double auc22 = 0;//prc
 			n = 0;
 			if (prc[n].n == 0)fpc++;
 			else tpc++;
+			int tpc_pred = tpc;
+			double prec_pred = (double)tpc / (tpc + fpc);
 			for (n = 1; n < n_both_sam; n++)
 			{
 				int n1 = n - 1;
-				int tpc1 = tpc, fpc1 = fpc;
+				int tpc1 = tpc;
 				if (prc[n].n == 0)fpc++;
 				else tpc++;
-				if (prc[n].q == prc[n1].q || tpc==tpc1)continue;
-				double prec1 = (double)tpc1 / (tpc1 + fpc1);
+				if (prc[n].q == prc[n1].q || tpc==tpc1)continue;				
 				double prec = (double)tpc / (tpc + fpc);
-				double dauc = (prec + prec1) * (tpc - tpc1) / 2 / n_cnt_tot;
-				printf("%g\t%g\t%d\t%d\t%g\n", prec1, prec, tpc1,tpc, dauc);
+				double dauc = (prec + prec_pred) * (tpc - tpc_pred) / 2 / n_cnt_tot;
+				printf("%g\t%g\t%d\t%d\t%g\n", prec_pred, prec, tpc_pred,tpc, dauc);
 				auc22 += dauc;
+				tpc_pred = tpc;
+				prec_pred = prec;
 			}
+		//	if (count_avrec > 0)avrec /= count_avrec;
 			printf("\n");
 			if (auc22 > auc_prc)
 			{
@@ -3835,17 +3841,20 @@ int main(int argc, char *argv[])
 			n = 0;
 			if (prc_best[n].n == 0)fpc++;
 			else tpc++;
+			int tpc_pred = tpc;
+			double prec_pred = (double)tpc / (tpc + fpc);
 			for (n = 1; n < n_both_sam; n++)
 			{
 				int n1 = n - 1;
-				int tpc1 = tpc, fpc1 = fpc;
+				int tpc1 = tpc;
 				if (prc_best[n].n == 0)fpc++;
 				else tpc++;
 				if (prc_best[n].q == prc_best[n1].q || tpc == tpc1)continue;													
-				double prec = (double)tpc / (tpc + fpc);								
-				double prec1 = (double)tpc1 / (tpc1 + fpc1);
-				double dauc = (prec + prec1) * (tpc - tpc1) / 2 / n_cnt_tot;
-				auc22 += dauc;				
+				double prec = (double)tpc / (tpc + fpc);
+				double dauc = (prec + prec_pred) * (tpc - tpc_pred) / 2 / n_cnt_tot;				
+				auc22 += dauc;
+				tpc_pred = tpc;
+				prec_pred = prec;
 				fprintf(outq, "%g\t%g\n", (double)tpc / n_cnt_tot, prec);
 			}
 			fprintf(outq, "\n");
