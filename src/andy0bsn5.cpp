@@ -51,6 +51,8 @@ int compare_qbs(const void *X1, const void *X2)//decrease
 	struct qbs *S2 = (struct qbs *)X2;
 	if (S1->q - S2->q > 0)return -1;
 	if (S1->q - S2->q < 0)return 1;
+	if (S1->n - S2->n > 0)return 1;
+	if (S1->n - S2->n < 0)return -1;
 	return 0;
 }
 struct uno {
@@ -3680,17 +3682,35 @@ int main(int argc, char *argv[])
 					exit(1);
 				}
 			}
-			fp_rate_step[0] = 0;
-			tp_rate[0] = 0;
-			int k_step = 1;
+			int k_step = 0;
+			fp_rate_step[k_step] = 0;
+			tp_rate[k_step] = 0;
+			printf("%d\t%d\t%g\n", k_step + 1, tp_rate[k_step], fp_rate_step[k_step]);
+			k_step++;			
 			for (n = 1; n < n_cnt_tot; n++)
-			{
-				if (fp_rate[n] >= fp2)break;
+			{				
 				int n1 = n - 1;
 				if (fp_rate[n] > fp_rate[n1])
 				{
 					tp_rate[k_step] = n;
-					fp_rate_step[k_step] = fp_rate[n1];
+					fp_rate_step[k_step] = fp_rate[n1];					
+					if (fp_rate_step[k_step] >= fp2)
+					{
+						fp_rate_step[k_step]=fp2;
+						printf("%d\t%d\t%g\n", k_step + 1, tp_rate[k_step], fp_rate_step[k_step]);
+						k_step++;
+						break;
+					}
+					printf("%d\t%d\t%g\n", k_step + 1, tp_rate[k_step], fp_rate_step[k_step]);
+					k_step++;
+				}
+			}
+			{
+				int k_step1 = k_step - 1;
+				if (fp_rate_step[k_step1] < fp2)
+				{
+					tp_rate[k_step] = n_cnt_tot;
+					fp_rate_step[k_step] = fp2;
 					k_step++;
 				}
 			}
@@ -3698,7 +3718,7 @@ int main(int argc, char *argv[])
 			printf("%d\t%d\n", n_cnt_tot, k_step);
 			for (n = 0; n < k_step; n++)
 			{
-				printf("%d\t%g\n", tp_rate[n], fp_rate_step[n]);
+				printf("%d\t%d\t%g\n", n+1, tp_rate[n], fp_rate_step[n]);
 			}
 			printf("\nROC\n");
 			double auc2 = 0;			
@@ -3709,31 +3729,34 @@ int main(int argc, char *argv[])
 				printf("%d\t%d\t%g\t%g\t%g\n", tp_rate[n], tp_rate[n1], fp_rate_step[n], fp_rate_step[n1], dauc);
 				auc2 += dauc;
 			}
-		//	printf("\nPRC scores\n");			
-			//for (n = 1; n < 100; n++)printf("%f\t%d\n", prc[n].q, prc[n].n);
-		//	double avrec = 0, count_avrec=0;
+			printf("\nTOP 1000 scores\n");			
+			for (n = 0; n < 1000; n++)printf("%.12f\t%d\n", prc[n].q, prc[n].n);
 			int tpc = 0, fpc = 0;
 			printf("\nPRC\n");
-		//	const double fdr1 = 1 / (double)101, fdr2 = 0.5;
 			double auc22 = 0;//prc
-			n = 0;
-			if (prc[n].n == 0)fpc++;
-			else tpc++;
 			int tpc_pred = tpc;
-			double prec_pred = (double)tpc / (tpc + fpc);
-			for (n = 1; n < n_both_sam; n++)
-			{
-				int n1 = n - 1;
-				int tpc1 = tpc;
+			double prec_pred;
+			if (prc[0].n == 1)prec_pred = 1;
+			else prec_pred = 0;			
+			int prc_count = 0;
+			int n_both_sam1 = n_both_sam - 1;
+			for (n = 0; n < n_both_sam; n++)
+			{				
 				if (prc[n].n == 0)fpc++;
 				else tpc++;
-				if (prc[n].q == prc[n1].q || tpc==tpc1)continue;				
-				double prec = (double)tpc / (tpc + fpc);
-				double dauc = (prec + prec_pred) * (tpc - tpc_pred) / 2 / n_cnt_tot;
-				printf("%g\t%g\t%d\t%d\t%g\n", prec_pred, prec, tpc_pred,tpc, dauc);
-				auc22 += dauc;
-				tpc_pred = tpc;
-				prec_pred = prec;
+				if (tpc == tpc_pred)continue; 
+				int n1 = n + 1;
+				if (n == n_both_sam1 || ((prc[n].n == 1 && prc[n1].n == 0) && prc[n].q > prc[n1].q))
+				{
+					prc_count++;
+					double prec = (double)tpc / (tpc + fpc);
+					if (prc_count == 1)prec_pred = prec;
+					double dauc = (prec + prec_pred) * (tpc - tpc_pred) / 2 / n_cnt_tot;
+					auc22 += dauc;
+					printf("%g\t%g\t%d\t%d\t%g\n", prec_pred, prec, tpc_pred, tpc, dauc);
+					tpc_pred = tpc;
+					prec_pred = prec;
+				}
 			}
 		//	if (count_avrec > 0)avrec /= count_avrec;
 			printf("\n");
@@ -3837,25 +3860,31 @@ int main(int argc, char *argv[])
 		fprintf(outq, "\t%s_%d_%d\n", file_for, olen_selected2, size_selected2);
 		double auc22 = 0;//prc
 		{
-			int tpc = 0, fpc = 0;			
-			n = 0;
-			if (prc_best[n].n == 0)fpc++;
-			else tpc++;
+			int tpc = 0, fpc = 0;						
+			double prec_pred;
+			if (prc_best[0].n == 1)prec_pred = 1;
+			else prec_pred = 0;
 			int tpc_pred = tpc;
-			double prec_pred = (double)tpc / (tpc + fpc);
-			for (n = 1; n < n_both_sam; n++)
-			{
-				int n1 = n - 1;
-				int tpc1 = tpc;
+			fprintf(outq, "%g\t%g\n", (double)tpc_pred / n_cnt_tot, prec_pred);
+			int prc_count = 0;
+			int n_both_sam1 = n_both_sam - 1;
+			for (n = 0; n < n_both_sam; n++)
+			{								
 				if (prc_best[n].n == 0)fpc++;
 				else tpc++;
-				if (prc_best[n].q == prc_best[n1].q || tpc == tpc1)continue;													
-				double prec = (double)tpc / (tpc + fpc);
-				double dauc = (prec + prec_pred) * (tpc - tpc_pred) / 2 / n_cnt_tot;				
-				auc22 += dauc;
-				tpc_pred = tpc;
-				prec_pred = prec;
-				fprintf(outq, "%g\t%g\n", (double)tpc / n_cnt_tot, prec);
+				if (tpc == tpc_pred)continue;		
+				int n1 = n + 1;
+				if (n == n_both_sam1 || ((prc_best[n].n == 1 && prc_best[n1].n == 0) && prc_best[n].q > prc_best[n1].q))
+				{
+					double prec = (double)tpc / (tpc + fpc);
+					prc_count++;
+					if (prc_count == 1)prec_pred = prec;
+					double dauc = (prec + prec_pred) * (tpc - tpc_pred) / 2 / n_cnt_tot;
+					auc22 += dauc;
+					tpc_pred = tpc;
+					prec_pred = prec;
+					fprintf(outq, "%g\t%g\n", (double)tpc / n_cnt_tot, prec);
+				}
 			}
 			fprintf(outq, "\n");
 			fclose(outq);
@@ -3869,17 +3898,32 @@ int main(int argc, char *argv[])
 			printf("Output file can't be opened!\n");
 			exit(1);
 		}
-		fp_rate_step[0] = 0;
-		tp_rate[0] = 0;
-		int k_step = 1;
+		int k_step = 0;
+		fp_rate_step[k_step] = 0;
+		tp_rate[k_step] = 0;
+		k_step++;
 		for (n = 1; n < n_cnt_tot; n++)
 		{
-			if (fp_rate_best[n] >= fp2)break;
 			int n1 = n - 1;
 			if (fp_rate_best[n] > fp_rate_best[n1])
 			{
 				tp_rate[k_step] = n;
 				fp_rate_step[k_step] = fp_rate_best[n1];
+				if (fp_rate_step[k_step] >= fp2)
+				{
+					fp_rate_step[k_step] = fp2;
+					k_step++;
+					break;
+				}
+				k_step++;
+			}
+		}
+		{
+			int k_step1 = k_step - 1;
+			if (fp_rate_step[k_step1] < fp2)
+			{
+				tp_rate[k_step] = n_cnt_tot;
+				fp_rate_step[k_step] = fp2;
 				k_step++;
 			}
 		}
