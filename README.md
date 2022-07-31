@@ -9,7 +9,7 @@ SiteGA estimates the alignment X = {x(1), x(2), ..., x(N)} of best motifs in N p
 SiteGA source code is written in C++ language. To compile exetubables from the source code you need:
 
 * In Linux system, C++ compiler, e.g. [GCC](https://gcc.gnu.org/) compiler 
-* In Windiws system any VC++ package, e.g. [Microsoft Visual Studio Express](https://visualstudio.microsoft.com/vs/express/)
+* In Windiws system any VC++ package, e.g. [Microsoft Visual Studio Community](https://visualstudio.microsoft.com/vs/community/)
 
 # Source code
 Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains files with SiteGA source codes, they respect to decribed below separate modules of pipeline.
