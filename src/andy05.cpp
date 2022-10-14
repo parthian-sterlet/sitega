@@ -10,7 +10,7 @@
 
 #define Min(a,b) ((a)>(b))? (b):(a);
 #define Max(a,b) ((a)>(b))? (a):(b);
-#define SEQLEN 12000
+#define SEQLEN 5000
 #define MOTLEN 12 //max LPD length
 #define MEGE 40//population size 1st stage
 #define ELIT 20//population size 2nd stage
@@ -819,7 +819,7 @@ void DelHole(char *str)
 char *TransStr(char *d)
 {
 	int i, c, lens;
-	lens = strlen(d);
+	lens = (int)strlen(d);
 	for (i = 0; i < lens; i++)
 	{
 		c = int(d[i]);
@@ -831,11 +831,16 @@ char *TransStr(char *d)
 int CheckStr(char *file, char *d, int n, int print)
 {
 	int i, len, ret;
-	len = strlen(d);
+	len = (int)strlen(d);
 	ret = 1;
 	for (i = 0; i < len; i++)
 	{
-		if (strchr("atgcATGC\n", (int)d[i]) != NULL)continue;
+		int di = (int)d[i];
+		if (strchr("atgcATGC", di) != NULL)continue;
+		if (strchr("nN", di) != NULL)
+		{
+			ret = 0; continue;
+		}
 		if (print == 1)printf("File %s; sequence %d position %d (%c) bad. Sequence deleted!\n", file, n, i + 1, d[i]);
 		ret = -1;
 		break;
@@ -850,7 +855,8 @@ int IdeLet(char c)
 	case 'c': ret = 1; break;
 	case 'g': ret = 2; break;
 	case 't': ret = 3; break;
-	default: ret = -1;
+	case 'n': ret = -1; break;
+	default: ret = -2;
 	}
 	return(ret);
 }
@@ -1033,10 +1039,17 @@ double EvalMahFIT(town *a, int n_train, int octa, int ***seq, int olen, double *
 		for (k = 0; k < a->size; k++)
 		{
 			int rlenk = (a->tot[k].end - a->tot[k].sta + 1);
-			fs[k] = 0;
+			fs[k] = 0;			
 			for (n = a->tot[k].sta; n <= a->tot[k].end; n++)
 			{
-				if (a->tot[k].num == seq[ori][m][n + pos])fs[k]++;
+				int let = seq[ori][m][n + pos];
+				if (let == -1)
+				{
+					a->fpr = 1;
+					a->mah = a->fit = 0;
+					return 0;
+				}
+				if (a->tot[k].num == let)fs[k]++;
 			}
 			fs[k] /= rlenk;
 			//frp[b][k] = fs[k];
@@ -1133,6 +1146,12 @@ double EvalMahFIT(town *a, int n_train, int octa, int ***seq, int olen, double *
 			printf("ComplHoxaError peak %d ori %d len %d pos %d posdi %d hoxa %g\n", m, a->ori[m], a->pos[m], len[m], posdi, wei);
 			exit(1);
 		}
+		/*if (wei == 0)
+		{
+			a->fpr = 1;
+			a->mah = a->fit = 0;
+			return 0;
+		}*/
 		oct += wei;
 		sum++;
 		//printf("oct %f sco %f peak %d cep %d pos %d pro %f wei %g\n", oct, qps[b].q, m, a->ori[m], a->pos[m], octa_prow[a->ori[m]][m][a->pos[m]], hoxa_wei[b]);
@@ -1923,7 +1942,7 @@ void DelChar(char *str, char c)
 	int i, lens, size;
 
 	size = 0;
-	lens = strlen(str);
+	lens = (int)strlen(str);
 	for (i = 0; i < lens; i++)
 	{
 		if (str[i] != c)str[size++] = str[i];
@@ -1936,7 +1955,7 @@ int Fun(char *d, town sta, int len0, double *p, double *rec_buf, double rec_c)
 	int k;
 	char d1[200];
 
-	len = strlen(d);
+	len = (int)strlen(d);
 	ret = 1;
 	for (k = 0; k <= len - len0; k++)
 	{
@@ -1949,7 +1968,14 @@ int Fun(char *d, town sta, int len0, double *p, double *rec_buf, double rec_c)
 			double fm = 0;
 			for (i = sta.tot[j].sta; i <= sta.tot[j].end; i++)
 			{
-				int cod = 4 * IdeLet(d1[i]) + IdeLet(d1[i + 1]);
+				int c1 = IdeLet(d1[i]);
+				int c2 = IdeLet(d1[i + 1]);
+				if (c1 < 0 || c2 < 0) 
+				{
+					p[k] = 0;
+					return 0;
+				}
+				int cod = 4 * c1 + c2;
 				if (sta.tot[j].num == cod) { fm++; break; }
 			}
 			if (fm != 0)
@@ -1965,7 +1991,7 @@ int Fun(char *d, town sta, int len0, double *p, double *rec_buf, double rec_c)
 int ComplStr(char *d)
 {
 	int i, len;
-	len = strlen(d);
+	len = (int)strlen(d);
 	char d1[SEQLEN];
 	strcpy(d1, d);
 	//	memset(d,0,sizeof(d));
@@ -1987,49 +2013,77 @@ void GetSost(char *d, int word, int size, int *sost)
 	int i, j, k, i_sost, let;
 	char letter[5] = "acgt";
 	int ten[8] = { 1, 4, 16, 64, 256, 1024, 4096, 16384 };
-	int lens = strlen(d);
+	int lens = (int)strlen(d);
 	for (i = 0; i < size; i++)sost[i] = 0;
-	for (i = 0; i < lens - word + 1; i++)
+	int word1 = word - 1;
+	int befo = 0, test = 0;
+	for (i = 0; i < lens - word1; i++)
 	{
 		i_sost = 0;
-		for (j = word - 1; j >= 0; j--)
+		int coden = IdeLet(d[i + word1]);
+		if (befo == 1 && coden >= 0 )test = 1;
+		if (befo == 0)
 		{
-			for (k = 0; k < 4; k++)
+			test = 1;
+			for (j = 0;j < word;j++)
 			{
-				if (d[i + j] == letter[k]) { let = k; break; }
+				int codei = IdeLet(d[i + j]);
+				if (codei < 0)
+				{
+					test = 0;
+					break;
+				}
 			}
-			i_sost += ten[word - 1 - j] * let;
 		}
-		sost[i_sost]++;
+		if(test==1)
+		{
+			let = 0;
+			for (j = word1; j >= 0; j--)
+			{				
+				for (k = 0; k < 4; k++)
+				{
+					if (d[i + j] == letter[k]) { let = k; break; }
+				}
+				i_sost += ten[word - 1 - j] * let;
+			}
+			sost[i_sost]++;
+		}		
 	}
 }
 void GetSostPro(char *d, int word, int size, int *sost, double *sost_pro)
 {
 	int i, j, k, i_sost;
-	char letter[5] = "acgt";
+	char letter[6] = "acgtn";
 	int ten[8] = { 1, 4, 16, 64, 256, 1024, 4096, 16384 };
-	int lens = strlen(d);
+	int lens = (int)strlen(d);
 	int word1 = word - 1;
 	for (i = 0; i < size; i++)sost[i] = 0;
 	for (i = 0; i < lens - word1; i++)
 	{
 		i_sost = 0;
+		int err = 1;
 		for (j = word1; j >= 0; j--)
-		{
+		{			
 			for (k = 0; k < 4; k++)
 			{
 				if (d[i + j] == letter[k])
 				{
 					i_sost += ten[word1 - j] * k;
+					err = 0;
 					break;
 				}
 			}
+			if (err == 1)break;
 		}
-		sost[i_sost]++;
-		sost_pro[i] = (double)i_sost;
+		if (err == 0)
+		{
+			sost[i_sost]++;
+			sost_pro[i] = (double)i_sost;
+		}
+		else sost_pro[i] = -1;
 	}
 }
-void EvalSeq(char *file, int &nseq, int olen)
+void EvalSeq(char *file, int &nseq, int olen, int len_peak_max)
 {
 	char l[SEQLEN], d[SEQLEN], head[400];
 	int fl = 0;
@@ -2050,9 +2104,9 @@ void EvalSeq(char *file, int &nseq, int olen)
 		if (*l == '\n' && fl != -1)continue;
 		if (((*l == symbol) || (fl == -1)) && (fl != 0))
 		{
-			int lenx = strlen(d);
+			int lenx = (int)strlen(d);
 			int check = CheckStr(file, d, n, 1);
-			if (lenx >= olen && check == 1)nseq++;
+			if ((lenx >= olen && lenx <= len_peak_max) && check != -1)nseq++;
 			if (fl == -1)
 			{
 				fclose(in);
@@ -2085,7 +2139,7 @@ void EvalSeq(char *file, int &nseq, int olen)
 		strcat(d, l);
 	}
 }
-void EvalLen(char *file, int *len, int olen)
+void EvalLen(char *file, int *len, int olen, int len_peak_max)
 {
 	char l[SEQLEN], d[SEQLEN], head[400];
 	int fl = 0;
@@ -2106,9 +2160,9 @@ void EvalLen(char *file, int *len, int olen)
 		if (*l == '\n' && fl != -1)continue;
 		if (((*l == symbol) || (fl == -1)) && (fl != 0))
 		{
-			int lenx = strlen(d);
+			int lenx = (int)strlen(d);
 			int check = CheckStr(file, d, nn, 0);
-			if (lenx >= olen && check == 1)len[n++] = lenx;
+			if ((lenx >= olen && lenx <= len_peak_max) && check != -1)len[n++] = lenx;
 			nn++;
 			if (fl == -1)
 			{
@@ -2141,7 +2195,7 @@ void EvalLen(char *file, int *len, int olen)
 		strcat(d, l);
 	}
 }
-void ReadSeq(char *file, int nseq, int *len, int ***seq_real, int olen, double *octaf, int *octa1, int octa, int octa_size, double **octa_pro1, char ***peak_real)
+void ReadSeq(char *file, int nseq, int *len, int ***seq_real, int olen, double *octaf, int *octa1, int octa, int octa_size, double **octa_pro1, char ***peak_real, int len_peak_max)
 {
 	char l[SEQLEN], d[2][SEQLEN], head[400];
 	int fl = 0, i, j;
@@ -2164,10 +2218,10 @@ void ReadSeq(char *file, int nseq, int *len, int ***seq_real, int olen, double *
 		if (*l == '\n' && fl != -1)continue;
 		if (((*l == symbol) || (fl == -1)) && (fl != 0))
 		{
-			int lenx = strlen(d[0]);
+			int lenx = (int)strlen(d[0]);
 			int check = CheckStr(file, d[0], nn, 0);
-			nn++;
-			if (lenx >= olen && check == 1)
+			nn++;			
+			if ((lenx >= olen && lenx <= len_peak_max) && check != -1)
 			{
 				TransStr(d[0]);
 				d[0][len[n]] = '\0';
@@ -2191,12 +2245,12 @@ void ReadSeq(char *file, int nseq, int *len, int ***seq_real, int olen, double *
 					for (i = 0; i < len1; i++)
 					{
 						cod[1] = IdeLet(d[j][i + 1]);
-						if (cod[0] != -1 && cod[1] != -1)seq_real[j][n][i] = 4 * cod[0] + cod[1];
+						if (cod[0] >=0 && cod[1] >=0)seq_real[j][n][i] = 4 * cod[0] + cod[1];
 						else
 						{
-							//seq_real[j][n][i] = -1;
-							printf("ReadSeq! Input file %s peak %d strand %d position %d error!\n%s\n", file, n, j, i, d[j]);
-							exit(1);
+							seq_real[j][n][i] = -1;
+						//	printf("ReadSeq! Input file %s peak %d strand %d position %d error!\n%s\n", file, n, j, i, d[j]);
+							//exit(1);
 						}
 						cod[0] = cod[1];
 					}
@@ -2207,11 +2261,15 @@ void ReadSeq(char *file, int nseq, int *len, int ***seq_real, int olen, double *
 			{
 				if (lenx < olen)
 				{
-					printf("ReadSeq! Short peak %d (Len %d) ignored\n", n + 1, lenx);
+					printf("ReadSeq! Short peak %d (Len %d) ignored\n", nn + 1, lenx);
 				}
-				if (check == -1)
+				if (lenx > len_peak_max)
 				{
-					printf("ReadSeq! Unusual symbol, peak %d ignored\n%s\n", n + 1, d[0]);
+					printf("ReadSeq! Long peak %d (Len %d) ignored\n", nn + 1, lenx);
+				}
+				if (check != 1)
+				{
+					printf("ReadSeq! Unusual symbol, peak %d partially ignored\n%s\n", nn + 1, d[0]);
 				}
 			}
 			if (fl == -1)
@@ -2252,7 +2310,7 @@ void ReadSeq(char *file, int nseq, int *len, int ***seq_real, int olen, double *
 		strcat(d[0], l);
 	}
 }
-void ReadSeqBack(char *file, int nseq, int *len, int olen, int reg_max, double **dav, double **dcv, double *octaf, int *octa1, int octa, int octa_size, int len_max)
+void ReadSeqBack(char *file, int nseq, int *len, int olen, int reg_max, double **dav, double **dcv, double *octaf, int *octa1, int octa, int octa_size, int len_max, int len_peak_max)
 {
 	char l[SEQLEN], d[SEQLEN], head[400];
 	int m, i, j, k, v, fl = 0;
@@ -2270,13 +2328,7 @@ void ReadSeqBack(char *file, int nseq, int *len, int olen, int reg_max, double *
 	}
 	char symbol = fgetc(in);
 	rewind(in);
-	for (j = 1; j <= reg_max; j++)
-	{
-		int j1 = j - 1;
-		n_backr[j1] = 0;
-		for (k = 0; k < nseq; k++)n_backr[j1] += (len[k] - j);
-		n_backr[j1] *= 2;
-	}
+	for (j = 0; j < reg_max; j++)n_backr[j] = 0;
 	int nn = 0, n = 0;
 	while (n >= 0)
 	{
@@ -2284,13 +2336,13 @@ void ReadSeqBack(char *file, int nseq, int *len, int olen, int reg_max, double *
 		if (*l == '\n' && fl != -1)continue;
 		if (((*l == symbol) || (fl == -1)) && (fl != 0))
 		{
-			int lenx = strlen(d);
+			int lenx = (int)strlen(d);
 			int check = CheckStr(file, d, nn, 0);
 			nn++;
-			if (lenx >= olen && check == 1)
-			{
+			if ((lenx >= olen && lenx <= len_peak_max) && check != -1)
+			{				
 				TransStr(d);
-				d[len[n]] = '\0';
+				d[len[n]] = '\0';				
 				int cod[2];
 				for (m = 0; m < 2; m++)
 				{
@@ -2301,13 +2353,13 @@ void ReadSeqBack(char *file, int nseq, int *len, int olen, int reg_max, double *
 					for (k = 0; k < len[n] - 1; k++)
 					{
 						cod[1] = IdeLet(d[k + 1]);
-						int code;
-						if (cod[0] != -1 && cod[1] != -1) code = 4 * cod[0] + cod[1];
-						else
-						{
-							printf("ReadSeqBack! Input file %s peak %d strand %d position %d error!\n%s\n", file, n, m, k, d);
-							exit(1);
-						}
+						int code = -1;
+						if (cod[0] >=0 && cod[1] >=0) code = 4 * cod[0] + cod[1];
+					//	else
+					//	{
+							//printf("ReadSeqBack! Input file %s peak %d strand %d position %d error!\n%s\n", file, n, m, k, d);
+							//exit(1);
+					//	}
 						seq_back[k] = code;
 						cod[0] = cod[1];
 					}
@@ -2316,33 +2368,60 @@ void ReadSeqBack(char *file, int nseq, int *len, int olen, int reg_max, double *
 						int j1 = j - 1;
 						for (k = 0; k < len[n] - j; k++)
 						{
+							int gom = 1;
 							for (i = 0; i < 16; i++)freq[i] = 0;
-							for (v = 0; v < j; v++)freq[seq_back[k + v]]++;
-							for (i = 0; i < 16; i++)
+							for (v = 0; v < j; v++)
 							{
-								if (freq[i] > 0)
+								int sb = seq_back[k + v];
+								if (sb == -1)
 								{
-									freq[i] /= j;
-									dav[j1][i] += freq[i];
-									dcv[j1][i] += freq[i] * freq[i];
+									gom = -1;
+									break;
 								}
+								else freq[sb]++;
 							}
+							if (gom == 1)
+							{
+								n_backr[j1]++;
+								for (i = 0; i < 16; i++)
+								{
+									if (freq[i] > 0)
+									{
+										freq[i] /= j;
+										dav[j1][i] += freq[i];
+										dcv[j1][i] += freq[i] * freq[i];
+									}
+								}								
+							}							
 						}
-					}
-				}
+					}										
+				}				
 				n++;
 			}
 			else
 			{
-				if (lenx < olen)printf("peak %d (Len %d) ignored\n", n + 1, lenx);
-				if (check == -1)printf("Unusual symbol, peak %d ignored\n%s\n", n + 1, d);
+				if (lenx < olen)
+				{
+					printf("ReadSeqBack! Short peak %d (Len %d) ignored\n", nn + 1, lenx);
+				}
+				if (lenx > len_peak_max)
+				{
+					printf("ReadSeqBack! Long peak %d (Len %d) ignored\n", nn + 1, lenx);
+				}
+				if (check != 1)
+				{
+					printf("ReadSeqBack!Unusual symbol, peak %d partially ignored\n%s\n", nn + 1, d);
+					//exit(1);
+				}
 			}
 			if (fl == -1)
 			{
-				for (k = 0; k < 16; k++)
+
+				for (j = 0; j < reg_max; j++)
 				{
-					for (j = 0; j < reg_max; j++)
-					{
+					n_backr[j] *= 2;
+					for (k = 0; k < 16; k++)
+					{						
 						dav[j][k] /= n_backr[j];
 						dcv[j][k] /= n_backr[j];
 						dcv[j][k] -= dav[j][k] * dav[j][k];
@@ -2388,7 +2467,7 @@ int main(int argc, char *argv[])
 {
 	int *len, nseq, *lenb, nseqb, i, j, k, m, n;
 	char file_for[500], file_back[500], path_fasta[500], path_out[500], pfile_for[500], pfile_back[500];
-	char file_out[500];
+	char filef[500], file_out[500];
 	int ***seq_real;
 	char ***peak_real;
 	double **dav;//dinucl.content background
@@ -2398,6 +2477,7 @@ int main(int argc, char *argv[])
 	double *qp;//train scores	
 	int **octa_prowb, *len_octa, **octa_prows;// octa position lists, octa position counts
 	double **octa_pro1, **octa_prow, *thr_octa;// , *hoxa_wei;
+	int len_peak_max = 1000;
 
 	//qbs *qps;
 
@@ -2418,6 +2498,7 @@ int main(int argc, char *argv[])
 	int size = atoi(argv[6]);
 	int octa = atoi(argv[7]); 
 	strcpy(path_out, argv[8]);
+
 	int olen1 = olen - 1;
 	srand((unsigned)time(NULL));
 	if (size > POPSIZE)
@@ -2443,15 +2524,15 @@ int main(int argc, char *argv[])
 	}
 	town_ext pop_ext;
 	//foreground
-	EvalSeq(pfile_for, nseq, olen);
+	EvalSeq(pfile_for, nseq, olen, len_peak_max);
 	len = new int[nseq];
 	if (len == NULL) { puts("Out of memory..."); exit(1); }
-	EvalLen(pfile_for, len, olen);
+	EvalLen(pfile_for, len, olen, len_peak_max);
 	//background
-	EvalSeq(pfile_back, nseqb, olen);
+	EvalSeq(pfile_back, nseqb, olen, len_peak_max);
 	lenb = new int[nseqb];
 	if (lenb == NULL) { puts("Out of memory..."); exit(1); }
-	EvalLen(pfile_back, lenb, olen);
+	EvalLen(pfile_back, lenb, olen, len_peak_max);
 	best_sco = new double[nseq];
 	if (best_sco == NULL) { puts("Out of memory..."); exit(1); }
 	seq_real = new int**[2];
@@ -2517,11 +2598,11 @@ int main(int argc, char *argv[])
 	if (octa1 == NULL) { puts("Out of memory..."); exit(1); }
 	for (i = 0; i < octa_size; i++)octa_av[i] = 0;
 	for (i = 0; i < octa_size; i++)octa1[i] = 0;
-	ReadSeq(pfile_for, nseq, len, seq_real, olen, octa_av, octa1, octa, octa_size, octa_pro1,peak_real);
+	ReadSeq(pfile_for, nseq, len, seq_real, olen, octa_av, octa1, octa, octa_size, octa_pro1,peak_real, len_peak_max);
 	for (i = 0; i < octa_size; i++)octa_rat[i] = log10(octa_av[i]);
 	for (i = 0; i < octa_size; i++)octa_av[i] = 0;
 	for (i = 0; i < octa_size; i++)octa1[i] = 0;
-	ReadSeqBack(pfile_back, nseqb, lenb, olen, reg_max, dav, dcv, octa_av, octa1, octa, octa_size,len_max);
+	ReadSeqBack(pfile_back, nseqb, lenb, olen, reg_max, dav, dcv, octa_av, octa1, octa, octa_size,len_max, len_peak_max);
 	for (i = 0; i < octa_size; i++)octa_rat[i] -= log10(octa_av[i]);
 	/*printf("Octa_rat");
 	for (i = 0; i < octa_size; i++)
@@ -2536,7 +2617,8 @@ int main(int argc, char *argv[])
 		for (n = 0; n < leni; n++)
 		{
 			int i_sost = (int)octa_pro1[i][n];
-			octa_pro1[i][n] = octa_rat[i_sost];
+			if (i_sost != -1)octa_pro1[i][n] = octa_rat[i_sost];
+			else octa_pro1[i][n] = 0;
 		}
 	}
 	//exit(1);
@@ -2556,6 +2638,10 @@ int main(int argc, char *argv[])
 		char word[] = "acgt";
 		GetWords(2, 0, 16, word);
 	}
+	strcpy(filef, file_for);
+	strcat(filef, "_");
+	strcpy(file_out, file_for);
+	strcat(file_out, "_andy");
 	for (i = 0; i < MEGE; i++)
 	{
 		pop[i].mem_in(nseq);
@@ -3355,11 +3441,11 @@ int main(int argc, char *argv[])
 		pop[0].fprint_allfi(file_for1, ext2best, olen, pop_ext.c0, pop_ext.buf, reg_max);
 		pop[0].fprint_allfi_mat(file_for1, extmat, name, olen, pop_ext.c0, pop_ext.buf);
 		char file_train_seq[500];
-		int file_fasta_len = strlen(file_for1);
+		int file_fasta_len = (int)strlen(file_for1);
 		k = 0;
 		for (j = 0; j < file_fasta_len; j++)
 		{
-			char cc = file_for[j];
+			char cc = file_for1[j];
 			if (cc == '.' || cc == '\0')
 			{
 				file_train_seq[k++] = '\0';
@@ -3369,7 +3455,7 @@ int main(int argc, char *argv[])
 		}
 		strcat(file_train_seq, "_sga_train.seq");
 		pop[0].fprint_seq(file_train_seq, olen, nseq, peak_real, best_sco);
-	}	
+	}
 	for (i = 0; i < MEGE; i++)pop[i].mem_out();
 	for (i = 0; i < 2; i++)det2[i].mem_out();
 	det1.mem_out();
