@@ -49,26 +49,30 @@ void DelChar(char *str, char c)
 	}
 	str[size] = '\0';
 }
-int CheckStr(char *file, char *d, int n, int print, int thresh)
+int CheckStr(char *file, char *d, int n, int print, int bad)
 {
-	int i, len, ret;
+	int i, len, ret,di;
 	len = strlen(d);
-	ret = 1;
-	int bad = 0;
+	ret = 1;	
 	for (i = 0; i < len; i++)
 	{
-		if (strchr("atgcATGC", (int)d[i]) != NULL)continue;		
-		else bad++;
-		break;
+		di = (int)(d[i]);
+		if (strchr("atgcATGC", di )!= NULL)continue;		
+		if (strchr("nN", di) != NULL)bad++;
+		else
+		{
+			printf("File %s; sequence %d position %d (%c) bad. Sequence too bad!\n", file, n, i + 1, d[i]);
+			exit(1);
+		}
 	}
-	if (bad > thresh)
+	if (bad>0)
 	{
-		if (print == 1)printf("File %s; sequence %d position %d (%c) bad. Sequence deleted!\n", file, n, i + 1, d[i]);
-		return -1;
+		if (print == 1)printf("File %s; sequence %d position %d (%c) bad. Sequence processed!\n", file, n, i + 1, d[i]);
+		return 1;
 	}
 	return(ret);
 }
-void EvalSeq(char *file, int &nseq, int olen, int thresh)
+void EvalSeq(char *file, int &nseq, int olen)
 {
 	char l[SEQLEN], d[SEQLEN], head[400];
 	int fl = 0;
@@ -90,8 +94,10 @@ void EvalSeq(char *file, int &nseq, int olen, int thresh)
 		if (*l == '\n' && fl != -1)continue;
 		if (((*l == symbol) || (fl == -1)) && (fl != 0))
 		{
-			int lenx = strlen(d);
-			int check = CheckStr(file, d, n, 1, thresh);
+			int lenx = (int)strlen(d);
+			int bad = 0;
+			int check = CheckStr(file, d, n, 1,bad);
+			lenx -= bad;
 			if (lenx >= olen && check == 1)nseq++;
 			if (fl == -1)
 			{
@@ -124,7 +130,7 @@ void EvalSeq(char *file, int &nseq, int olen, int thresh)
 		strcat(d, l);
 	}
 }
-void EvalLen(char *file, int *len, int olen, int thresh)
+void EvalLen(char *file, int *len, int *bad, int olen)
 {
 	char l[SEQLEN], d[SEQLEN], head[400];
 	int fl = 0;
@@ -145,9 +151,16 @@ void EvalLen(char *file, int *len, int olen, int thresh)
 		if (*l == '\n' && fl != -1)continue;
 		if (((*l == symbol) || (fl == -1)) && (fl != 0))
 		{
-			int lenx = strlen(d);
-			int check = CheckStr(file, d, n, 0, thresh);
-			if (lenx >= olen && check == 1)len[n++] = lenx;
+			int lenx = (int)strlen(d);
+			int bad1 = 0;
+			int check = CheckStr(file, d, n, 0, bad1);
+			lenx -= bad1;
+			if (lenx >= olen && check == 1)
+			{
+				len[n] = lenx;
+				bad[n] = bad1;
+				n++;
+			}
 			nn++;
 			if (fl == -1)
 			{
@@ -180,32 +193,6 @@ void EvalLen(char *file, int *len, int olen, int thresh)
 		strcat(d, l);
 	}
 }
-void GetSost(char *d, int word, double *sost)
-{
-	int i, j, k, i_sost, let;
-	char letter0[5] = "acgt", letter[5] = "ACGT";
-	if (strchr(letter0, (int)d[0]) != NULL)strcpy(letter, letter0);
-	int ten[6] = { 1, 4, 16, 64, 256, 1024 };
-	int lens = strlen(d);
-	int size = 1;
-	for (k = 0; k < word; k++)size *= 4;
-	for (i = 0; i < size; i++)sost[i] = 0;
-	lens = lens - word + 1;
-	for (i = 0; i < lens; i++)
-	{
-		i_sost = 0;
-		for (j = word - 1; j >= 0; j--)
-		{
-			for (k = 0; k < 4; k++)
-			{
-				if (d[i + j] == letter[k]) { let = k; break; }
-			}
-			i_sost += ten[word - 1 - j] * let;
-		}
-		sost[i_sost]++;
-	}
-	for (i = 0; i < size; i++)sost[i] /= lens;
-}
 char *TransStrBack(char *d)
 {
 	int i, c, lens;
@@ -233,12 +220,12 @@ int ComplStr(char *d)
 		case 'T': {d[i] = 'A'; break; }
 		case 'C': {d[i] = 'G'; break; }
 		case 'G': {d[i] = 'C'; break; }
-		default: d[i] = 'n';
+		default: d[i] = 'N';
 		}
 	}
 	return 1;
 }
-void ReadSeq(char *file, int nseq, int *len, char ***peak_real, int olen, int thresh)
+void ReadSeq(char *file, int nseq, int *len, char ***peak_real, int olen)
 {
 	char l[SEQLEN], d[2][SEQLEN], head[400];
 	int fl = 0, j;
@@ -258,8 +245,10 @@ void ReadSeq(char *file, int nseq, int *len, char ***peak_real, int olen, int th
 		if (*l == '\n' && fl != -1)continue;
 		if (((*l == symbol) || (fl == -1)) && (fl != 0))
 		{
-			int lenx = strlen(d[0]);
-			int check = CheckStr(file, d[0], n, 0, thresh);
+			int lenx = (int)strlen(d[0]);
+			int bad = 0;
+			int check = CheckStr(file, d[0], n, 0,bad);
+			lenx -= bad;
 			nn++;
 			if (lenx >= olen && check == 1)
 			{
@@ -370,7 +359,7 @@ int main(int argc, char *argv[])
 	//	char name_chr[10][3] = {"1","2","3","4","5","6","7","8","9","10"};
 	//int n_chr=10;
 	int sizelo1[NCHR], sizelo2[NCHR];//lengths in bp, Mb
-	int n_chr;
+	int n_chr=0;
 	strcpy(path_fasta, argv[1]);
 	strcpy(filei, argv[2]);//in_file
 	strcpy(fileo1, argv[3]);//out_file
@@ -463,8 +452,7 @@ int main(int argc, char *argv[])
 	if (strcmp(genome, "sc64") == 0)mil = 100000;
 	for (i = 0; i < n_chr; i++)sizelo2[i] = sizelo1[i] / mil;
 	double stop_thr = 0.99;// fraction of peaks 100% covered with height background sequences
-	int win_gomol = 50;//to compare homology and min paek length
-	int thresh = 20; // min alive atgc letters
+	int win_gomol = 50;//to compare homology and min paek length	
 	srand((unsigned)time(NULL));
 	for (i = 0; i < n_chr; i++)
 	{
@@ -479,14 +467,14 @@ int main(int argc, char *argv[])
 	}
 	int tot_len = 0;
 	for (i = 0; i < n_chr; i++)tot_len += sizelo2[i];
-	int *len, nseq = 0, olen = win_gomol;
-	EvalSeq(filei, nseq, olen, thresh);
+	int *len, nseq = 0, olen = win_gomol, *bad;
+	EvalSeq(filei, nseq, olen);
 	len = new int[nseq];
 	if (len == NULL) { puts("Out of memory..."); exit(1); }
-	//	peak_wei = new int[nseq];
-	//	if (peak_wei == NULL){ puts("Out of memory..."); exit(1); }
+	bad = new int[nseq];
+	if (bad == NULL){ puts("Out of memory..."); exit(1); }
 	int dnseq = 0;	
-	EvalLen(filei, len, olen, thresh);
+	EvalLen(filei, len, bad, olen);
 	int *hei;
 	hei = new int[nseq];
 	if (hei == NULL) { puts("Out of memory..."); exit(1); }
@@ -498,11 +486,11 @@ int main(int argc, char *argv[])
 		peak_real[i] = new char*[nseq];
 		for (j = 0; j < nseq; j++)
 		{
-			peak_real[i][j] = new char[len[j] + 1];
+			peak_real[i][j] = new char[len[j] + bad[j] + 1];
 			if (peak_real[i][j] == NULL) { puts("Out of memory..."); exit(1); }
 		}
 	}
-	ReadSeq(filei, nseq, len, peak_real, win_gomol, thresh);
+	ReadSeq(filei, nseq, len, peak_real, win_gomol);
 	int len_max, len_min;
 	seqm *sort;
 	sort = new seqm[nseq];
@@ -526,7 +514,7 @@ int main(int argc, char *argv[])
 	}
 	for (i = 0; i < nseq; i++)hei[i] = 0;
 	qsort((void*)(&sort[0]), nseq, sizeof(sort[0]), compare_len);
-	len_max = sort[nseq - 1].len;
+	len_max = sort[nseq - 1].len+1;
 	len_min = sort[0].len;
 	int pr_tot = 0;
 	int fl = 0;
@@ -678,12 +666,18 @@ int main(int argc, char *argv[])
 		iter++;
 		while (fgets(d, len_max, in_seq[chr_z]) != NULL)
 		{
-			check = CheckStr(filechr[chr_z], d, 0, 0,len_max);
-			if (check == 1)break;
-		}
-		TransStrBack(d);
+			if (strstr(d, "N") != NULL || strstr(d, "n") != NULL)continue;
+			else
+			{
+				check = 1;
+				break;
+			}
+			//check = CheckStr(filechr[chr_z], d, 0, 0,len_max);
+			//if (check == 1)break;
+		}		
 		if (check == 1)
 		{
+			TransStrBack(d);
 			int gom = 0;
 			for (i = 0; i < nseq; i++)
 			{
@@ -749,7 +743,7 @@ int main(int argc, char *argv[])
 			{
 				if (hei[i] < height)
 				{
-					len_max = sort[i].len;
+					len_max = sort[i].len+1;
 					inx = i;
 					break;
 				}
@@ -772,7 +766,7 @@ int main(int argc, char *argv[])
 	}
 	delete[] peak_real;
 	delete[] len;
+	delete[] bad;
 	delete[] sort;
-	//delete[] sele;
 	return 0;
 }
