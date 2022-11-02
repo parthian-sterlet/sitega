@@ -2553,7 +2553,7 @@ void ReadSeqBack(char* file, int nseq, int* len, int*** seq_back, int olen, int 
 int main(int argc, char* argv[])
 {
 	int* len, nseq, nseqb, * lenb, i, j, k, n, m;
-	char file_for[500], file_back[500], path_fasta[500], pfile_for[500], pfile_back[500];
+	char file_for[500], file_back[500], path_fasta[500], path_out[500], pfile_for[500], pfile_back[500];
 	int*** seq_real, *** seq_back;
 	double** dav;//dinucl.content background
 	double** dcv;//self covariations for regions LPD
@@ -2562,9 +2562,9 @@ int main(int argc, char* argv[])
 	int** octa_prowb, * len_octa, ** octa_prows;// octa position lists, octa position counts, weight sums
 	double** octa_pro1, ** octa_prow, * thr_octa;// , *hoxa_wei;	
 
-	if (argc != 11)
+	if (argc != 12)
 	{
-		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 567int motif_min,max,dif 8double ratio_cnt_of_all(0=jk <0=odd) 9int num_iterations 10 int olig_background");//  5<pop_size>
+		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 567int motif_min,max,dif 8double ratio_cnt_of_all(0=jk <0=odd) 9int num_iterations 10 int olig_background 11path_out");//  5<pop_size>
 		exit(1);
 	}
 	//	printf("One ");
@@ -2586,8 +2586,10 @@ int main(int argc, char* argv[])
 	double ratio_train_to_control = atof(argv[8]);
 	int iteration = atoi(argv[9]);//total no. of jack-knife test			
 	int octa = atoi(argv[10]);
+	strcpy(path_out, argv[11]);
 	double fp2 = 0.001;// FPR threshold for pAUC	
 	int len_peak_max = 1000;
+	int olen_min0 = 8;
 	srand((unsigned)time(NULL));
 	dcv = new double* [reg_max];
 	if (dcv == NULL) return -1;
@@ -3711,7 +3713,10 @@ int main(int argc, char* argv[])
 					char extmat[20];
 					char extmat0[] = "_mat";
 					strcpy(extmat, extmat0);
-					pop[iter][0].fprint_allfi_mat(file_for, extmat, name, olen, pop_ext.c0, pop_ext.buf, iter, size_start, olen_min);
+					char file_for1[500];
+					strcpy(file_for1, path_out);
+					strcat(file_for1, file_for);
+					pop[iter][0].fprint_allfi_mat(file_for1, extmat, name, olen, pop_ext.c0, pop_ext.buf, iter, size_start, olen_min0);
 				}
 				big_exit1 = 1;
 			}
@@ -3719,9 +3724,10 @@ int main(int argc, char* argv[])
 			qsort(prc, n_both_sam, sizeof(prc[0]), compare_qbs);
 			FILE* outq;
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
-			strcpy(file_out_cnt, file_for);
+			strcpy(file_out_cnt, path_out);
+			strcat(file_out_cnt, file_for);
 			strcat(file_out_cnt, add_roc);
-			if (olen == olen_min && size0 == size_start)
+			if (olen == olen_min0 && size0 == size_start)
 			{
 				if ((outq = fopen(file_out_cnt, "wt")) == NULL)
 				{
@@ -3757,9 +3763,10 @@ int main(int argc, char* argv[])
 			fclose(outq);
 			printf("\nROC\n");
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
-			strcpy(file_out_cnt, file_for);
+			strcpy(file_out_cnt, path_out);
+			strcat(file_out_cnt, file_for);
 			strcat(file_out_cnt, add_roc1);
-			if (olen == olen_min && size0 == size_start)
+			if (olen == olen_min0 && size0 == size_start)
 			{
 				if ((outq = fopen(file_out_cnt, "wt")) == NULL)
 				{
@@ -3815,9 +3822,10 @@ int main(int argc, char* argv[])
 			printf("\nTOP 900 FP rates\n");
 			for (n = 0; n < 900; n++)printf("%d\t%g\n", n + 1, fp_rate[n]);
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
-			strcpy(file_out_cnt, file_for);
+			strcpy(file_out_cnt, path_out);
+			strcat(file_out_cnt, file_for);
 			strcat(file_out_cnt, add_prc1);
-			if (olen == olen_min && size0 == size_start)
+			if (olen == olen_min0 && size0 == size_start)
 			{
 				if ((outq = fopen(file_out_cnt, "wt")) == NULL)
 				{
@@ -3885,9 +3893,10 @@ int main(int argc, char* argv[])
 				size_len2 = size0;
 			}
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
-			strcpy(file_out_cnt, file_for);
+			strcpy(file_out_cnt, path_out);
+			strcat(file_out_cnt, file_for);
 			strcat(file_out_cnt, add_auc);
-			if (olen == olen_min && size0 == size_start)
+			if (olen == olen_min0 && size0 == size_start)
 			{
 				if ((outq = fopen(file_out_cnt, "wt")) == NULL)
 				{
@@ -3907,11 +3916,12 @@ int main(int argc, char* argv[])
 			fclose(outq);
 		}
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
-		strcpy(file_out_cnt, file_for);
+		strcpy(file_out_cnt, path_out);
+		strcat(file_out_cnt, file_for);
 		strcat(file_out_cnt, "_len");
 		strcat(file_out_cnt, add_auc);
 		FILE* outq;
-		if (olen == olen_min)
+		if (olen == olen_min0)
 		{
 			if ((outq = fopen(file_out_cnt, "wt")) == NULL)
 			{
@@ -3934,8 +3944,10 @@ int main(int argc, char* argv[])
 	{
 		FILE* outq;
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
-		strcpy(file_out_cnt, file_for);
+		strcpy(file_out_cnt, path_out);
+		strcat(file_out_cnt, file_for);
 		strcat(file_out_cnt, "_best");
+		strcat(file_out_cnt, argv[5]);
 		strcat(file_out_cnt, add_roc);
 		if ((outq = fopen(file_out_cnt, "wt")) == NULL)
 		{
@@ -3960,8 +3972,10 @@ int main(int argc, char* argv[])
 		fprintf(outq, "\n");
 		fclose(outq);
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
-		strcpy(file_out_cnt, file_for);
+		strcpy(file_out_cnt, path_out);
+		strcat(file_out_cnt, file_for);
 		strcat(file_out_cnt, "_best");
+		strcat(file_out_cnt, argv[5]);
 		strcat(file_out_cnt, add_prc);
 		if ((outq = fopen(file_out_cnt, "wt")) == NULL)
 		{
@@ -4005,8 +4019,10 @@ int main(int argc, char* argv[])
 			fclose(outq);
 		}
 		memset(file_out_cnt, 0, sizeof(file_out_cnt));
-		strcpy(file_out_cnt, file_for);
+		strcpy(file_out_cnt, path_out);
+		strcat(file_out_cnt, file_for);
 		strcat(file_out_cnt, "_best");
+		strcat(file_out_cnt, argv[5]);
 		strcat(file_out_cnt, add_auc);
 		if ((outq = fopen(file_out_cnt, "wt")) == NULL)
 		{
