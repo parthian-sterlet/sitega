@@ -2588,7 +2588,7 @@ int main(int argc, char* argv[])
 	int octa = atoi(argv[10]);
 	strcpy(path_out, argv[11]);
 	double fp2 = 0.001;// FPR threshold for pAUC	
-	int len_peak_max = 1000;
+	int len_peak_max = 2500;
 	int olen_min0 = 8;
 	srand((unsigned)time(NULL));
 	dcv = new double* [reg_max];
