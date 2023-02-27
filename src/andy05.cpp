@@ -2477,7 +2477,7 @@ int main(int argc, char *argv[])
 	double *qp;//train scores	
 	int **octa_prowb, *len_octa, **octa_prows;// octa position lists, octa position counts
 	double **octa_pro1, **octa_prow, *thr_octa;// , *hoxa_wei;
-	int len_peak_max = 1000;
+	int len_peak_max = 2500;
 
 	//qbs *qps;
 
