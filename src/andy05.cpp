@@ -2476,8 +2476,7 @@ int main(int argc, char *argv[])
 	//	double **frp;//LPD frequencies
 	double *qp;//train scores	
 	int **octa_prowb, *len_octa, **octa_prows;// octa position lists, octa position counts
-	double **octa_pro1, **octa_prow, *thr_octa;// , *hoxa_wei;
-	int len_peak_max = 2500;
+	double **octa_pro1, **octa_prow, *thr_octa;// , *hoxa_wei;	
 
 	//qbs *qps;
 
@@ -2498,7 +2497,8 @@ int main(int argc, char *argv[])
 	int size = atoi(argv[6]);
 	int octa = atoi(argv[7]); 
 	strcpy(path_out, argv[8]);
-
+	int len_peak_max = 3000;
+	
 	int olen1 = olen - 1;
 	srand((unsigned)time(NULL));
 	if (size > POPSIZE)
