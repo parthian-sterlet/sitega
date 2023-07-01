@@ -101,7 +101,7 @@ struct town {
 	void fprint_all(char *file, char *add);
 	void fprint_allfi(char *file, char *add, int len, double c0, double *buf, int reg_max);
 	void fprint_allfi_mat(char *file, char *add, char *name, int len, double c0, double *buf);
-	void fprint_seq(char *file, int olen, int nseq, char ***seq, double *best_sco);
+	void fprint_seq(char *file, int olen, int nseq, char ***seq, double *best_sco, int *len);
 	int check(int min, int max);
 	int mem_in(int nseq);
 	void mem_out(void);
@@ -759,7 +759,7 @@ void town::fprint_allfi_mat(char *file, char *add, char *name, int len, double c
 	}
 	fclose(out);
 }
-void town::fprint_seq(char *file, int olen, int nseq, char ***seq, double *best_sco)
+void town::fprint_seq(char *file, int olen, int nseq, char ***seq, double *best_sco, int *len)
 {
 	int i, j, k, x1, x2;
 	char d[POPSIZE], dir[] = "+-";
@@ -776,6 +776,16 @@ void town::fprint_seq(char *file, int olen, int nseq, char ***seq, double *best_
 		k = 0;
 		for (j = x1; j < x2; j++)d[k++] = seq[cep][i][j];
 		d[olen] = '\0';
+		if (cep == 1)
+		{
+			int x10 = x1, x20 = x2;
+			x1 = len[i] - x20 + 1;
+			x2 = len[i] - x10;
+		}
+		else
+		{
+			x1++;			
+		}
 		fprintf(out, "%d\t%d\t%d\t%c\t%f\t%s\n", i + 1, x1, x2, dir[ori[i]], best_sco[i], d);
 	}
 	fclose(out);
@@ -2480,9 +2490,9 @@ int main(int argc, char *argv[])
 
 	//qbs *qps;
 
-	if (argc != 9)
+	if (argc != 10)
 	{
-		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 5int motif_len 6int size 7int olig_background 8path_out");//  5<pop_size>
+		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 5int motif_len 6int size 7int olig_background 8path_out 9int max_peak_len");//  5<pop_size>
 		exit(1);
 	}
 	strcpy(path_fasta, argv[1]);
@@ -2497,8 +2507,8 @@ int main(int argc, char *argv[])
 	int size = atoi(argv[6]);
 	int octa = atoi(argv[7]); 
 	strcpy(path_out, argv[8]);
-	int len_peak_max = 3000;
-	
+	int len_peak_max = atoi(argv[9]); //2500;
+
 	int olen1 = olen - 1;
 	srand((unsigned)time(NULL));
 	if (size > POPSIZE)
@@ -3454,7 +3464,7 @@ int main(int argc, char *argv[])
 			file_train_seq[k++] = cc;
 		}
 		strcat(file_train_seq, "_sga_train.seq");
-		pop[0].fprint_seq(file_train_seq, olen, nseq, peak_real, best_sco);
+		pop[0].fprint_seq(file_train_seq, olen, nseq, peak_real, best_sco,len);
 	}
 	for (i = 0; i < MEGE; i++)pop[i].mem_out();
 	for (i = 0; i < 2; i++)det2[i].mem_out();
