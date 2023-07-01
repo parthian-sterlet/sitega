@@ -2562,9 +2562,9 @@ int main(int argc, char* argv[])
 	int** octa_prowb, * len_octa, ** octa_prows;// octa position lists, octa position counts, weight sums
 	double** octa_pro1, ** octa_prow, * thr_octa;// , *hoxa_wei;	
 
-	if (argc != 12)
+	if (argc != 13)
 	{
-		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 567int motif_min,max,dif 8double ratio_cnt_of_all(0=jk <0=odd) 9int num_iterations 10 int olig_background 11path_out");//  5<pop_size>
+		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 567int motif_min,max,dif 8double ratio_cnt_of_all(0=jk <0=odd) 9int num_iterations 10 int olig_background 11path_out 12int max_peak_len");//  5<pop_size>
 		exit(1);
 	}
 	//	printf("One ");
@@ -2588,7 +2588,7 @@ int main(int argc, char* argv[])
 	int octa = atoi(argv[10]);
 	strcpy(path_out, argv[11]);
 	double fp2 = 0.001;// FPR threshold for pAUC	
-	int len_peak_max = 3000;
+	int len_peak_max = atoi(argv[12]); //2500;
 	int olen_min0 = 8;
 	srand((unsigned)time(NULL));
 	dcv = new double* [reg_max];
@@ -2864,7 +2864,7 @@ int main(int argc, char* argv[])
 	char file_out_cnt[500];
 	int n_train_max = 0;
 	int size_start = 40;// (int)(k_size_start*olenf_max);
-	int size_end = 100;// (int)(k_size_end*olenf_max);
+	int size_end = 80;// (int)(k_size_end*olenf_max);
 	int size_dif = 20;// (int)(k_size_dif*olenf_max);
 	for (iter = 0; iter < iteration; iter++)
 	{
