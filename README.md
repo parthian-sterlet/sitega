@@ -84,6 +84,7 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 9. number of iterations in bootatrap (default 2)
 10. k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
 11. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
+12. maximal peak length (default value is 3000)
 
 ## Train a model
 
@@ -96,6 +97,7 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 6. size, the number of LPDs (a value is estimated in the bootstrap cross-valiation test, see the previous paragraph)
 7. k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
 8. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
+9. maximal peak length (default value is 3000)
 
 ## Set threshold for a model
 
