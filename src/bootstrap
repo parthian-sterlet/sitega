@@ -1,5 +1,5 @@
-#./background_genome /data/genome/ PEAKS046132_ARR14_Q8L9Y3_MACS2_2168.fa	PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_gb1.fa	PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_gb2.fa	PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_gb3.fa	PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_gb4.fa 10 0.01	1 1 1 500 at10 >PEAKS046132_ARR14_Q8L9Y3_MACS2_2168.log >background_genome.log
-#./andy0bsn5 /data/work/ PEAKS046132_ARR14_Q8L9Y3_MACS2_2168.fa	PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_gb1.fa 6 12 20 4 -1 2 6 /data/outbs/ >bootstrap.log
-./background_genome_mono /data/genome/ PEAKS046132_ARR14_Q8L9Y3_MACS2_2168.fa	PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_gbm.fa 10 0.01 500 at10 >PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_yesn.log
-./andy0bsn5 /data/work/ PEAKS046132_ARR14_Q8L9Y3_MACS2_2168.fa	PEAKS046132_ARR14_Q8L9Y3_MACS2_2168_gbm.fa 6 12 20 4 -1 2 6 /data/outbs/ >bootstrap.log
+./background_genome_mono /data/genome/ ABI3VP1_tnt.AT5G60130_col_a.fasta	ABI3VP1_tnt.AT5G60130_col_a_gb.fasta	5 0.01 5000 at10 0.99		ABI3VP1_tnt.AT5G60130_col_a.out1	ABI3VP1_tnt.AT5G60130_col_a.out2	ABI3VP1_tnt.AT5G60130_col_a.out3	>	ABI3VP1_tnt.AT5G60130_col_a.logABI3VP1_tnt.AT5G60130_col_a.fasta	ABI3VP1_tnt.AT5G60130_col_a_gb.fasta	6	8	8	4	-1	2	6	/hpcws/levitsky-work1/cv/ds/	3000	>	ABI3VP1_tnt.AT5G60130_col_a.log
+./andy05bsn /data/bs/ ABI3VP1_tnt.AT5G60130_col_a.fasta	ABI3VP1_tnt.AT5G60130_col_a_gb.fasta	6	8	8	4	-1	2	6	/data/cv/out/	3000	>	ABI3VP1_tnt.AT5G60130_col_a.log
+
+
 
