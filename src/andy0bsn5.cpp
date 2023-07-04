@@ -2864,7 +2864,7 @@ int main(int argc, char* argv[])
 	char file_out_cnt[500];
 	int n_train_max = 0;
 	int size_start = 40;// (int)(k_size_start*olenf_max);
-	int size_end = 80;// (int)(k_size_end*olenf_max);
+	int size_end = 100;// (int)(k_size_end*olenf_max);
 	int size_dif = 20;// (int)(k_size_dif*olenf_max);
 	for (iter = 0; iter < iteration; iter++)
 	{
@@ -3817,10 +3817,13 @@ int main(int argc, char* argv[])
 				auc_roc_len = auc_roc;
 				size_len = size0;
 			}
-			printf("\nTOP 900 scores\n");
-			for (n = 0; n < 900; n++)printf("%.12f\t%d\n", prc[n].q, prc[n].n);
-			printf("\nTOP 900 FP rates\n");
-			for (n = 0; n < 900; n++)printf("%d\t%g\n", n + 1, fp_rate[n]);
+			{
+				int top900 = Min(900, nseq);
+				printf("\nTOP 900 scores\n");
+				for (n = 0; n < top900; n++)printf("%.12f\t%d\n", prc[n].q, prc[n].n);
+				printf("\nTOP 900 FP rates\n");
+				for (n = 0; n < top900; n++)printf("%d\t%g\n", n + 1, fp_rate[n]);
+			}
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
 			strcpy(file_out_cnt, path_out);
 			strcat(file_out_cnt, file_for);
