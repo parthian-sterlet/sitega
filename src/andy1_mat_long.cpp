@@ -835,16 +835,49 @@ int main(int argc, char* argv[])
 	int n_chr_mm = 21;
 	//mm9	
 	//int sizelo[21]={197195432,181748087,159599783,155630120,152537259,149517037,152524553,131738871,124076172,129993255,121843856,121257530,120284312,125194864,103494974,98319150,95272651,90772031,61342430,166650296,15902555};	
-	//mm10
+	//mouse mm10
 	int sizelo_mm10[21] = { 195471971, 182113224, 160039680, 156508116, 151834684, 149736546, 145441459, 129401213, 124595110, 130694993, 122082543, 120129022, 120421639, 124902244, 104043685, 98207768, 94987271, 90702639, 61431566, 171031299, 91744698 };
-	//Drosophila melanogaster dm6
-	char name_chr_dm[7][3] = { "2R", "2L", "3R", "3L", "X", "Y", "4" };
-	int sizelo_dm6[7] = { 25286936, 23513712, 32079331, 28110227, 23542271, 3667352, 1348131 };
-	int n_chr_dm = 7;
+	//rat Rnor 6.0
+	int n_chr_rn = 22;
+	int sizelo_rn6[22] = { 260522016, 249053267, 169034231, 182687754, 166875058, 140994061, 135012528, 123900184, 114175309, 107211142, 86241447, 46669029, 106807694, 104886043, 101769107, 84729064, 86533673, 83828827, 57337602, 54435887, 152453651, 18315841 };
+	char name_chr_rn[22][3] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "X", "Y" };
+	//zebrafish 11
+	char name_chr_zf[25][3] = { "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25" };
+	int n_chr_zf = 25;
+	//int sizelo_zf10[25]={58871917,59543403,62385949,76625712,71715914,60272633,74082188,54191831,56892771,45574255,45107271,49229541,51780250,51944548,47771147,55381981,53345113,51008593,48790377,55370968,45895719,39226288,46272358,42251103,36898761};
+	int sizelo_zf11[25] = { 59578282, 59640629, 62628489, 78093715, 72500376, 60270059, 74282399, 54304671, 56459846, 45420867, 45484837, 49182954, 52186027, 52660232, 48040578, 55266484, 53461100, 51023478, 48449771, 55201332, 45934066, 39133080, 46223584, 42172926, 37502051 };
 	//arabidopsis tair10
 	char name_chr_at[5][3] = { "1", "2", "3", "4", "5" };
 	int sizelo_at10[5] = { 30427671, 19698289, 23459830, 18585056, 26975502 };
 	int n_chr_at = 5;
+	//soybean Glycine_max_v2.1
+	int n_chr_gm = 20;
+	char name_chr_gm[20][3] = { "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20" };
+	int sizelo_gm21[20] = { 56831624, 48577505, 45779781, 52389146, 42234498, 51416486, 44630646, 47837940, 50189764, 51566898, 34766867, 40091314, 45874162, 49042192, 51756343, 37887014, 41641366, 58018742, 50746916, 47904181 };
+	//Caenorhabditis elegans WBcel235
+	char name_chr_ce[6][5] = { "I", "II", "III", "IV", "V", "X" };
+	int sizelo_ce235[6] = { 15072434, 15279421, 13783801, 17493829, 20924180, 17718942 };
+	int n_chr_ce = 6;
+	//Drosophila melanogaster dm6
+	char name_chr_dm[7][3] = { "2R", "2L", "3R", "3L", "X", "Y", "4" };
+	int sizelo_dm6[7] = { 25286936, 23513712, 32079331, 28110227, 23542271, 3667352, 1348131 };
+	int n_chr_dm = 7;
+	//yeast Schizosaccharomyces pombe ASM294v2 
+	int sizelo_sch294[3] = { 5579133, 4539804, 2452883 };
+	int n_chr_sch = 3;
+	char name_chr_sch[3][5] = { "I", "II", "III" };
+	//yeast Saccharomyces cerevisiae R64-1-1
+	int sizelo_sc64[16] = { 230218, 813184, 316620, 1531933, 576874, 270161, 1090940, 562643, 439888, 745751, 666816, 1078177, 924431, 784333, 1091291, 948066 };
+	int n_chr_sc = 16;
+	char name_chr_sc[16][5] = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI" };
+	//Marchantia polymorpha 6.1
+	int sizelo_mp61[10] = { 30584173, 29643427, 27142341, 26988051, 26794015, 23861560, 21963529, 21314552, 4523046, 7543715 };
+	char name_chr_mp[10][3] = { "1","2","3","4","5","6","7","8","U","V" };
+	int n_chr_mp = 10;
+	//zea mays 73
+	int sizelo_zm73[10] = { 301476924,237917468,232245527,242062272,217959525,169407836,176826311,175377492,157038028,149632204 };
+	char name_chr_zm[10][3] = { "1","2","3","4","5","6","7","8","9","10" };
+	int n_chr_zm = 10;
 
 	strcpy(path_fasta, argv[1]);
 	strcpy(genome, argv[2]);
@@ -892,14 +925,118 @@ int main(int argc, char* argv[])
 			}
 			else
 			{
-				if (strcmp(genome, "dm6") == 0)
+				if (strcmp(genome, "rn6") == 0)
 				{
 					genome_rec = 1;
-					n_chr = n_chr_dm;
+					n_chr = n_chr_rn;
 					for (i = 0; i < n_chr; i++)
 					{
-						sizelo1[i] = sizelo_dm6[i];
-						strcpy(name_chr[i], name_chr_dm[i]);
+						sizelo1[i] = sizelo_rn6[i];
+						strcpy(name_chr[i], name_chr_rn[i]);
+					}
+				}
+				else
+				{
+					if (strcmp(genome, "dm6") == 0)
+					{
+						genome_rec = 1;
+						n_chr = n_chr_dm;
+						for (i = 0; i < n_chr; i++)
+						{
+							sizelo1[i] = sizelo_dm6[i];
+							strcpy(name_chr[i], name_chr_dm[i]);
+						}
+					}
+					else
+					{
+						if (strcmp(genome, "ce235") == 0)
+						{
+							genome_rec = 1;
+							n_chr = n_chr_ce;
+							for (i = 0; i < n_chr; i++)
+							{
+								sizelo1[i] = sizelo_ce235[i];
+								strcpy(name_chr[i], name_chr_ce[i]);
+							}
+						}
+						else
+						{
+							if (strcmp(genome, "sc64") == 0)
+							{
+								genome_rec = 1;
+								n_chr = n_chr_sc;
+								for (i = 0; i < n_chr; i++)
+								{
+									sizelo1[i] = sizelo_sc64[i];
+									strcpy(name_chr[i], name_chr_sc[i]);
+								}
+							}
+							else
+							{
+								if (strcmp(genome, "sch294") == 0)
+								{
+									genome_rec = 1;
+									n_chr = n_chr_sch;
+									for (i = 0; i < n_chr; i++)
+									{
+										sizelo1[i] = sizelo_sch294[i];
+										strcpy(name_chr[i], name_chr_sch[i]);
+									}
+								}
+								else
+								{
+									if (strcmp(genome, "gm21") == 0)
+									{
+										genome_rec = 1;
+										n_chr = n_chr_gm;
+										for (i = 0; i < n_chr; i++)
+										{
+											sizelo1[i] = sizelo_gm21[i];
+											strcpy(name_chr[i], name_chr_gm[i]);
+										}
+									}
+									else
+									{
+										if (strcmp(genome, "mp61") == 0)
+										{
+											genome_rec = 1;
+											n_chr = n_chr_mp;
+											for (i = 0; i < n_chr; i++)
+											{
+												sizelo1[i] = sizelo_mp61[i];
+												strcpy(name_chr[i], name_chr_mp[i]);
+											}
+										}
+										else
+										{
+											if (strcmp(genome, "zm73") == 0)
+											{
+												genome_rec = 1;
+												n_chr = n_chr_zm;
+												for (i = 0; i < n_chr; i++)
+												{
+													sizelo1[i] = sizelo_zm73[i];
+													strcpy(name_chr[i], name_chr_zm[i]);
+												}
+											}
+											else
+											{
+												if (strcmp(genome, "zf11") == 0)
+												{
+													genome_rec = 1;
+													n_chr = n_chr_zf;
+													for (i = 0; i < n_chr; i++)
+													{
+														sizelo1[i] = sizelo_zf11[i];
+														strcpy(name_chr[i], name_chr_zf[i]);
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -1061,13 +1198,20 @@ int main(int argc, char* argv[])
 							fprintf(out, "%f\t%c", p[cmpl1][ib[cmpl1]], cep[cmpl1]);
 							fprintf(out, "\t");
 							int n1;
-							for (n1 = ib[cmpl1]; n1 < posc1[cmpl1]; n1++)fprintf(out, "%c", dp[cmpl1][n1]);
-							for (n1 = posc1[cmpl1]; n1 < posc2[cmpl1]; n1++)
+							for (n1 = ib[cmpl1]; n1 < posc1[cmpl1]; n1++)
 							{
-								char sy = (char)((int)dp[cmpl1][n1] - 32);
+								char sy = (char)((int)dp[cmpl1][n1] + 32);
 								fprintf(out, "%c", sy);
 							}
-							for (n1 = posc2[cmpl1]; n1 < ib[cmpl1] + len0; n1++)fprintf(out, "%c", dp[cmpl1][n1]);
+							for (n1 = posc1[cmpl1]; n1 < posc2[cmpl1]; n1++)
+							{								
+								fprintf(out, "%c", dp[cmpl1][n1]);
+							}
+							for (n1 = posc2[cmpl1]; n1 < ib[cmpl1] + len0; n1++)
+							{
+								char sy = (char)((int)dp[cmpl1][n1] + 32);
+								fprintf(out, "%c", sy);
+							}
 							fprintf(out, "\n");
 						}
 						double score_here = p[cmpl1][ib[cmpl1]];						
