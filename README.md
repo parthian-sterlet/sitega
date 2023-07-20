@@ -138,8 +138,8 @@ Whole chromosome sequences in plain format are required to run the program, i.e.
 These scripts implement various pipelines for Linux:
 1. [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/src/train) - **Preparation** and  **Train a model** modules
 2. [bootstrap test for a model](https://github.com/parthian-sterlet/sitega/blob/master/src/bootstrap) - **Preparation** and **Estimate accuracy for a model** modules
-3. [training and scanning with a model](https://github.com/parthian-sterlet/sitega/blob/master/src/scan) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model** modules
-
+3. [training and scanning a fasta file with a model](https://github.com/parthian-sterlet/sitega/blob/master/src/scan) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model** modules
+4. [training and scanning whole genome with a model](https://github.com/parthian-sterlet/sitega/blob/master/src/scan) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan whole genome with a model** modules
 # Interpretation of results
 
 ## Background dataset generation
