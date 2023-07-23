@@ -10,7 +10,7 @@
 
 #define Min(a,b) ((a)>(b))? (b):(a);
 #define Max(a,b) ((a)>(b))? (a):(b);
-#define SEQLEN 5000
+#define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
 #define MEGE 40//population size 1st stage
 #define ELIT 20//population size 2nd stage
