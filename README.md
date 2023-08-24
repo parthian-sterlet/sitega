@@ -62,7 +62,7 @@ Lists of command line arguments for all modules are described below
 
 ## Background set generation
 
-[background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/blob/main/src/background_genome_mono.cpp)
+Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/blob/main/src/background_genome_mono.cpp), 
 see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antinoise)
 
 ## Set parameters of a model through accuracy estimation
