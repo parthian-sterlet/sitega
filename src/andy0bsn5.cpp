@@ -2864,8 +2864,8 @@ int main(int argc, char* argv[])
 	char file_out_cnt[500];
 	int n_train_max = 0;
 	int size_start = 20;// (int)(k_size_start*olenf_max);
-	int size_end = 25;// (int)(k_size_end*olenf_max);
-	int size_dif = 5;// (int)(k_size_dif*olenf_max);
+	int size_end = 100;// (int)(k_size_end*olenf_max);
+	int size_dif = 20;// (int)(k_size_dif*olenf_max);
 	for (iter = 0; iter < iteration; iter++)
 	{
 		if (n_train[iter] > n_train_max)n_train_max = n_train[iter];
