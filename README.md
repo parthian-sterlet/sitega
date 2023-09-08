@@ -10,7 +10,7 @@ The DepLogo tool [(Grau et al. 2019)](https://doi.org/10.1093/bioinformatics/btz
 SiteGA source code is written in C++ language. To compile exetubables from the source code you need:
 
 * In Linux system, C++ compiler, e.g. [GCC](https://gcc.gnu.org/) compiler 
-* In Windiws system any VC++ package, e.g. [Microsoft Visual Studio Community](https://visualstudio.microsoft.com/vs/community/)
+* In Windows system any VC++ package, e.g. [Microsoft Visual Studio Community](https://visualstudio.microsoft.com/vs/community/)
 
 # Input data
 The main part of input data represent ChIP-seq peaks in a Fasta format. To optimize computation time, the restriction 3000 bp for the length of any peak is used, though a length of peak is not restricted by the algorithm. The same reason requires the application in analysis of at least moderate number of peaks, typically ~1000 peaks are enough to derive a motif.
