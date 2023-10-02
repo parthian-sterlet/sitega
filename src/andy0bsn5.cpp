@@ -3802,8 +3802,8 @@ int main(int argc, char* argv[])
 					double dauc = (tproc_cur + tproc_pred) * (fproc_cur - fproc_pred) / 2 / n_cnt_tot;
 					//printf("%d\t%d\t%g\t%g\t%g\n", tproc_cur, tproc_pred, fproc_cur, fproc_pred, dauc);
 					fprintf(outq, "%g\t%f\n", fproc_cur, (double)tproc_cur / n_cnt_tot);
-					auc_roc += dauc;
-					if (fproc_cur >= fp2)break;
+					if (fproc_cur <= fp2)auc_roc += dauc;
+					//if (fproc_cur >= fp2)break;
 					tproc_pred = tproc_cur;
 					fproc_pred = fproc_cur;
 				}
@@ -4080,10 +4080,10 @@ int main(int argc, char* argv[])
 				double fproc_cur = fp_rate_best[n];
 				if (fproc_cur >= fp2 || n == n_cnt_tot1)fproc_cur = fp2;
 				double dauc = (tproc_cur + tproc_pred) * (fproc_cur - fproc_pred) / 2 / n_cnt_tot;
-				auc_roc += dauc;
+				if (fproc_cur <= fp2)auc_roc += dauc;
 				//printf("%d\t%d\t%g\t%g\t%g\n", tproc_cur, tproc_pred, fproc_cur, fproc_pred, dauc);
 				fprintf(outq, "%g\t%f\n", fproc_cur, (double)tproc_cur / n_cnt_tot);
-				if (fproc_cur >= fp2)break;
+				//if (fproc_cur >= fp2)break;
 				tproc_pred = tproc_cur;
 				fproc_pred = fproc_cur;
 			}
