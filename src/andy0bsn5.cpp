@@ -3797,13 +3797,13 @@ int main(int argc, char* argv[])
 				if (fp_rate[n] > fproc_pred && (n == n_cnt_tot1 || fp_rate[n + 1] > fp_rate[n]))
 				{
 					int tproc_cur = n + 1;
-					double fproc_cur = fp_rate[n];
-					if (fproc_cur >= fp2 || n == n_cnt_tot1)fproc_cur = fp2;
-					double dauc = (tproc_cur + tproc_pred) * (fproc_cur - fproc_pred) / 2 / n_cnt_tot;
+					double fproc_cur = fp_rate[n], fproc_cur_pauc = fproc_cur;
+					if (fproc_cur >= fp2 || n == n_cnt_tot1)fproc_cur_pauc = fp2;
+					double dauc = (tproc_cur + tproc_pred) * (fproc_cur_pauc - fproc_pred) / 2 / n_cnt_tot;
 					//printf("%d\t%d\t%g\t%g\t%g\n", tproc_cur, tproc_pred, fproc_cur, fproc_pred, dauc);
 					fprintf(outq, "%g\t%f\n", fproc_cur, (double)tproc_cur / n_cnt_tot);
 					if (fproc_cur <= fp2)auc_roc += dauc;
-					//if (fproc_cur >= fp2)break;
+				//	if (fproc_cur >= fp2)break;
 					tproc_pred = tproc_cur;
 					fproc_pred = fproc_cur;
 				}
@@ -4077,9 +4077,9 @@ int main(int argc, char* argv[])
 			if (fp_rate_best[n] > fproc_pred && (n == n_cnt_tot1 || fp_rate_best[n + 1] > fp_rate_best[n]))
 			{
 				int tproc_cur = n + 1;
-				double fproc_cur = fp_rate_best[n];
-				if (fproc_cur >= fp2 || n == n_cnt_tot1)fproc_cur = fp2;
-				double dauc = (tproc_cur + tproc_pred) * (fproc_cur - fproc_pred) / 2 / n_cnt_tot;
+				double fproc_cur = fp_rate_best[n], fproc_cur_pauc = fproc_cur;
+				if (fproc_cur >= fp2 || n == n_cnt_tot1)fproc_cur_pauc = fp2;
+				double dauc = (tproc_cur + tproc_pred) * (fproc_cur_pauc - fproc_pred) / 2 / n_cnt_tot;
 				if (fproc_cur <= fp2)auc_roc += dauc;
 				//printf("%d\t%d\t%g\t%g\t%g\n", tproc_cur, tproc_pred, fproc_cur, fproc_pred, dauc);
 				fprintf(outq, "%g\t%f\n", fproc_cur, (double)tproc_cur / n_cnt_tot);
