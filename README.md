@@ -36,9 +36,9 @@ The background (negative) set of sequences is required as a complement to the fo
 
 git clone https://github.com/parthian-sterlet/sitega
 
-cd sitega/src/
+cd sitega/src
 
-chmod a+x build.sh/
+chmod a+x build.sh
 
 ./build.sh
 
