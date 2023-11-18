@@ -74,15 +74,15 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 1. path to fasta files with sets of foreground and background sequences (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 2. fasta file with set of foreground sequences
 3. fasta file with set of background sequences
-4. maximal length of one LPD (default value 6)
-5. minimal length of motif (integer value respecting to a tested length L, default value is 8)
-6. maximal length of motif (default value is 28)
-7. step of length of motif (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
+4. integer value, maximal length of one LPD (default value 6)
+5. integer value, minimal length of motif (integer value respecting to a tested length L, default value is 8)
+6. integer value, maximal length of motif (default value is 28)
+7. integer value, step of length of motif (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
 8. cross-validation type specification: positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
-9. number of iterations in bootatrap (default 2)
-10. k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
+9. integer value, number of iterations in bootatrap (default 2)
+10. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
 11. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
-12. maximal peak length (default value is 3000)
+12. integer value, maximal peak length (default value is 3000)
 
 ## Train a model
 
@@ -90,12 +90,12 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 1. path to fasta files with sets of foreground and background sequences (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 2. fasta file with set of foreground sequences
 3. fasta file with set of background sequences
-4. maximal length of one LPD (default value 6)
-5. length of motif (integer value respecting to a tested length L, this value is selected by the bootstrap cross-valiation test, see the previous paragraph)
-6. size, the number of LPDs (a value is estimated in the bootstrap cross-valiation test, see the previous paragraph)
-7. k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
+4. integer value, maximal length of one LPD (default value 6)
+5. integer value, length of motif (integer value respecting to a tested length L, this value is selected by the bootstrap cross-valiation test, see the previous paragraph)
+6. integer value, size, the number of LPDs (a value is estimated in the bootstrap cross-valiation test, see the previous paragraph)
+7. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
 8. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
-9. maximal peak length (default value is 3000)
+9. integer value, maximal peak length (default value is 3000)
 
 ## Set threshold for a model
 
@@ -104,9 +104,9 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
 3. file_profile_fasta = input Whole-genome promoters set in fasta format ([example](https://github.com/parthian-sterlet/sitega/blob/master/genomes/sc64/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa) provides one for _S. cerevisiae_)
 4. output file [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), table SiteGA model threshold vs. Expected Recognition Rate (ERR)
-5. pvalue_large = maximal ERR (default value 0.001)
-6. score_min = lowest threshold of SiteGA model (default value 0.75)
-7. dpvalue = granulation value for ERR compaction in [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), the default value 0.0000000005 implies the absence of compaction
+5. double pvalue_large = maximal ERR (default value 0.001)
+6. double score_min = lowest threshold of SiteGA model (default value 0.75)
+7. double dpvalue = granulation value for ERR compaction in [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), the default value 0.0000000005 implies the absence of compaction
 
 ## Scan test sequences with a model
 
@@ -121,11 +121,11 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 ## Scan whole genome with a model
 
 [andy1_mat_long.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy1_mat_long.cpp)
-1. path to chromosome sequences in [Fasta format](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa), these are files for individual chromosomes in separate files, these file are prepared from [the whole-genome fasta file](https://github.com/parthian-sterlet/sitega/blob/master/genomes/sc64/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa) by the [https://github.com/parthian-sterlet/antinoise/blob/main/src/fasta_muliplefiles.cpp](https://github.com/parthian-sterlet/antinoise/blob/main/src/fasta_muliplefiles.cpp) from the [AntiNoise](https://github.com/parthian-sterlet/antinoise) package.
+1. path to chromosome sequences in [Fasta format](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa), these are files for individual chromosomes in separate files, they are prepared by splitting  [the whole-genome fasta file](https://github.com/parthian-sterlet/sitega/blob/master/genomes/sc64/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa) by the [https://github.com/parthian-sterlet/antinoise/blob/main/src/fasta_muliplefiles.cpp](https://github.com/parthian-sterlet/antinoise/blob/main/src/fasta_muliplefiles.cpp) from the [AntiNoise](https://github.com/parthian-sterlet/antinoise) package.
 2. species and genome release (values hg38, mm10, rn6, zf11, dm6, and ce235; at10, gm21, zm73, and mp61; sc64 and sch294). The animals inludes human _Homo sapiens_ hg38, mouse _Mus musculus_ mm10, rat _Rattus norvegicus_ Rnor_6.0, zebrafish _Danio rerio_ GRCz11, fly _Drosophila melanogaster_ dm6, and roundworm _Caenorhabditis elegans_ WBcel235; the plants are arabidopsis _Arabidopsis thaliana_ TAIR10, soybean _Glycine max_ v2.1, maize _Zea mays_ B73, and liverwort _Marchantia polymorpha_ MpTak v6.1; the fungi are baker's yeast _Saccharomyces cerevisiae_ R64-1-1 and fission yeast _Schizosaccharomyces pombe_ ASM294v2.
 3. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
 4. input file [Threshold vs ERR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) for [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) threshold selection by ERR threshold
-5. ERR threshold = threshold for ERR of [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) is used to select the SiteGA threshold according to input file [Table Threshold vs ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) from **Set threshold for a model** module
+5. double value, ERR threshold = threshold for ERR of [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) is used to select the SiteGA threshold according to input file [Table Threshold vs ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) from **Set threshold for a model** module
 6. output file [Profile with recognized hits](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile)
 
 # Examples scripts:
