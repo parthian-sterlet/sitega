@@ -1,3 +1,3 @@
-./background_genome_mono	/data/genome/	ABI3VP1_tnt.AT5G60130_col_a.fasta	ABI3VP1_tnt.AT5G60130_col_a_gb.fasta	5	0.01	5000	at10	0.99	ABI3VP1_tnt.AT5G60130_col_a.outm	ABI3VP1_tnt.AT5G60130_col_a.outd	ABI3VP1_tnt.AT5G60130_col_a.outm_one	ABI3VP1_tnt.AT5G60130_col_a.outd_one	ABI3VP1_tnt.AT5G60130_col_a.outlog	>	ABI3VP1_tnt.AT5G60130_col_a.log
-./andy05 /data/work/ ABI3VP1_tnt.AT5G60130_col_a.fasta	ABI3VP1_tnt.AT5G60130_col_a_gb.fasta	6	12	60	6	/data/out/ 3000	>	ABI3VP1_tnt.AT5G60130_col_a.log
+./background_genome_mono.exe	/data/genome/	ABI3VP1_tnt.AT5G60130_col_a.fasta	ABI3VP1_tnt.AT5G60130_col_a_gb.fasta	5	0.01	5000	at10	0.99	ABI3VP1_tnt.AT5G60130_col_a.outm	ABI3VP1_tnt.AT5G60130_col_a.outd	ABI3VP1_tnt.AT5G60130_col_a.outm_one	ABI3VP1_tnt.AT5G60130_col_a.outd_one	ABI3VP1_tnt.AT5G60130_col_a.outlog	>	ABI3VP1_tnt.AT5G60130_col_a.log
+./andy05.exe /data/work/ ABI3VP1_tnt.AT5G60130_col_a.fasta	ABI3VP1_tnt.AT5G60130_col_a_gb.fasta	6	12	60	6	/data/out/ 3000	>	ABI3VP1_tnt.AT5G60130_col_a.log
 
