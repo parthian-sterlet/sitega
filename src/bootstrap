@@ -1,4 +1,4 @@
-./andy05bsn.exe /data/bs/ ABI3VP1_tnt.AT5G60130_col_a.fasta	ABI3VP1_tnt.AT5G60130_col_a_gb.fasta	6	8	8	4	-1	2	6	/data/cv/out/	3000	>	ABI3VP1_tnt.AT5G60130_col_a.log
+./andy05bsn.exe ../examples/ ABI3VP1_tnt.AT5G60130_col_a.fasta	ABI3VP1_tnt.AT5G60130_col_a_gb.fasta	6	8	8	4	-1	2	6	../examples//	3000	>	ABI3VP1_tnt.AT5G60130_col_a.log
 
 
 
