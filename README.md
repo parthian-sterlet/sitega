@@ -121,7 +121,7 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 ## Scan whole genome with a model
 
 [andy1_mat_long.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy1_mat_long.cpp)
-1. file.seq = input file of test sequences, it has the same format as [Fasta file of peaks](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa), non ('a', 'c', 'g' and 't') nucleotides are ignored
+1. path to chromosome sequences in [Fasta format](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa), these are files for individual chromosomes in separate files, these file are prepared from [the whole-genome fasta file](https://github.com/parthian-sterlet/sitega/blob/master/genomes/sc64/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa) by the [https://github.com/parthian-sterlet/antinoise/blob/main/src/fasta_muliplefiles.cpp](https://github.com/parthian-sterlet/antinoise/blob/main/src/fasta_muliplefiles.cpp) from the [AntiNoise](https://github.com/parthian-sterlet/antinoise) package.
 2. genome release (hg38, mm10, dm6, ce235, sc64 and at10 for H.sapiens, M.musculus, D.,melanogaster, C.elehans, S.cerevisiae and A.thaliana  genomes, respectively)
 3. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
 4. input file [Threshold vs ERR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) for [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) threshold selection by ERR threshold
@@ -135,11 +135,12 @@ These scripts implement various pipelines for Linux:
 2. [bootstrap test for a model](https://github.com/parthian-sterlet/sitega/blob/master/src/bootstrap) - **Preparation** and **Estimate accuracy for a model** modules
 3. [training and scanning a fasta file with a model](https://github.com/parthian-sterlet/sitega/blob/master/src/scan_fasta) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model** modules
 4. [training and scanning whole genome with a model](https://github.com/parthian-sterlet/sitega/blob/master/src/scan_genome) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan whole genome with a model** modules
+   
 # Interpretation of results
 
 ## Background set generation
 
-[background_genome.cpp](https://github.com/parthian-sterlet/antinoise/blob/master/src/background_genome.cpp) prepares the background set that may be used for training (**Train a model** module) or performance evaluation (**Set parameters of a model through accuracy estimation** module)
+[background_genome.cpp](https://github.com/parthian-sterlet/antinoise/blob/master/src/background_genome.cpp) from the [AntiNoise](https://github.com/parthian-sterlet/antinoise) package prepares the background set that may be used for training (**Train a model** module) or performance evaluation (**Set parameters of a model through accuracy estimation** module)
 
 ## Set parameters of a model through accuracy estimation
 
