@@ -1,14 +1,13 @@
 #!/bin/sh
-g++ -o sitega_thr_dist_mat sitega_thr_dist_mat.cpp
-g++ -o andy0bsn5 andy0bsn5.cpp
-g++ -o andy1_mat andy1_mat.cpp
-g++ -o andy05 andy05.cpp
-g++ -o background_genome background_genome.cpp
-g++ -o background_genome_mono background_genome_mono.cpp
-chmod a+x andy0bsn5 
-chmod a+x andy1_mat
-chmod a+x andy05
-chmod a+x sitega_thr_dist_mat
+g++ -o sitega_thr_dist_mat.exe sitega_thr_dist_mat.cpp
+g++ -o andy0bsn5.exe andy0bsn5.cpp
+g++ -o andy1_mat.exe andy1_mat.cpp
+g++ -o andy05.exe andy05.cpp
+g++ -o background_genome_mono.exe background_genome_mono.cpp
+chmod a+x andy0bsn5.exe
+chmod a+x andy1_mat.exe
+chmod a+x andy05.exe
+chmod a+x sitega_thr_dist_mat.exe
 chmod a+x bootstrap
 chmod a+x scan 
 chmod a+x train
