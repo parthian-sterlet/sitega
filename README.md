@@ -72,8 +72,8 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 
 [andy0bsn5.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn5.cpp)
 1. path to fasta files with sets of foreground and background sequences (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
-2. fasta file with set of foreground sequences
-3. fasta file with set of background sequences
+2. fasta file, set of foreground sequences
+3. fasta file, set of background sequences
 4. integer value, maximal length of one LPD (default value 6)
 5. integer value, minimal length of motif (integer value respecting to a tested length L, default value is 8)
 6. integer value, maximal length of motif (default value is 28)
@@ -83,7 +83,8 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 10. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
 11. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 12. integer value, maximal peak length (default value is 3000)
-
+13. output log file
+    
 ## Train a model
 
 [andy05.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy05.cpp)
@@ -96,6 +97,7 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 7. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
 8. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 9. integer value, maximal peak length (default value is 3000)
+10. output log file
 
 ## Set threshold for a model
 
