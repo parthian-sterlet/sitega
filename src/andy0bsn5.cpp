@@ -2590,7 +2590,8 @@ int main(int argc, char* argv[])
 	strcpy(path_out, argv[11]);
 	double fp2 = 0.001;// FPR threshold for pAUC	
 	int len_peak_max = atoi(argv[12]); //2500;
-	strcpy(file_log, argv[13]);
+	strcpy(file_log,path_out);
+	strcat(file_log, argv[13]);
 	if ((outlog = fopen(file_log, "wt")) == NULL)
 	{
 		fprintf(outlog, "Input file %s can't be opened!\n", file_log);
@@ -2873,7 +2874,7 @@ int main(int argc, char* argv[])
 	strcpy(add_prc, "_prc_bs.txt");
 	char file_out_cnt[500];
 	int n_train_max = 0;
-	int size_start = 20;// (int)(k_size_start*olenf_max);
+	int size_start = 40;// (int)(k_size_start*olenf_max);
 	int size_end = 100;// (int)(k_size_end*olenf_max);
 	int size_dif = 20;// (int)(k_size_dif*olenf_max);
 	for (iter = 0; iter < iteration; iter++)
@@ -3679,12 +3680,6 @@ int main(int argc, char* argv[])
 					//if (change_level<GA_EXIT)gen1++;				
 					fprintf(outlog,"Gen %d Fit %.5f Rat %.5f RatM %.5f RatR %.5f ", gen, pop[iter][0].fit, change_level, change_level_mut, change_level_rec);
 					fprintf(outlog,"M %d %d,%d,%d R %d ", success_m, success_o, success_l, success_p, success_r1[4]);
-					fclose(outlog);
-					if ((outlog = fopen(file_log, "at")) == NULL)
-					{
-						fprintf(outlog, "Input file %s can't be opened!\n", file_log);
-						exit(1);
-					}
 					{
 						int sumr = 0;
 						for (i = 0; i < mege_h; i++)sumr += success_ri[i];
