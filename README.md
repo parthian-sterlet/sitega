@@ -74,15 +74,18 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 2. fasta file, set of foreground sequences
 3. fasta file, set of background sequences
 4. integer value, maximal length of one LPD (default value 6)
-5. integer value, minimal length of motif (integer value respecting to a tested length L, default value is 8)
-6. integer value, maximal length of motif (default value is 28)
-7. integer value, step of length of motif (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
-8. cross-validation type specification: positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
-9. integer value, number of iterations in bootatrap (default 2)
-10. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
-11. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
-12. integer value, maximal peak length (default value is 3000)
-13. output log file
+5. integer value, minimal number of LPDs (default value 40)
+6. integer value, maximal number of LPDs (default value 100)
+7. integer value, step of the number of LPDs (default value 20, i.e. no. of LPDs 40, 60, 80 and 100 are tested)
+8. integer value, minimal length of motif (integer value respecting to a tested length L, default value is 8)
+9. integer value, maximal length of motif (default value is 28)
+10. integer value, step of the motif length (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
+11. cross-validation type specification: positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
+12. integer value, number of iterations in bootatrap (default 2)
+13. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
+14. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
+15. integer value, maximal peak length (default value is 3000)
+16. output log file
     
 ## Train a model
 
