@@ -2565,9 +2565,9 @@ int main(int argc, char* argv[])
 	double** octa_pro1, ** octa_prow, * thr_octa;// , *hoxa_wei;	
 	FILE* outlog;
 
-	if (argc != 14)
+	if (argc != 17)
 	{
-		puts("Sintax: 1path_both_fasta 2,3files_forground,background 4int max_LPD_length 5,6,7int motif_min,max,dif 8double ratio_cnt_of_all(0=jk <0=odd) 9int num_iterations 10 int olig_background 11path_out 12int max_peak_len 13file log");//  5<pop_size>
+		puts("Sintax: 1path_both_fasta 2,3files_forground,background 4int LPD_length 5,6,7int no. of LPD_min,max,dif 8,9,10int motif_min,max,dif 11double ratio_cnt_of_all(0=jk <0=odd) 12int num_iterations 13int olig_background 14path_out 15int max_peak_len 16file log");//  5<pop_size>
 		exit(1);
 	}
 	//	fprintf(out,"One ");
@@ -2581,17 +2581,20 @@ int main(int argc, char* argv[])
 	strcat(pfile_for, file_for);
 	strcat(pfile_back, file_back);
 	int reg_max = atoi(argv[4]);// max LPD length
-	int olen_min = atoi(argv[5]);// dlina motiva
-	int olen_max = atoi(argv[6]);// dlina motiva
-	int olen_dif = atoi(argv[7]);// dlina motiva	
-	double ratio_train_to_control = atof(argv[8]);
-	int iteration = atoi(argv[9]);//total no. of jack-knife test			
-	int octa = atoi(argv[10]);
-	strcpy(path_out, argv[11]);
+	int size_start = atoi(argv[5]);// no. of LPD min
+	int size_end = atoi(argv[6]);// no. of LPD max
+	int size_dif = atoi(argv[7]);// no. of LPD dif
+	int olen_min = atoi(argv[8]);// dlina motiva
+	int olen_max = atoi(argv[9]);// dlina motiva
+	int olen_dif = atoi(argv[10]);// dlina motiva	
+	double ratio_train_to_control = atof(argv[11]);
+	int iteration = atoi(argv[12]);//total no. of jack-knife test			
+	int octa = atoi(argv[13]);
+	strcpy(path_out, argv[14]);
 	double fp2 = 0.001;// FPR threshold for pAUC	
-	int len_peak_max = atoi(argv[12]); //2500;
+	int len_peak_max = atoi(argv[15]); //2500;
 	strcpy(file_log,path_out);
-	strcat(file_log, argv[13]);
+	strcat(file_log, argv[16]);
 	if ((outlog = fopen(file_log, "wt")) == NULL)
 	{
 		fprintf(outlog, "Input file %s can't be opened!\n", file_log);
@@ -2874,9 +2877,6 @@ int main(int argc, char* argv[])
 	strcpy(add_prc, "_prc_bs.txt");
 	char file_out_cnt[500];
 	int n_train_max = 0;
-	int size_start = 40;// (int)(k_size_start*olenf_max);
-	int size_end = 100;// (int)(k_size_end*olenf_max);
-	int size_dif = 20;// (int)(k_size_dif*olenf_max);
 	for (iter = 0; iter < iteration; iter++)
 	{
 		if (n_train[iter] > n_train_max)n_train_max = n_train[iter];
