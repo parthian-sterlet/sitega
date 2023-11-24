@@ -51,9 +51,9 @@ Scheme of modules functioning is given below
 
 ![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega9.png)
 
-Modules **Set parameters of a model through accuracy estimation** and **Train a model** should run with file of the background sequence set, e.g. it was previously computed by **Background set generation** module
+Modules **Set parameters of a model through accuracy estimation** and **Train a model** take the input data of the foreground and background sequence sets, the background set is computed by the **Background set generation** module
 
-Module **Set parameters of a model through accuracy estimation** is required for functionality of **Train a model** and all consequent modules since only the bootstrap procedure correctly selects parameters of a model (see output data block **Table FPR vs. TPR, ROC curve & pAUC**)
+Module **Set parameters of a model through accuracy estimation** is required for functionality of **Train a model** and all subsequent modules since the bootstrap procedure correctly selects parameters of a model (see output data block **Table FPR vs. TPR, ROC curve & pAUC**)
 
 Modules **Set threshold for a model** and **Scan test seauences with a model** require file with [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previously computed by **Train a model** module
 
