@@ -53,11 +53,11 @@ Scheme of modules functioning is given below
 
 Modules **Set parameters of a model through accuracy estimation** and **Train a model** take the input data of the foreground and background sequence sets, the background set is computed by the **Background set generation** module
 
-Module **Set parameters of a model through accuracy estimation** is required for functionality of **Train a model** and all subsequent modules since the bootstrap procedure correctly selects parameters of a model (see output data block **Table FPR vs. TPR, ROC curve & pAUC**)
+The module **Set parameters of a model through accuracy estimation** is required for functionality of the module **Train a model** and all subsequent modules since the bootstrap procedure correctly selects parameters of a model (see output data block **Table FPR vs. TPR, ROC curve & pAUC**)
 
-Modules **Set threshold for a model** and **Scan test seauences with a model** require file with [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previously computed by **Train a model** module
+Modules **Set threshold for a model** and **Scan test seauences with a model** require file with [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) which should be previously computed by the module **Train a model** 
 
-Module **Set threshold for a model** is required to select a correct threshold for **Scan test sequences with a model** module
+The module **Set threshold for a model** is required to select a correct threshold for **Scan test sequences with a model** module
 
 # How to run separate modules
 Lists of command line arguments for all modules are described below
@@ -118,7 +118,7 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 1. path to whole genome sequences of chromosomes in plain format (see above, the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
 3. site_description_mode = 0 or 1. 0 means default mode, 1 means computation of frequencies of all LPDs for all tested sequences (option is used for the train fasta file to describe a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat))
-4. ERR threshold = threshold for ERR of [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) is used to select the SiteGA threshold according to input file [Table Threshold vs ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) from **Set threshold for a model** module
+4. ERR threshold = threshold for ERR of [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) is used to select the SiteGA threshold according to input file [Threshold vs ERR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) from **Set threshold for a model** module
 5. input file [Threshold vs ERR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) for [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) threshold selection by ERR threshold
 6. output file [Profile with recognized hits](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile)
 
