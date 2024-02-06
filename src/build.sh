@@ -1,5 +1,4 @@
 #!/bin/sh
-cd src
 g++ -o sitega_thr_dist_mat.exe sitega_thr_dist_mat.cpp
 g++ -o andy0bsn5.exe andy0bsn5.cpp
 g++ -o andy1_mat.exe andy1_mat.cpp
