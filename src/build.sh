@@ -1,4 +1,5 @@
 #!/bin/sh
+cd src
 g++ -o sitega_thr_dist_mat.exe sitega_thr_dist_mat.cpp
 g++ -o andy0bsn5.exe andy0bsn5.cpp
 g++ -o andy1_mat.exe andy1_mat.cpp
@@ -10,3 +11,9 @@ chmod a+x sitega_thr_dist_mat.exe
 chmod a+x bootstrap
 chmod a+x scan 
 chmod a+x train
+cd ..
+cd genomes
+cd mm10
+tar -cvzf ups2kb_mm10.seq.tar.gz ups2kb_mm10.seq
+cd ..
+cd ..
