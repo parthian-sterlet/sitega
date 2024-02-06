@@ -10,11 +10,11 @@
 #define Min(a,b) ((a)>(b))? (b):(a);
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 5050
-#define DIM 205
-double sost[DIM];
+#define DIM 100
+//double sost[DIM];
 #define Min(a,b) ((a)>(b))? (b):(a);
 #define Max(a,b) ((a)>(b))? (a):(b);
-double sost1[DIM];
+//double sost1[DIM];
 
 char *TransStr(char *d)
 {
@@ -394,12 +394,12 @@ void city::sort_all(void)
 int main(int argc, char *argv[])
 {
 	int i, j, k, n;
-	char head[1000], file_out_dist[300], file_sitega[300], path_fasta[300], file_fasta[300];
-	FILE *in, *out_dist;
+	char head[1000], file_out_distt[300], file_out_distb[300], file_sitega[300], path_fasta[300], file_fasta[300];
+	FILE *in, *out_distt, * out_distb;
 
-	if (argc != 8)
+	if (argc != 9)
 	{
-		printf("%s 1path_fasta 2sitega_matrix_file 3file_profile_fasta 4file out_dist 5double pvalue_large 6double score_min 7double dpvalue", argv[0]);//5file out_cpp_arr 
+		printf("%s 1path_fasta 2sitega_matrix_file 3file_profile_fasta 4file out_dist_txt 5file out_dist_binary 6double pvalue_large 6double score_min 8double dpvalue", argv[0]);//5file out_cpp_arr 
 		return -1;
 	}
 	char letter[] = "acgt";
@@ -407,11 +407,12 @@ int main(int argc, char *argv[])
 	strcpy(file_fasta, path_fasta);
 	strcat(file_fasta, argv[3]);
 	strcpy(file_sitega, argv[2]);
-	strcpy(file_out_dist, argv[4]);
-	double pvalue_large = atof(argv[5]);
+	strcpy(file_out_distt, argv[4]);
+	strcpy(file_out_distb, argv[5]);
+	double pvalue_large = atof(argv[6]);
 	//strcpy(file_out_cpp_arr, argv[5]);
-	double thr_bot = atof(argv[6]);
-	double bin = atof(argv[7]);
+	double thr_bot = atof(argv[7]);
+	double bin = atof(argv[8]);
 
 	int nseq_pro = 0, len_pro = 0;
 	int all_pos = 0;
@@ -518,16 +519,6 @@ int main(int argc, char *argv[])
 		}
 	}
 	fclose(in);
-	if ((out_dist = fopen(file_out_dist, "wt")) == NULL)
-	{
-		printf("Out file %s can't be opened!\n", file_out_dist);
-		return -1;
-	}
-	/*if ((out_cpp_arr = fopen(file_out_cpp_arr, "at")) == NULL)
-	{
-		printf("Out file %s can't be opened!\n", file_out_cpp_arr);
-		return -1;
-	}*/
 	int nthr_dist = 0;
 	int nthr_final = nthr - 1;
 	double fpr_pred = (double)1 / all_pos_rec;
@@ -568,8 +559,7 @@ int main(int argc, char *argv[])
 			{
 				thr_dist[count] = thr[j];
 				fpr_dist[count] = fpr;
-			}
-			fprintf(out_dist, "%.18f\t%.18g\n", thr_dist[count], fpr_dist[count]);
+			}			
 			fpr_dist[count] = -log10(fpr_dist[count]);
 			count++;
 			if (fpr_pred >= pvalue_large)
@@ -579,40 +569,24 @@ int main(int argc, char *argv[])
 			thr_pred = thr[j];
 			fpr_pred = fpr;
 		}
-	}
-	fclose(out_dist);
-	/*
-	int nval = 16;
-	fprintf(out_cpp_arr, "double %s_thr_list[%d] = {\n", file_sitega, nthr_dist);
-	int nthr_dist1 = nthr_dist - 1;
-	for (j = 0; j < nthr_dist; j++)
+	}	
+	if ((out_distt = fopen(file_out_distt, "wt")) == NULL)
 	{
-		fprintf(out_cpp_arr, "%.12f", thr_dist[j]);
-		if (j == nthr_dist1)fprintf(out_cpp_arr, "};\n");
-		else fprintf(out_cpp_arr, ",");
-		if ((j + 1) % nval == 0)fprintf(out_cpp_arr, "\n");
-	}
-	fprintf(out_cpp_arr, "double %s_fpr_list[%d] = {\n", file_sitega, nthr_dist);
-	for (j = 0; j < nthr_dist; j++)
-	{
-		fprintf(out_cpp_arr, "%.12f", fpr_dist[j]);
-		if (j == nthr_dist1)fprintf(out_cpp_arr, "};\n");
-		else fprintf(out_cpp_arr, ",");
-		if ((j + 1) % nval == 0)fprintf(out_cpp_arr, "\n");
-	}
-	//for(j=n_thr_max;j>=0;j--)fprintf(out_cpp,"%f\t%.f\t%.f\t%g\n",thr[j],rec_pos[j],all_pos,rec_pos[j]/all_pos);	
-	fclose(out_cpp_arr);
-	*/
-	/*
-	FILE *out_cpp_struct_many;
-	if ((out_cpp_struct_many = fopen(file_out_cpp_struct_many, "at")) == NULL)
-	{
-		printf("Out file %s can't be opened!\n", file_out_cpp_struct_many);
+		printf("Out file %s can't be opened!\n", file_out_distt);
 		return -1;
 	}
-	fprintf(out_cpp_struct_many, "case %d:{if(mem_ini(n[%d],%s_%d_thr_list,%s_%d_fpr_list,%s_%d_thr_sel,%s_%d_thr_inx)==-1)return -1;}\n", matnum, matnum - 1, file_sitega, matnum, name, matnum, name, matnum, name, matnum);
-	fclose(out_cpp_struct_many);
-	*/
+	for (j = 0; j < count; j++)fprintf(out_distt, "%.18f\t%.18g\n", thr_dist[j], fpr_dist[j]);
+	fclose(out_distt);
+	if ((out_distb = fopen(file_out_distb, "wb")) == NULL)
+	{
+		printf("Out file %s can't be opened!\n", file_out_distb);
+		return -1;
+	}
+	fwrite(&sta, sizeof(sta), 1, out_distb);
+	fwrite(&count, sizeof(int), 1, out_distb);
+	fwrite(thr_dist, sizeof(double), count, out_distb);
+	fwrite(fpr_dist, sizeof(double), count, out_distb);
+	fclose(out_distb);
 	FILE *out_sta;
 	char file_sta[500];
 	strcpy(file_sta,file_sitega); 
@@ -622,7 +596,7 @@ int main(int argc, char *argv[])
 		printf("Out file %s can't be opened!\n", file_sta);
 		return -1;
 	}
-	fprintf(out_sta, "%s\t%d\t", file_out_dist, nthr_dist);
+	fprintf(out_sta, "%s\t%d\t", file_out_distt, nthr_dist);
 	fprintf(out_sta, "%.18f\t%.18g\n", thr_dist[count-1], fpr_dist[count-1]);
 	fclose(out_sta);
 	delete[] thr_dist;
