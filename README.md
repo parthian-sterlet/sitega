@@ -107,10 +107,11 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 1. path to file_profile_fasta (see argument #3 below, the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
 3. file_profile_fasta = input Whole-genome promoters set in fasta format ([example](https://github.com/parthian-sterlet/sitega/blob/master/genomes/sc64/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa) provides one for _S. cerevisiae_)
-4. output file [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), table SiteGA model threshold vs. Expected Recognition Rate (ERR)
-5. double pvalue_large = maximal ERR (default value 0.001)
-6. double score_min = lowest threshold of SiteGA model (default value 0.75)
-7. double dpvalue = granulation value for ERR compaction in [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), the default value 0.0000000005 implies the absence of compaction
+4. output file, text mode, [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), table SiteGA model threshold vs. Expected Recognition Rate (ERR)
+5. output file, binary mode, [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) as a matrix and [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), table SiteGA model threshold vs. ERR)
+6. double pvalue_large = maximal ERR (default value 0.001)
+7. double score_min = lowest threshold of SiteGA model (default value 0.75)
+8. double dpvalue = granulation value for ERR compaction in [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), the default value 0.0000000005 implies the absence of compaction
 
 ## Scan test sequences with a model
 
