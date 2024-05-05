@@ -3885,8 +3885,12 @@ int main(int argc, char* argv[])
 			memset(file_out_cnt, 0, sizeof(file_out_cnt));
 			strcpy(file_out_cnt, path_out);
 			strcat(file_out_cnt, file_for);
+			strcat(file_out_cnt, "_");
+			strcat(file_out_cnt, argv[5]);
+			strcat(file_out_cnt, "_");
+			strcat(file_out_cnt, argv[8]);
 			strcat(file_out_cnt, add_auc);
-			if (olen == olen8 && size0 == size20)
+		//	if (olen == olen8 && size0 == size20)
 			{
 				if ((outq = fopen(file_out_cnt, "wt")) == NULL)
 				{
@@ -3894,14 +3898,14 @@ int main(int argc, char* argv[])
 					exit(1);
 				}
 			}
-			else
+			/*else
 			{
 				if ((outq = fopen(file_out_cnt, "at")) == NULL)
 				{
 					printf("Output file can't be opened!\n");
 					exit(1);
 				}
-			}
+			}*/
 			fprintf(outq, "%s\t%d\t%d\t%g\t%g\n", file_for, olen, size0, auc_roc, auc_pr);
 			fclose(outq);
 		}	
