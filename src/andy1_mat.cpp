@@ -522,7 +522,7 @@ void ReadSeq(char *file, char *file1, int &n, int &len1)
 			if (n != 0)
 			{
 				fputc('\n', out);
-				printf("\b\b\b\b\b\b\b\b\b%9d", len);
+				//printf("\b\b\b\b\b\b\b\b\b%9d", len);
 			}
 			fputc(c, out);
 			if (fgets(head, sizeof(head), in) == NULL)exit(1);
@@ -531,14 +531,14 @@ void ReadSeq(char *file, char *file1, int &n, int &len1)
 			len = 0;
 			n++;
 			//printf("\nSeq %5d                    ",n);
-			if (n % 10 == 0)printf("\b\b\b\b\b\b\b\b\b%9d", n);
+			//if (n % 10 == 0)printf("\b\b\b\b\b\b\b\b\b%9d", n);
 			continue;
 		}
 		if (strchr("\t\n ", c) != NULL)continue;
 		if (strchr("ATGCNatgcn", c) != NULL)
 		{
 			len++;
-			if (len % 10000 == 0)printf("\b\b\b\b\b\b\b\b\b%9d", len);
+		//	if (len % 10000 == 0)printf("\b\b\b\b\b\b\b\b\b%9d", len);
 			if (c < 97) c += 32;
 			fputc(c, out);
 			/*	if(len==3314)
@@ -716,23 +716,20 @@ double Rmah(char *d1, char *d2, city a, char *alfabet)
 	}
 	return ret;
 }
-int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, int &len0, int end, int nseq, int cmpl, char *alfabet)//double score was 5th argument
+int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, int &len0, int end, int nseq, int cmpl, char *alfabet)//double score was 5th argument
 {
 	int i, j, err, ret, len;
-	city sta;
-
-	sta.get_file(file);
 	/*if (GetFun(sitename, &sta) == -1)
 	{
 	printf("Site %s function not found!", sitename);
 	exit(1);
 	}*/
 	char sitename[300];
-	strcpy(sitename, sta.site);
-	len0 = sta.len;
+	strcpy(sitename, sta->site);
+	len0 = sta->len;
 	len = strlen(d);
 	FILE *out;
-	char tatabuf[10], addsite[300];
+	char addsite[300];
 	strcpy(addsite, sitename);
 	//	sprintf(tatabuf, "%d", sta.len);
 	//	strcat(addsite, "_");
@@ -740,8 +737,8 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 	char file3[300];
 	strcpy(file3, "freq_");
 	strcat(file3, addsite);
-	if (site_desc == 1)sta.sort_all();
-	int iend = sta.size - 1;
+	if (site_desc == 1)sta->sort_all();
+	int iend = sta->size - 1;
 	static int m = 0;
 	if (site_desc == 1 && m == 0)
 	{
@@ -752,38 +749,38 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 			exit(1);
 		}
 		//	fprintf(out, "\t\t");
-		for (i = 0; i < sta.size; i++)sost1[i] = 0;
-		for (i = 0; i < sta.size; i++)
+		for (i = 0; i < sta->size; i++)sost1[i] = 0;
+		for (i = 0; i < sta->size; i++)
 		{
-			for (j = 0; j < sta.size; j++)
+			for (j = 0; j < sta->size; j++)
 			{
 				uw[i][j] = 0;
 			}
 		}
-		for (j = 0; j < sta.size; j++)tssl[j] = tssr[j] = 0;
+		for (j = 0; j < sta->size; j++)tssl[j] = tssr[j] = 0;
 		// int tss0=-1;
 		int tss0 = 11;
 		if (strstr(sitename, "rfam") != NULL)tss0 = -1;
 		int left = 1;
 		{
-			for (i = 0; i < sta.size; i++)
+			for (i = 0; i < sta->size; i++)
 			{
-				legr[i] = left + sta.tot[i].sta;
-				regr[i] = left + sta.tot[i].end;
+				legr[i] = left + sta->tot[i].sta;
+				regr[i] = left + sta->tot[i].end;
 				{
 					if (legr[i] > tss0)tssl[i] = -tss0;
 					else tssl[i] = -(tss0 + 1);
 					if (regr[i] > tss0)tssr[i] = -tss0;
 					else tssr[i] = -(tss0 + 1);
 				}
-				fprintf(out, "[%d;%d] %s", legr[i], regr[i], s[sta.tot[i].num].oli);
+				fprintf(out, "[%d;%d] %s", legr[i], regr[i], s[sta->tot[i].num].oli);
 				if (i != iend)fprintf(out, "\t");
 			}
 		}
 		fprintf(out, "\n");
 		fclose(out);
 	}
-	if (sta.len > len)
+	if (sta->len > len)
 	{
 		strcpy(mess, "Sequence too short...");
 		return(-1);
@@ -801,16 +798,16 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 		strcpy(mess, "Not enough memory....");
 		return(-1);
 	}
-	for (k = 0; k <= len - sta.len; k++)
+	for (k = 0; k <= len - sta->len; k++)
 	{
-		if ((k + 1) % 100000 == 0)
+		/*if ((k + 1) % 100000 == 0)
 		{
 			printf("\b\b\b\b\b\b\b\b\b%9d", k);
-		}
+		}*/
 		p[k] = 0;
 		{
 			memset(d1, 0, len + 1);
-			for (j = 0; j < sta.len; j++)d1[j] = d[k + j]; d1[sta.len] = '\0';
+			for (j = 0; j < sta->len; j++)d1[j] = d[k + j]; d1[sta->len] = '\0';
 			{
 				if (strchr(d1, 'n') != 0)
 				{
@@ -818,20 +815,20 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 					continue;
 				}
 			}
-			double sco = sta.c;
-			for (j = 0; j < sta.size; j++)
+			double sco = sta->c;
+			for (j = 0; j < sta->size; j++)
 			{
-				int rlenj = (sta.tot[j].end - sta.tot[j].sta + 1);
+				int rlenj = (sta->tot[j].end - sta->tot[j].sta + 1);
 				double fm = 0;
-				for (i = sta.tot[j].sta; i <= sta.tot[j].end; i++)
+				for (i = sta->tot[j].sta; i <= sta->tot[j].end; i++)
 				{
 					int cod = 4 * IdeLet(d1[i], alfabet) + IdeLet(d1[i + 1], alfabet);
-					if (sta.tot[j].num == cod) { fm++; }
+					if (sta->tot[j].num == cod) { fm++; }
 				}
 				if (fm != 0)
 				{
 					fm /= rlenj;
-					sco += sta.tot[j].buf*fm;
+					sco += sta->tot[j].buf*fm;
 				}
 			}
 			p[k] = 1 - fabs(sco - 1);
@@ -840,7 +837,7 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 	}
 	if (site_desc == 1)
 	{
-		printf("%d\n", m + 1);
+	//	printf("%d\n", m + 1);
 		if ((out = fopen(file3, "at")) == NULL)
 		{
 			printf("Input file %s can't be opened!\n", file3);
@@ -849,27 +846,27 @@ int Fun(char *d, char *head, char *mess, char *file, double *p, int site_desc, i
 		m++;
 		memset(d1, 0, len + 1);
 		strcpy(d1, d);
-		for (k = 0; k < sta.size; k++)
+		for (k = 0; k < sta->size; k++)
 		{
-			int rlenk = (sta.tot[k].end - sta.tot[k].sta + 1);
+			int rlenk = (sta->tot[k].end - sta->tot[k].sta + 1);
 			double fm = 0;
-			for (n = sta.tot[k].sta; n <= sta.tot[k].end; n++)
+			for (n = sta->tot[k].sta; n <= sta->tot[k].end; n++)
 			{
 				int cod = 4 * IdeLet(d1[n], alfabet) + IdeLet(d1[n + 1], alfabet);
-				if (sta.tot[k].num == cod)fm++;
+				if (sta->tot[k].num == cod)fm++;
 			}
 			fm /= rlenk;
-			for (n = 0; n < sta.size; n++)
+			for (n = 0; n < sta->size; n++)
 			{
 				if (k == n)uw[k][n] += fm * fm;
 				else
 				{
-					int rlenn = (sta.tot[n].end - sta.tot[n].sta + 1);
+					int rlenn = (sta->tot[n].end - sta->tot[n].sta + 1);
 					double fn = 0;
-					for (t = sta.tot[n].sta; t <= sta.tot[n].end; t++)
+					for (t = sta->tot[n].sta; t <= sta->tot[n].end; t++)
 					{
 						int cod = 4 * IdeLet(d1[t], alfabet) + IdeLet(d1[t + 1], alfabet);
-						if (sta.tot[n].num == cod)fn++;
+						if (sta->tot[n].num == cod)fn++;
 					}
 					fn /= rlenn;
 					uw[k][n] += fm * fn;
@@ -941,6 +938,7 @@ int main(int argc, char *argv[])
 	int head_pr = 1;//atoi(argv[7]);
 	int pos_pr = 1;//atoi(argv[8]);
 	cmpl = 2;// atoi(argv[5]);	
+	pval_crit = -log10(pval_crit);
 	if (site_desc == 1)cmpl = 0;
 	{
 
@@ -961,7 +959,7 @@ int main(int argc, char *argv[])
 				exit(1);
 			}
 			double fpr_cur = atof(sfp);
-			if (fpr_cur > pval_crit)
+			if (fpr_cur < pval_crit)
 			{
 				thr = thr_prev;
 				break;
@@ -1077,6 +1075,8 @@ int main(int argc, char *argv[])
 		printf("Input file can't be opened!\n");
 		exit(1);
 	}
+	city sta;
+	sta.get_file(sitename);
 	for (n = 0; n < nseq; n++)
 	{
 		//printf("%d\n",n);
@@ -1128,7 +1128,7 @@ int main(int argc, char *argv[])
 			int share;
 			if (nseq == 1)share = 1;
 			else share = n / (nseq - 1);
-			ret = Fun(d, head, mess, sitename, p, site_desc, len0, share, nseq, cmpl, alfabet);
+			ret = Fun(d, head, mess, &sta, p, site_desc, len0, share, nseq, cmpl, alfabet);
 			if (ret != 1)
 			{
 				printf("Fun ret error %s", mess);
