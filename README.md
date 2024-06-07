@@ -111,7 +111,7 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 5. output file, binary mode, [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) as a matrix and [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), table SiteGA model threshold vs. ERR)
 6. double pvalue_large = maximal ERR (default value 0.001)
 7. double score_min = lowest threshold of SiteGA model (default value 0.75)
-8. double dpvalue = granulation value for ERR compaction in [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), the default value 0.0000000005 implies the absence of compaction
+8. double dpvalue = granulation value for ERR compaction in [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), the default value 0.0000005 implies a moderate compaction
 
 ## Scan test sequences with a model
 
