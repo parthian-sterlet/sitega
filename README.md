@@ -20,9 +20,9 @@ Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) con
 ## 1. Background sequence set generation
 The background set of sequences is required as a complement to the foreground set to select the values of two parameters of the SiteGA model: motif length and the number of LPDs. The main purpose of the background set is to exclude artifact motifs related to a genome-specific sequence content bias, e.g. polyA, from the results of *de novo* motif search. To prepare genome-specific sets of background sequences, it is recommended to use the [AntiNoise](https://github.com/parthian-sterlet/antinoise) package. 
 ## 2. Set parameters of a model through accuracy estimation
-[andy0bsn5.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn5.cpp) performs the bootsrap cross-validation test to select parameters of a model providing the best performance for given foreground and background sets. A model has parameters of motif length and the number of LPDs. The program sequentially checks all possible combinations of motif length and number of LPDs. The minimal, maximal and step of the motif length, and those values for the number of LPDs are the parameters of command line, default lengths are 8, 12, 16 and 20 nt, default numbers of LPDs are 40, 60, 80 and 100. The bootsrap cross-validation test denotes the partitioning of the foreground set into subsets of training and control sequence sets, the former is used to train a model and the latter to measure its performance. The maximal partial area under curve (pAUC) and area under precision-recall curve (AUCPR) are used to estimate the accuracy of a model for certain motif length and the number of LPDs. The term partial means that only the part of a ROC curve respecting the criterion FPR < 0.001 is impied for pAUC computation. The receiver operating characteristic (ROC) curve means the dependence between True Positive Rate (TPR) and False Positive Rate (FPR). TPR/FPR (axes Y/X of the ROC curve) are defined as the fraction of sequences from the foreground set containing predicted sites and the frequency of predicted sites in the background set, respectively. FPR = Nb/Wb, here Nb - number of predicted sites in the background set, Wb - total number of checked positions for predicted sites in the background set. The dependence between Precision and Recall represents AUCPR. Recall = TPR = TP/(TP+FN), Precision = TP/(TP+FP), here TP & FP denote counts of predicted sequences from foreground & background sets, FN denote counts of not predicted sequences from the foreground set. 
+[andy0bsn5cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn5cell.cpp) performs the bootsrap cross-validation test to select parameters of a model providing the best performance for given foreground and background sets. A model has parameters of the motif length and the range for the number of LPDs. The motif length, the minimal value for the number of LPDs and it step are the parameters of command line. Recommended motif lengths are 8, 12, 16 and 20 nt. Default numbers of LPD and it step are 30 and 5, default number of distinct number of LPDs is 8, i.e. of  the numbers of LPDs 30, 35, etc. up to 65 are tested. The bootsrap cross-validation test denotes the partitioning of the foreground set into subsets of training and control sequence sets, the former is used to train a model and the latter to measure its performance. The maximal partial area under curve (pAUC) and area under precision-recall curve (AUCPR) are used to estimate the accuracy of a model for certain motif length and the number of LPDs. The term partial means that only the part of a ROC curve respecting the criterion FPR < 0.001 is impied for pAUC computation. The receiver operating characteristic (ROC) curve means the dependence between True Positive Rate (TPR) and False Positive Rate (FPR). TPR/FPR (axes Y/X of the ROC curve) are defined as the fraction of sequences from the foreground set containing predicted sites and the frequency of predicted sites in the background set, respectively. FPR = Nb/Wb, here Nb - number of predicted sites in the background set, Wb - total number of checked positions for predicted sites in the background set. The dependence between Precision and Recall represents AUCPR. Recall = TPR = TP/(TP+FN), Precision = TP/(TP+FP), here TP & FP denote counts of predicted sequences from foreground & background sets, FN denote counts of not predicted sequences from the foreground set. 
 ## 3. Train a model
-[andy05.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy05.cpp) trains a SiteGA model with selected by the bootstrap cross-validation procedure parameters of the motif length and the number of LPDs for given foreground and background sets. The resulting model is written in a [special matrix file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
+[andy05cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy05cell.cpp) trains a SiteGA model with selected by the bootstrap cross-validation procedure parameters of the motif length and the number of LPDs for given foreground and background sets. The resulting model is written in a [special matrix file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
 ## 4. Set threshold for a model
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp) creates table of thresholds for model's hits search in test sequences (**Scan test sequences with a model** module) based on score distribution for the set of whole-genome promoter sequences selected for respective species. Prepeared sets are stored in [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes) folder. The threshold selection implies the estimation of Expected Recognition Rate (ERR) of a model for promoter sequences of whole genome. The dependence of the threshold from ERR is stored in a [special file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) containing a list of two columns: recognition thresholds in descending order and corresponding -Log10(ERR) values
 ## 5. Scan test sequences with a model
@@ -69,27 +69,24 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 
 ## Set parameters of a model through accuracy estimation
 
-[andy0bsn5.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn5.cpp)
+[andy0bsn5cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn5cell.cpp)
 1. path to fasta files with sets of foreground and background sequences (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 2. fasta file, set of foreground sequences
 3. fasta file, set of background sequences
 4. integer value, maximal length of one LPD (default value 6)
-5. integer value, minimal number of LPDs (default value 40)
-6. integer value, maximal number of LPDs (default value 100)
-7. integer value, step of the number of LPDs (default value 20, i.e. no. of LPDs 40, 60, 80 and 100 are tested)
-8. integer value, minimal length of motif (integer value respecting to a tested length L, default value is 8)
-9. integer value, maximal length of motif (default value is 28)
-10. integer value, step of the motif length (default value is 4, i.e. lengths 8, 12, 16 etc. are considered)
-11. cross-validation type specification: positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
-12. integer value, number of iterations in bootatrap (default 2)
-13. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
-14. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
-15. integer value, maximal peak length (default value is 3000)
-16. output log file
+5. integer value, minimal number of LPDs (default value 30)
+6. integer value, step of the number of LPDs (default value 5, i.e. no. of LPDs 30, 35... etc up to 65 are tested, the default number of distinct numbers of LPDs is eight)
+7. integer value, length of motif (integer value respecting to a tested length L, default value is 12)
+8. cross-validation type specification: positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
+9. integer value, number of iterations in bootatrap (default 2 implies two-fold cross-validation)
+10. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
+11. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
+12. integer value, maximal peak length (default value is 3000)
+13. output log file
     
 ## Train a model
 
-[andy05.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy05.cpp)
+[andy05cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy05cell.cpp)
 1. path to fasta files with sets of foreground and background sequences (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 2. fasta file with set of foreground sequences
 3. fasta file with set of background sequences
