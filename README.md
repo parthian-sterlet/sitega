@@ -22,13 +22,13 @@ The background set of sequences is required as a complement to the foreground se
 ## 2. Set parameters of a model through accuracy estimation
 [andy0bsn5cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn5cell.cpp) performs the bootsrap cross-validation test to select parameters of a model providing the best performance for given foreground and background sets. A model has parameters of the motif length and the range for the number of LPDs. The motif length, the minimal value for the number of LPDs and it step are the parameters of command line. Recommended motif lengths are 8, 12, 16 and 20 nt. Default numbers of LPD and it step are 30 and 5, default number of distinct number of LPDs is 8, i.e. of  the numbers of LPDs 30, 35, etc. up to 65 are tested. The bootsrap cross-validation test denotes the partitioning of the foreground set into subsets of training and control sequence sets, the former is used to train a model and the latter to measure its performance. The maximal partial area under curve (pAUC) and area under precision-recall curve (AUCPR) are used to estimate the accuracy of a model for certain motif length and the number of LPDs. The term partial means that only the part of a ROC curve respecting the criterion FPR < 0.001 is impied for pAUC computation. The receiver operating characteristic (ROC) curve means the dependence between True Positive Rate (TPR) and False Positive Rate (FPR). TPR/FPR (axes Y/X of the ROC curve) are defined as the fraction of sequences from the foreground set containing predicted sites and the frequency of predicted sites in the background set, respectively. FPR = Nb/Wb, here Nb - number of predicted sites in the background set, Wb - total number of checked positions for predicted sites in the background set. The dependence between Precision and Recall represents AUCPR. Recall = TPR = TP/(TP+FN), Precision = TP/(TP+FP), here TP & FP denote counts of predicted sequences from foreground & background sets, FN denote counts of not predicted sequences from the foreground set. 
 ## 3. Train a model
-[andy05cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy05cell.cpp) trains a SiteGA model with selected by the bootstrap cross-validation procedure parameters of the motif length and the number of LPDs for given foreground and background sets. The resulting model is written in a [special matrix file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
+[05cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/05cell.cpp) trains a SiteGA model with selected by the bootstrap cross-validation procedure parameters of the motif length and the number of LPDs for given foreground and background sets. The resulting model is written in a [special matrix file](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat)
 ## 4. Set threshold for a model
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp) creates table of thresholds for model's hits search in test sequences (**Scan test sequences with a model** module) based on score distribution for the set of whole-genome promoter sequences selected for respective species. Prepeared sets are stored in [genomes](https://github.com/parthian-sterlet/sitega/tree/master/genomes) folder. The threshold selection implies the estimation of Expected Recognition Rate (ERR) of a model for promoter sequences of whole genome. The dependence of the threshold from ERR is stored in a [special file](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) containing a list of two columns: recognition thresholds in descending order and corresponding -Log10(ERR) values
 ## 5. Scan test sequences with a model
-[andy1_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy1_mat.cpp) scans test sequences with a constructed model and the selected threshold of a model.
+[1_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/1_mat.cpp) scans test sequences with a constructed model and the selected threshold of a model.
 ## 6. Scan whole genome with a model
-[andy1_mat_long.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy1_mat_long.cpp) scans whole genome as a set of full-sized chromosomes with a constructed model and the selected threshold of a model.
+[1_mat_long.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/1_mat_long.cpp) scans whole genome as a set of full-sized chromosomes with a constructed model and the selected threshold of a model.
 
 # How to compile
 * In Linux system: 
@@ -69,7 +69,7 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
 
 ## Set parameters of a model through accuracy estimation
 
-[andy0bsn5cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn5cell.cpp)
+[0bsn5cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/0bsn5cell.cpp)
 1. path to fasta files with sets of foreground and background sequences (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 2. fasta file, set of foreground sequences
 3. fasta file, set of background sequences
@@ -86,7 +86,7 @@ see the github repositiory [AntiNoise](https://github.com/parthian-sterlet/antin
     
 ## Train a model
 
-[andy05cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy05cell.cpp)
+[05cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy05cell.cpp)
 1. path to fasta files with sets of foreground and background sequences (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 2. fasta file with set of foreground sequences
 3. fasta file with set of background sequences
@@ -146,11 +146,11 @@ These scripts implement various pipelines for Linux:
 
 ## Set parameters of a model through accuracy estimation
 
-[andy0bsn5.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn5.cpp) several times construct distinct [SiteGA models](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) (parameter of command line 'number of iterations'), but each time it uses only a part of the foreground set for training, the rest (control) part of set is used to estimate FPR). The output file [Table pAUC file](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.fa_roc_bs1.txt) reoresenting pAUC values computed by [ROC curves](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.fa_roc_bs1.txt) for various values of parameters of a model allows selection of the one model among several ones. These several ones come from different numbers of LPDs and lengths L of a motif. 
+[andy0bsn5cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy0bsn5cell.cpp) several times construct distinct [SiteGA models](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) (parameter of command line 'number of iterations'), but each time it uses only a part of the foreground set for training, the rest (control) part of set is used to estimate FPR). The output file [Table pAUC file](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.fa_roc_bs1.txt) reoresenting pAUC values computed by [ROC curves](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.fa_roc_bs1.txt) for various values of parameters of a model allows selection of the one model among several ones. These several ones come from different numbers of LPDs and lengths L of a motif. 
 
 ## Train a model
 
-[andy05.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy05.cpp) constructs one sitega model, with the numbers of locally positioned dinucleotides (LPDs) assigned according the parameter of the command line, this value deduced from the bootstrap cross validation test (see the previous paragraph). The selected model respecting the maximal pAUC in the bootstrap cross validation test, this model is written in output file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with *.mat* extension
+[andy05cell.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy05cell.cpp) constructs one sitega model, with the numbers of locally positioned dinucleotides (LPDs) assigned according the parameter of the command line, this value deduced from the bootstrap cross validation test (see the previous paragraph). The selected model respecting the maximal pAUC in the bootstrap cross validation test, this model is written in output file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) with *.mat* extension
 
 ## Set threshold for a model
 
