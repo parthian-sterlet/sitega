@@ -8,7 +8,7 @@ For a given set of N foreground sequences (peaks), the fitness function F(X) = D
 # Requirements
 SiteGA source code is written in C++ language. To compile exetubables from the source code you need:
 
-* In Linux system, C++ compiler, e.g. [GCC](https://gcc.gnu.org/) 
+* In Linux system, C++ compiler, the minimal one is [GCC](https://gcc.gnu.org/) compiler, more prominent is [Clang](https://clang.llvm.org/) under the management of [Spack](https://spack.readthedocs.io/en/latest/getting_started.html) tool
 * In Windows system any VC++ package, e.g. [Microsoft Visual Studio Community](https://visualstudio.microsoft.com/vs/community/)
 
 # Input data
