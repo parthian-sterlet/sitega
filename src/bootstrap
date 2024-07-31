@@ -1,3 +1,4 @@
+# 4 lines show runs with the motif lengths 8, 12, 16 and 20 bp
 ./andy0bsn5cell.exe ../examples/ PEAKS035427_ATOH1_P48985_MACS2.fa	PEAKS035427_ATOH1_P48985_MACS2_gb.fa	6	18 2 8 -1	2	6	../examples/ 3000 PEAKS035427_ATOH1_P48985_MACS2.outlog
 ./andy0bsn5cell.exe ../examples/ PEAKS035427_ATOH1_P48985_MACS2.fa	PEAKS035427_ATOH1_P48985_MACS2_gb.fa	6	18 2 12 -1	2	6	../examples/ 3000 PEAKS035427_ATOH1_P48985_MACS2.outlog
 ./andy0bsn5cell.exe ../examples/ PEAKS035427_ATOH1_P48985_MACS2.fa	PEAKS035427_ATOH1_P48985_MACS2_gb.fa	6	18 2 16 -1	2	6	../examples/ 3000 PEAKS035427_ATOH1_P48985_MACS2.outlog
