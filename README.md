@@ -75,13 +75,13 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 4. integer value, maximal length of one LPD (default value 6)
 5. integer value, minimal number of LPDs (default value 30)
 6. integer value, step of the number of LPDs (default value 5, i.e. numbers of LPDs 30, 35... etc. up to 65 are tested, the default number of distinct numbers of LPDs is eight)
-7. integer value, length of motif in nucleotides (tested lengths from 8 to 20 are recommended)
-8. integer value, cross-validation type specification: positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
-9. integer value, number of iterations in bootatrap (default 2 implies two-fold cross-validation)
-10. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
-11. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
-12. integer value, maximal peak length (default value is 3000)
-13. output log file
+7. integer value, length of motif in nucleotides, the length from 8 to 12 nt is recommended, The computation time increases greatly with with the growth of time to 16 or 20 nt, due to substantion growtch of posible combinations of local nucleiotide contexts within a motif. The best solution is to test various motif lengths from 8 to 12 nt and select among them the one providing the best recognition accuracy. 
+9. integer value, cross-validation type specification: positive value below 1 means the ratio of the training subset size to that of control subset for repeated random subsampling validation, default value -1 means equal sizes of training and control subsets, odd/even peaks are used either for training and control subsets)
+10. integer value, number of iterations in bootatrap (default 2 implies two-fold cross-validation)
+11. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
+12. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
+13. integer value, maximal peak length (default value is 3000)
+14. output log file
     
 ## Train a model
 
