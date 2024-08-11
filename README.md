@@ -91,7 +91,7 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 3. fasta file with set of background sequences
 4. integer value, maximal length of one LPD (default value 6)
 5. integer value, length of motif (this value is selected in the bootstrap cross-valiation test, [see above](https://github.com/parthian-sterlet/sitega/tree/master#set-parameters-of-a-model-through-accuracy-estimation))
-6. integer value, size, the number of LPDs (a value is selected in the bootstrap cross-valiation test, [see above](https://github.com/parthian-sterlet/sitega/tree/master#set-parameters-of-a-model-through-accuracy-estimation)))
+6. integer value, size, the number of LPDs (a value is selected in the bootstrap cross-valiation test, [see above](https://github.com/parthian-sterlet/sitega/tree/master#set-parameters-of-a-model-through-accuracy-estimation))
 7. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
 8. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 9. integer value, maximal peak length (default value is 3000)
