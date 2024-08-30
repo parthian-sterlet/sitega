@@ -2811,10 +2811,13 @@ int main(int argc, char* argv[])
 	int* pair_take;
 	int* first_cell, * second_cell;
 	double jwei;
-	double jwei0[3] = { 1.1, 1.2, 1.3 };
+	double jwei0[3];// = { 1.1, 1.2, 1.3 };
 	{
 		int rwei[MEGE];
-		double jwei1 = jwei0[2];
+		double jwei1 = pow(double(20), double(2) / (MEGE + 2));//= jwei0[2];
+		jwei0[2] = jwei1;
+		jwei0[1] = jwei1 / 2;
+		jwei0[0] = jwei1 / 5;		
 		int jmax = MEGE / 2 - 1, jmax1 = jmax - 1;
 		rwei[jmax] = 2;
 		for (j = jmax1; j >= 0; j--)

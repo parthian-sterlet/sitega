@@ -12,12 +12,12 @@
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
-#define MEGE 60//population size 1st stage
-#define ELIT 60//population size 2nd stage
+#define MEGE 84//population size 1st stage
+#define ELIT 84//population size 2nd stage
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 120
-#define GA_EXIT 0.01
+//#define GA_EXIT 0.01
 
 double  uw[POPSIZE][POPSIZE];
 struct ss {
@@ -2917,10 +2917,14 @@ int main(int argc, char* argv[])
 	int** pair_d; // pair 1 & 2 population ranks of individuals in each cell				
 	int* pair_take;
 	int pair_all_max = 0; 
-	double jwei0[3] = { 1.1, 1.2, 1.3 };
+	double jwei0[3];
 	{
+		//= { 1.02, 1.05, 1.1 };
 		int rwei[MEGE];
-		double jwei1 = jwei0[2];
+		double jwei1 = pow(double(20), double(2) / (MEGE + 2));//= jwei0[2];
+		jwei0[2] = jwei1;
+		jwei0[1] = jwei1 / 2;
+		jwei0[0] = jwei1 / 5;
 		int jmax = MEGE / 2 - 1, jmax1 = jmax - 1;
 		rwei[jmax] = 2;
 		for (j = jmax1; j >= 0; j--)
@@ -2928,8 +2932,8 @@ int main(int argc, char* argv[])
 			rwei[j] = (int)(rwei[jmax] * jwei1);
 			jwei1 *= jwei0[2];
 		}
-		printf("RecWei\t");
-		for (j = jmax; j >= 0; j--)printf("%d %d\t", j, rwei[j]);
+		fprintf(outlog, "RecWei\t");
+		for (j = jmax; j >= 0; j--)fprintf(outlog, "%d %d\t", j, rwei[j]);
 		printf("\n");
 		for (j = jmax; j >= 0; j--)
 		{
@@ -2942,7 +2946,7 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
-	printf("Total pairs reserved %d\n", pair_all_max);
+	fprintf(outlog, "Total pairs reserved %d\n", pair_all_max);
 	pair_take = new int[pair_all_max];
 	if (pair_take == NULL) return -1;
 	pair_d = new int* [pair_all_max];
@@ -3024,7 +3028,7 @@ int main(int argc, char* argv[])
 		int step, step_max, step_max_tot = 0;
 		int elit_rec;
 		int knseq = Max(100, nseq);
-		int sr_step = 400 * knseq;//400000 if nseq = 1000		;
+		int sr_step = 1000 * knseq;//1000000 if nseq = 1000		;
 		int n_rec_cycle_max = 2000 * knseq;//2000000 if nseq = 1000		
 		double jwei;
 		if (gen == 0)
@@ -3035,6 +3039,7 @@ int main(int argc, char* argv[])
 			jwei = jwei0[0];
 			mege_h = MEGE;
 			ratio_rec_cycle = 0.0025;
+			sr_step = 1000 * knseq;
 		}
 		else
 		{
@@ -3046,7 +3051,7 @@ int main(int argc, char* argv[])
 				elit_rec = ELIT / 5;
 				mege_h = ELIT;		
 				ratio_rec_cycle = 0.001;
-				sr_step = 1000 * knseq;
+				sr_step = 2000 * knseq;
 			}
 			else
 			{
@@ -3056,7 +3061,7 @@ int main(int argc, char* argv[])
 				jwei = jwei0[2]; 
 				mege_h = ELIT;
 				ratio_rec_cycle = 0.001;
-				sr_step = 1000 * knseq;
+				sr_step = 2000 * knseq;
 			}
 		}
 		if (step_max < step)step_max = step;
@@ -3210,7 +3215,7 @@ int main(int argc, char* argv[])
 								for (k = 0; k < 3; k++)asuccess[k] += step_success[k];
 								if (try_mi[i] != 0)exp_rec_rate[i] = (double)success_mi[i] / try_mi[i];
 								else exp_rec_rate[i] = 0;
-								if (gen >= 1)fprintf(outlog, "Step%d M%d %d,%d,%d Try %d,%d,%d Min %d M %f H %g Fit %f Ratio %f RatioSco %f\n", m_iter, i + 1, step_success[0], step_success[1], step_success[2], step_try[0], step_try[1], step_try[2], n_mut_min_cyc, pop[i].mah, pop[i].fpr, pop[i].fit, ratio[2], ratio_per_cycle);
+							//	if (gen >= 1)fprintf(outlog, "Step%d M%d %d,%d,%d Try %d,%d,%d Min %d M %f H %g Fit %f Ratio %f RatioSco %f\n", m_iter, i + 1, step_success[0], step_success[1], step_success[2], step_try[0], step_try[1], step_try[2], n_mut_min_cyc, pop[i].mah, pop[i].fpr, pop[i].fit, ratio[2], ratio_per_cycle);
 								success_mi[i] = try_mi[i] = 0;
 								for (k = 0; k < 3; k++)step_try[k] = step_success[k] = 0;
 								if (n_mut_here >= step_max)
@@ -3233,9 +3238,15 @@ int main(int argc, char* argv[])
 					success_l += success_l_local;
 					success_p += success_p_local;
 					success_m_tot += success_m_local;
-					fprintf(outlog, "M %d %d,%d,%d = %d Try %d M %f H %g F %f", i + 1, success_o_local, success_l_local, success_p_local, success_m_local, n_mut_here, pop[i].mah, pop[i].fpr, pop[i].fit);
-					if (gen == 0)fprintf(outlog, "\tOLP %d%d%d RatioP %f", stop_oi[i], stop_li[i], stop_pi[i], ratio[2]);
-					fprintf(outlog, "\n");
+					if ((gen == 0 && i == 0) || gen > 0)
+					{
+						fprintf(outlog, "M %d %d,%d,%d = %d Try %d M %f H %g F %f", i + 1, success_o_local, success_l_local, success_p_local, success_m_local, n_mut_here, pop[i].mah, pop[i].fpr, pop[i].fit);
+						fprintf(outlog, "\n");
+					}
+					/*if (gen == 0 && i == 0)
+					{
+						fprintf(outlog, "\tOLP %d%d%d RatioP %f", stop_oi[i], stop_li[i], stop_pi[i], ratio[2]);						
+					}*/
 					n_mut_tot += n_mut_here;
 					if (success_m_local != 0)success_m++;
 				}
@@ -3587,22 +3598,22 @@ int main(int argc, char* argv[])
 		double change_level = pop[0].fit / fit_prev - 1;
 		double change_level_rec = pop[0].fit / fit_after_mut - 1;
 		double change_level_mut = fit_after_mut / fit_prev - 1;				
-		double rise = 2 * GA_EXIT;
-		if (change_level < GA_EXIT && gen > 1)
+		double exit_1st = 0.05, exit_2nd = 0.01;
+		if (change_level < exit_2nd && gen > 1)// 3rd iteration at least
 		{
 			printf("Go out!\n");
 			big_exit1 = 1;
 		}
 		else
-		{
-			//double rise = 2 * GA_EXIT;
-			/*if (restart_half > 0 && change_level < rise)
+		{			
+			if (restart_half > 0 && change_level < exit_2nd)
 			{				
+				int best_alive = (int)(mege_h / (3 + 2 * restart_half));//for mege = 30 -> 10,6,4,3,2,2,2
+				if (best_alive < 2)best_alive = 2;
 				int n_peaks = 20;
 				restart_full++;
 				fprintf(outlog, "Restart Full %d\n", restart_full);
-				for (i = 0; i < mege_h; i++)stop_oi[i] = stop_li[i] = 0;
-				int best_alive = 3;
+				for (i = 0; i < mege_h; i++)stop_oi[i] = stop_li[i] = 0;				
 				for (i = best_alive; i < mege_h; i++)
 				{
 					int best_num = i % best_alive;
@@ -3614,12 +3625,13 @@ int main(int argc, char* argv[])
 				qsort((void*)(&pop[0]), mege_h, sizeof(pop[0]), compare_pop);
 				for (j = 0; j < mege_h; j++)stop_pi[i] = 0;
 				for (j = 0; j < mege_h; j++)stop_oi[i] = stop_li[i] = 1;
-			}		*/
+			}		
 			if (restart_full == 0)
 			{
+				int best_alive = (int)(mege_h / (3 + 2 * restart_half));//for mege = 30 -> 10,6,4,3,2,2,2
+				if (best_alive < 2)best_alive = 2;
 				restart_half++;
-				fprintf(outlog, "Restart Half %d\n", restart_half);
-				int best_alive = mege_h / 3;
+				fprintf(outlog, "Restart Half %d\n", restart_half);				
 				int n_peaks = 20;
 				for (i = best_alive; i < mege_h; i++)
 				{
