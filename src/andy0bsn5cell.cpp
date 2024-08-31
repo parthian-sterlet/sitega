@@ -2816,8 +2816,8 @@ int main(int argc, char* argv[])
 		int rwei[MEGE];
 		double jwei1 = pow(double(20), double(2) / (MEGE + 2));//= jwei0[2];
 		jwei0[2] = jwei1;
-		jwei0[1] = jwei1 / 2;
-		jwei0[0] = jwei1 / 5;		
+		jwei0[1] = 1 + (jwei1 - 1) / 2;
+		jwei0[0] = 1 + (jwei1 - 1) / 5;
 		int jmax = MEGE / 2 - 1, jmax1 = jmax - 1;
 		rwei[jmax] = 2;
 		for (j = jmax1; j >= 0; j--)

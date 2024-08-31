@@ -12,8 +12,8 @@
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
-#define MEGE 84//population size 1st stage
-#define ELIT 84//population size 2nd stage
+#define MEGE 21//population size 1st stage
+#define ELIT 21//population size 2nd stage
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 120
@@ -2923,8 +2923,8 @@ int main(int argc, char* argv[])
 		int rwei[MEGE];
 		double jwei1 = pow(double(20), double(2) / (MEGE + 2));//= jwei0[2];
 		jwei0[2] = jwei1;
-		jwei0[1] = jwei1 / 2;
-		jwei0[0] = jwei1 / 5;
+		jwei0[1] = 1 + (jwei1 - 1) / 2;
+		jwei0[0] = 1 + (jwei1 - 1) / 5;
 		int jmax = MEGE / 2 - 1, jmax1 = jmax - 1;
 		rwei[jmax] = 2;
 		for (j = jmax1; j >= 0; j--)
@@ -2932,8 +2932,8 @@ int main(int argc, char* argv[])
 			rwei[j] = (int)(rwei[jmax] * jwei1);
 			jwei1 *= jwei0[2];
 		}
-		fprintf(outlog, "RecWei\t");
-		for (j = jmax; j >= 0; j--)fprintf(outlog, "%d %d\t", j, rwei[j]);
+		printf("RecWei\t");
+		for (j = jmax; j >= 0; j--)printf("%d %d\t", j, rwei[j]);
 		printf("\n");
 		for (j = jmax; j >= 0; j--)
 		{
