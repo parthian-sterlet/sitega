@@ -12,8 +12,8 @@
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
-#define MEGE 21//population size 1st stage
-#define ELIT 21//population size 2nd stage
+#define MEGE 84//population size 1st stage
+#define ELIT 84//population size 2nd stage
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 120
