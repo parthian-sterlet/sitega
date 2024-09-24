@@ -105,7 +105,7 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp)
 1. path to file_profile_fasta (see argument #3 below, the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) from **Train a model** module
-3. file_profile_fasta = input Whole-genome promoters set in fasta format ([example](https://github.com/parthian-sterlet/sitega/blob/master/genomes/sc64/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa) provides one for _S. cerevisiae_)
+3. file_profile_fasta = input Whole-genome promoters set in fasta format ([archive with example](https://github.com/parthian-sterlet/sitega/blob/master/genomes/mm10/ups2kb_mm10.seq.tar.gz) provides one for _M. musculus_)
 4. output file, text mode, [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2_sga.dist), table SiteGA model threshold vs. Expected Recognition Rate (ERR)
 5. output file, binary mode, [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) as a matrix and [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2_sga.dist), table SiteGA model threshold vs. ERR)
 6. double pvalue_large = maximal ERR (default value 0.001)
