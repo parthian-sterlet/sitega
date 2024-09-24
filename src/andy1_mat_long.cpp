@@ -1068,7 +1068,7 @@ int main(int argc, char* argv[])
 				exit(1);
 			}
 			double fpr_cur = atof(sfp);
-			if (fpr_cur > pval_crit)
+			if (fpr_cur < pval_crit)
 			{
 				thr = thr_prev;
 				break;
