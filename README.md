@@ -101,32 +101,32 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 
 [sitega_thr_dist_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/sitega_thr_dist_mat.cpp)
 1. path to file_profile_fasta (see argument #3 below, the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
-2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
+2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) from **Train a model** module
 3. file_profile_fasta = input Whole-genome promoters set in fasta format ([example](https://github.com/parthian-sterlet/sitega/blob/master/genomes/sc64/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa) provides one for _S. cerevisiae_)
-4. output file, text mode, [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), table SiteGA model threshold vs. Expected Recognition Rate (ERR)
-5. output file, binary mode, [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) as a matrix and [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), table SiteGA model threshold vs. ERR)
+4. output file, text mode, [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2_sga.dist), table SiteGA model threshold vs. Expected Recognition Rate (ERR)
+5. output file, binary mode, [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) as a matrix and [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2_sga.dist), table SiteGA model threshold vs. ERR)
 6. double pvalue_large = maximal ERR (default value 0.001)
 7. double score_min = lowest threshold of SiteGA model (default value 0.75)
-8. double dpvalue = granulation value for ERR compaction in [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err), the default value 0.0000005 implies a moderate compaction
+8. double dpvalue = granulation value for ERR compaction in [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat), the default value 0.0000005 implies a moderate compaction
 
 ## Scan test sequences with a model
 
 [andy1_mat.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy1_mat.cpp)
 1. test file in fasta format with its path
-2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
-3. site_description_mode = 0 or 1. 0 means default mode, 1 means computation of frequencies of all LPDs for all tested sequences (option is used for the train fasta file to describe a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat))
-4. ERR threshold = threshold for ERR of [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) is used to select the SiteGA threshold according to input file [Threshold vs ERR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) from **Set threshold for a model** module
-5. input file [Threshold vs ERR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) for [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) threshold selection by ERR threshold
+2. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) from **Train a model** module
+3. site_description_mode = 0 or 1. 0 means default mode, 1 means computation of frequencies of all LPDs for all tested sequences (option is used for the train fasta file to describe a [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat))
+4. ERR threshold = threshold for ERR of [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) is used to select the SiteGA threshold according to input file [Threshold vs ERR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2_sga.dist) from **Set threshold for a model** module
+5. input file [Threshold vs ERR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2_sga.dist) for [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) threshold selection by ERR threshold
 6. output file [Profile with recognized hits](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile)
 
 ## Scan whole genome with a model
 
 [andy1_mat_long.cpp](https://github.com/parthian-sterlet/sitega/blob/master/src/andy1_mat_long.cpp)
-1. path to chromosome sequences in [Fasta format](https://github.com/parthian-sterlet/sitega/blob/master/examples/peaks.fa), these are files for individual chromosomes in separate files, they are prepared by splitting  [the whole-genome fasta file](https://github.com/parthian-sterlet/sitega/blob/master/genomes/sc64/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa) by the [https://github.com/parthian-sterlet/antinoise/blob/main/src/fasta_muliplefiles.cpp](https://github.com/parthian-sterlet/antinoise/blob/main/src/fasta_muliplefiles.cpp) from the [AntiNoise](https://github.com/parthian-sterlet/antinoise) package.
+1. path to chromosome sequences in [Fasta format](https://github.com/parthian-sterlet/sitega/blob/master/examples/), individual chromosomes are in separate files in fasta format, they are prepared by splitting  [the whole-genome fasta file](https://github.com/parthian-sterlet/sitega/blob/master/genomes/sc64/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa) by the [https://github.com/parthian-sterlet/antinoise/blob/main/src/fasta_muliplefiles.cpp](https://github.com/parthian-sterlet/antinoise/blob/main/src/fasta_muliplefiles.cpp) from the [AntiNoise](https://github.com/parthian-sterlet/antinoise) package.
 2. species and genome release (values hg38, mm10, rn6, zf11, dm6, and ce235; at10, gm21, zm73, and mp61; sc64 and sch294). The animals inludes human _Homo sapiens_ hg38, mouse _Mus musculus_ mm10, rat _Rattus norvegicus_ Rnor_6.0, zebrafish _Danio rerio_ GRCz11, fly _Drosophila melanogaster_ dm6, and roundworm _Caenorhabditis elegans_ WBcel235; the plants are arabidopsis _Arabidopsis thaliana_ TAIR10, soybean _Glycine max_ v2.1, maize _Zea mays_ B73, and liverwort _Marchantia polymorpha_ MpTak v6.1; the fungi are baker's yeast _Saccharomyces cerevisiae_ R64-1-1 and fission yeast _Schizosaccharomyces pombe_ ASM294v2.
-3. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) from **Train a model** module
-4. input file [Threshold vs ERR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) for [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) threshold selection by ERR threshold
-5. double value, ERR threshold = threshold for ERR of [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/model.mat) is used to select the SiteGA threshold according to input file [Table Threshold vs ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) from **Set threshold for a model** module
+3. sitega_matrix_file = input file [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) from **Train a model** module
+4. input file [Threshold vs ERR table](https://github.com/parthian-sterlet/sitega/blob/master/examples/thr_err) for [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) threshold selection by ERR threshold
+5. double value, ERR threshold = threshold for ERR of [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) is used to select the SiteGA threshold according to input file [Table Threshold vs ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2_sga.dist) from **Set threshold for a model** module
 6. output file [Profile with recognized hits](https://github.com/parthian-sterlet/sitega/blob/master/examples/hit_profile)
 
 # Examples scripts:
