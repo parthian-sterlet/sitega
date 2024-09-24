@@ -132,10 +132,11 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 # Examples scripts:
 
 These scripts implement various pipelines for Linux:
-1. [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/src/train) - **Preparation** and  **Train a model** modules
-2. [bootstrap test for a model](https://github.com/parthian-sterlet/sitega/blob/master/src/bootstrap) - **Preparation** and **Estimate accuracy for a model** modules
-3. [training and scanning a fasta file with a model](https://github.com/parthian-sterlet/sitega/blob/master/src/scan_fasta) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model** modules
-4. [training and scanning whole genome with a model](https://github.com/parthian-sterlet/sitega/blob/master/src/scan_genome) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan whole genome with a model** modules
+1. [bootstrap test for a model](https://github.com/parthian-sterlet/sitega/blob/master/src/bootstrap) - **Preparation** and **Estimate accuracy for a model** modules
+2. [only training a model](https://github.com/parthian-sterlet/sitega/blob/master/src/train) - **Preparation** and  **Train a model** modules
+3. 4. [training and scanning a fasta file with a model](https://github.com/parthian-sterlet/sitega/blob/master/src/scan_fasta) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model** modules
+4. [training and scanning a fasta file with a model](https://github.com/parthian-sterlet/sitega/blob/master/src/scan_fasta) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan test seauences with a model** modules
+5. [training and scanning whole genome with a model](https://github.com/parthian-sterlet/sitega/blob/master/src/scan_genome) - **Preparation**, **Train a model**, **Set threshold for a model** and **Scan whole genome with a model** modules
    
 # Interpretation of results
 
