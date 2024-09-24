@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# binary files compiled by g++
 g++ -o sitega_thr_dist_mat.exe sitega_thr_dist_mat.cpp
 g++ -o andy0bsn5cell.exe andy0bsn5cell.cpp
 g++ -o andy1_mat.exe andy1_mat.cpp
@@ -27,6 +28,7 @@ tar -xzvf ups2kb_mm10.seq.tar.gz
 cd ..
 cd ..
 
+# binary files compiled by clang/spack
 cd bin
 chmod a+x andy0bsn5cell.exe
 chmod a+x andy1_mat.exe
