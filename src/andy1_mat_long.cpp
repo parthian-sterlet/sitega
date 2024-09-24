@@ -884,6 +884,7 @@ int main(int argc, char* argv[])
 	strcpy(sitename, argv[3]);
 	strcpy(file_thr_fpr, argv[4]);
 	double pval_crit = atof(argv[5]);
+	pval_crit = -log10(pval_crit);
 	strcpy(file_out_base, argv[6]);
 
 	int sizelo1[NCHR];//lengths in bp
@@ -1195,7 +1196,7 @@ int main(int argc, char* argv[])
 						{
 							rec_pos1++;
 							fprintf(out, "%d\t", posc[cmpl1]);
-							fprintf(out, "%f\t%c", p[cmpl1][ib[cmpl1]], cep[cmpl1]);
+							fprintf(out, "%.12f\t%c", p[cmpl1][ib[cmpl1]], cep[cmpl1]);
 							fprintf(out, "\t");
 							int n1;
 							for (n1 = ib[cmpl1]; n1 < posc1[cmpl1]; n1++)
