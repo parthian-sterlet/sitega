@@ -17,6 +17,9 @@ The bulk of input data are ChIP-seq peaks in FASTA format. To optimize computati
 # Source code
 Folder [**src**](https://github.com/parthian-sterlet/sitega/tree/master/src) contains SiteGA source code files that relate to individual pipeline modules and are described below.
 
+# Binary
+Folder [**bin**](https://github.com/parthian-sterlet/sitega/tree/master/bin) contains SiteGA source code files compiled by [Clang](https://clang.llvm.org/) under the management of [Spack](https://spack.readthedocs.io/en/latest/getting_started.html) tool. It is recomended to use these binary files instead of those compiled by default g++ compiler. Just copy them to the src folder. For illustrative purpose only all scripts are started from binary files compiled with default g++ compiler. 
+
 ## 1. Background sequence set generation
 The background set of sequences is required as a complement to the foreground set to select the values of two parameters of the SiteGA model: motif length and the number of LPDs. The main purpose of the background set is to exclude artifact motifs related to a genome-specific sequence content bias, e.g. polyA, from the results of *de novo* motif search. To prepare genome-specific sets of background sequences, it is recommended to use the [AntiNoise](https://github.com/parthian-sterlet/antinoise) package [(Raditsa et al., 2024)](https://doi.org/10.1093/nargab/lqae090). 
 ## 2. Set parameters of a model through accuracy estimation
