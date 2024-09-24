@@ -13,6 +13,6 @@ chmod a+x train
 cd ..
 cd genomes
 cd mm10
-tar -cvzf ups2kb_mm10.seq.tar.gz ups2kb_mm10.seq
+tar -xzvf ups2kb_mm10.seq.tar.gz
 cd ..
 cd ..
