@@ -1,5 +1,5 @@
 # three lines show runs with the motif lengths 8, 10, and 12 bp, all run imply the minimal number of LPD 18, and the step of the number of LPD is 2, so that numbers of LPDs 18, 20, etc. ... up to 48 are tested
-./andy0bsn5cell.exe ../examples/ PEAKS035427_ATOH1_P48985_MACS2.fa	PEAKS035427_ATOH1_P48985_MACS2_gb.fa	6	18 2 8 -1	2	6	../examples/ 3000 PEAKS035427_ATOH1_P48985_MACS2.outlogb
+./andy0bsn5cell.exe ../examples/ PEAKS035427_ATOH1_P48985_MACS2.fa	PEAKS035427_ATOH1_P48985_MACS2_gb.fa	6	18 2 8 -1	2	6	../examples/ 3000 PEAKS035427_ATOH1_P48985_MACS2.blog
 
 
 
