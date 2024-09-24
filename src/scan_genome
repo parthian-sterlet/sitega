@@ -1,3 +1,3 @@
 ./fasta_muliplefiles.exe ../genomes/sc64/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa ../genomes/sc64/chr 0
-./sitega_thr_dist_mat.exe ../examples/ PEAKS035427_ATOH1_P48985_MACS2.mat mm_ups1500.seq PEAKS035427_ATOH1_P48985_MACS2.dist 0.001 0.5 0.00000005
+./sitega_thr_dist_mat.exe ../examples/ PEAKS035427_ATOH1_P48985_MACS2.mat ups2kb_mm10.seq PEAKS035427_ATOH1_P48985_MACS2.dist 0.001 0.5 0.00000005
 ./andy1_mat_long.exe ../genomes/sc64/ sc64 PEAKS035427_ATOH1_P48985_MACS2.mat PEAKS035427_ATOH1_P48985_MACS2.dist 0.0005 PEAKS035427_ATOH1_P48985_MACS2.SGA_out_genome
