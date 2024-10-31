@@ -108,7 +108,7 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 3. file_profile_fasta = input Whole-genome promoters set in fasta format ([archive with example](https://github.com/parthian-sterlet/sitega/blob/master/genomes/mm10/ups2kb_mm10.seq.tar.gz) provides one for _M. musculus_)
 4. output file, text mode, [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2_sga.dist), table SiteGA model threshold vs. Expected Recognition Rate (ERR)
 5. output file, binary mode, [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) as a matrix and [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2_sga.dist), table SiteGA model threshold vs. ERR)
-6. double pvalue_large = maximal ERR (default value 0.001)
+6. double pvalue_large = maximal ERR, default value 0.001, value below 0.01 is recomended
 7. double dpvalue = granulation value for ERR compaction in [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat), the default value 0.0000005 implies a moderate compaction
 
 ## Scan test sequences with a model
