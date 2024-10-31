@@ -1259,7 +1259,7 @@ double EvalMahFITTrain(town* a, int nseq, int*** seq, char* file, int olen, int 
 	//a->fprint_allfi(file, ext2, olen, c0, buf,reg_max);
 	best_sel_ext->get_copy(c0, buf, a->size);
 	int b, o;
-	double sga_min = 0, sga_max = 0;
+	double sga_min = c0, sga_max = c0;
 	for (k = 0; k < a->size; k++)
 	{
 		if (buf[k] < 0)sga_min += buf[k];
