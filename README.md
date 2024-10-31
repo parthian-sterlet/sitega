@@ -109,8 +109,7 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 4. output file, text mode, [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2_sga.dist), table SiteGA model threshold vs. Expected Recognition Rate (ERR)
 5. output file, binary mode, [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) as a matrix and [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2_sga.dist), table SiteGA model threshold vs. ERR)
 6. double pvalue_large = maximal ERR (default value 0.001)
-7. double score_min = lowest threshold of SiteGA model (default value 0.75)
-8. double dpvalue = granulation value for ERR compaction in [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat), the default value 0.0000005 implies a moderate compaction
+7. double dpvalue = granulation value for ERR compaction in [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat), the default value 0.0000005 implies a moderate compaction
 
 ## Scan test sequences with a model
 
