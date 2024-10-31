@@ -397,9 +397,9 @@ int main(int argc, char *argv[])
 	char head[1000], file_out_distt[300], file_out_distb[300], file_sitega[300], path_fasta[300], file_fasta[300];
 	FILE *in, *out_distt, * out_distb;
 
-	if (argc != 9)
+	if (argc != 8)
 	{
-		printf("%s 1path_fasta 2sitega_matrix_file 3file_profile_fasta 4file out_dist_txt 5file out_dist_binary 6double pvalue_large 6double score_min 8double dpvalue", argv[0]);//5file out_cpp_arr 
+		printf("%s 1path_fasta 2sitega_matrix_file 3file_profile_fasta 4file out_dist_txt 5file out_dist_binary 6double pvalue_large 7double dpvalue", argv[0]);//5file out_cpp_arr 
 		return -1;
 	}
 	char letter[] = "acgt";
@@ -411,8 +411,8 @@ int main(int argc, char *argv[])
 	strcpy(file_out_distb, argv[5]);
 	double pvalue_large = atof(argv[6]);
 	//strcpy(file_out_cpp_arr, argv[5]);
-	double thr_bot = atof(argv[7]);
-	double bin = atof(argv[8]);
+	//double thr_bot = atof(argv[7]);
+	double bin = atof(argv[7]);
 
 	int nseq_pro = 0, len_pro = 0;
 	int all_pos = 0;
@@ -420,8 +420,7 @@ int main(int argc, char *argv[])
 	int nthr = 2 * (int)(pvalue_large*all_pos*1.05);
 	double *thr;
 	thr = new double[nthr];
-	if (thr == NULL) { puts("Out of memory..."); return -1; }
-	for (i = 0; i < nthr; i++)thr[i] = 0;
+	if (thr == NULL) { puts("Out of memory..."); return -1; }	
 	int nthr_max = nthr - 1;
 	char *dp;
 	dp = new char[len_pro + 10];
@@ -439,12 +438,27 @@ int main(int argc, char *argv[])
 		printf("Site %s function not found!", file_sitega);
 		exit(1);
 	}
-	int len1 = sta.len;
+	double sga_min = sta.c, sga_max = sta.c;
+	for (j = 0; j < sta.size; j++)
+	{
+		if (sta.tot[j].buf < 0)sga_min += sta.tot[j].buf;
+		else sga_max += sta.tot[j].buf;		
+	}
+	double sga_raz = sga_max - sga_min;
+	double thr_bot = sga_min / sga_raz;
+	int len1 = sta.len;	
+	for (i = 0; i < nthr; i++)thr[i] = thr_bot;
 	int rlen[DIM];
 	for (j = 0; j < sta.size; j++)rlen[j] = (sta.tot[j].end - sta.tot[j].sta + 1);
 	for (n = 0; n < nseq_pro; n++)
 	{
-		if (n % 100 == 0)printf("%5d %f\n", n, thr[nthr_max]);
+		if (n % 500 == 0)
+		{			
+			/*int di = nthr_max / 20;
+			for (i = 0; i < nthr_max; i += di)printf("%d %f ", i+1, thr[i]);
+			printf("\n");*/
+			printf("%5d %f\n", n, thr[nthr_max]);
+		}
 		fgets(head, sizeof(head), in);
 		memset(dp, 0, len_pro + 1);
 		fgets(dp, len_pro + 2, in);
@@ -467,7 +481,6 @@ int main(int argc, char *argv[])
 		{
 			if (compl1 == 1) if (ComplStr(dp) != 1) { puts("Out of memory..."); return -1; }
 			char d2[SEQLEN];
-			double p = -1000;
 			for (i = 0; i <= len21; i++)
 			{
 				strncpy(d2, &dp[i], len1);
@@ -489,7 +502,8 @@ int main(int argc, char *argv[])
 						score += sta.tot[j].buf*fm;
 					}
 				}
-				score = 1 - fabs(score - 1);
+				//score = 1 - fabs(score - 1);
+				score = (score - sga_min) / sga_raz;
 				double thr_check = Max(thr_bot, thr[nthr_max]);
 				if (score >= thr_check)
 				{

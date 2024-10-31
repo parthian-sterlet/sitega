@@ -831,8 +831,14 @@ int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, in
 					sco += sta->tot[j].buf*fm;
 				}
 			}
-			p[k] = 1 - fabs(sco - 1);
-			if (p[k] < -1)p[k] = -1;
+			p[k] = sco;
+		//	p[k] = 1 - fabs(sco - 1);
+			if (p[k] < -50)p[k] = -50;
+			if (p[k] > 3)
+			{
+			//	printf("Pos %d\tSco %f\tSeq %s\n", k + 1, p[k],d1);
+				int yy = 0;
+			}
 		}
 	}
 	if (site_desc == 1)
@@ -1118,7 +1124,7 @@ int main(int argc, char *argv[])
 		for (cmpl1 = 0; cmpl1 < 2; cmpl1++)
 		{
 			rec_pos_seq[cmpl1] = 0;
-			//	printf("%d\t%d\n",n,cmpl1);
+			printf("%d\t%d\n",n,cmpl1);
 			if (cmpl2[cmpl1] == -1)continue;
 			if (cmpl2[cmpl1] == 1) if (ComplStr(d) != 1) { puts("Out of memory..."); exit(1); }
 			//len=strlen(d);
