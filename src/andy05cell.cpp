@@ -12,8 +12,8 @@
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
-#define MEGE 84//population size 1st stage
-#define ELIT 84//population size 2nd stage
+#define MEGE 105//population size 1st stage
+#define ELIT 105//population size 2nd stage
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 120
@@ -1259,6 +1259,14 @@ double EvalMahFITTrain(town* a, int nseq, int*** seq, char* file, int olen, int 
 	//a->fprint_allfi(file, ext2, olen, c0, buf,reg_max);
 	best_sel_ext->get_copy(c0, buf, a->size);
 	int b, o;
+	double sga_min = 0, sga_max = 0;
+	for (k = 0; k < a->size; k++)
+	{
+		if (buf[k] < 0)sga_min += buf[k];
+		else sga_max += buf[k];
+	}
+	double sga_raz = sga_max - sga_min;
+	double thr_bot = sga_min / sga_raz;
 	for (b = 0; b < nseq; b++)
 	{
 		double fs[POPSIZE];
@@ -1283,7 +1291,7 @@ double EvalMahFITTrain(town* a, int nseq, int*** seq, char* file, int olen, int 
 						sco += buf[k] * fs[k];
 					}
 				}
-				sco = 1 - fabs(1 - sco);
+				sco = (sco - sga_min) / sga_raz;
 				if (m == 0 && o == 0)sco_pos = sco;
 				else
 				{
