@@ -716,7 +716,7 @@ double Rmah(char *d1, char *d2, city a, char *alfabet)
 	}
 	return ret;
 }
-int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, int &len0, int end, int nseq, int cmpl, char *alfabet)//double score was 5th argument
+int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, int &len0, int end, int nseq, int cmpl, char *alfabet, double sga_min, double sga_raz)//double score was 5th argument
 {
 	int i, j, err, ret, len;
 	/*if (GetFun(sitename, &sta) == -1)
@@ -831,14 +831,7 @@ int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, in
 					sco += sta->tot[j].buf*fm;
 				}
 			}
-			p[k] = sco;
-		//	p[k] = 1 - fabs(sco - 1);
-			if (p[k] < -50)p[k] = -50;
-			if (p[k] > 3)
-			{
-			//	printf("Pos %d\tSco %f\tSeq %s\n", k + 1, p[k],d1);
-				int yy = 0;
-			}
+			p[k] = (sco - sga_min) / sga_raz; 
 		}
 	}
 	if (site_desc == 1)
@@ -1083,6 +1076,14 @@ int main(int argc, char *argv[])
 	}
 	city sta;
 	sta.get_file(sitename);
+	double sga_min = sta.c, sga_max = sta.c;
+	for (i = 0; i < sta.size; i++)
+	{
+		if (sta.tot[i].buf < 0)sga_min += sta.tot[i].buf;
+		else sga_max += sta.tot[i].buf;
+	}
+	double sga_raz = sga_max - sga_min;
+	double thr_bot = sga_min / sga_raz;
 	for (n = 0; n < nseq; n++)
 	{
 		//printf("%d\n",n);
@@ -1124,7 +1125,7 @@ int main(int argc, char *argv[])
 		for (cmpl1 = 0; cmpl1 < 2; cmpl1++)
 		{
 			rec_pos_seq[cmpl1] = 0;
-			printf("%d\t%d\n",n,cmpl1);
+			//printf("%d\t%d\n",n,cmpl1);
 			if (cmpl2[cmpl1] == -1)continue;
 			if (cmpl2[cmpl1] == 1) if (ComplStr(d) != 1) { puts("Out of memory..."); exit(1); }
 			//len=strlen(d);
@@ -1134,7 +1135,7 @@ int main(int argc, char *argv[])
 			int share;
 			if (nseq == 1)share = 1;
 			else share = n / (nseq - 1);
-			ret = Fun(d, head, mess, &sta, p, site_desc, len0, share, nseq, cmpl, alfabet);
+			ret = Fun(d, head, mess, &sta, p, site_desc, len0, share, nseq, cmpl, alfabet,sga_min,sga_raz);
 			if (ret != 1)
 			{
 				printf("Fun ret error %s", mess);
