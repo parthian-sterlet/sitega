@@ -13,8 +13,8 @@
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
 #define CELL 16//no. of cell populations
-#define MEGE 21//population size 1st stage
-#define ELIT 21//population size 2nd stage
+#define MEGE 84//population size 1st stage
+#define ELIT 84//population size 2nd stage
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 80
@@ -40,20 +40,6 @@ int compare_qq2(const void* X1, const void* X2)//decrease
 	double X = (*(double*)X1 - *(double*)X2);
 	if (X > 0)return -1;
 	if (X < 0)return 1;
-	return 0;
-}
-struct qbs {
-	double q;//best score
-	int n;// 1 forgr 0 backgr
-};
-int compare_qbs(const void* X1, const void* X2)//decrease
-{
-	struct qbs* S1 = (struct qbs*)X1;
-	struct qbs* S2 = (struct qbs*)X2;
-	if (S1->q - S2->q > 0)return -1;
-	if (S1->q - S2->q < 0)return 1;
-	if (S1->n - S2->n > 0)return 1;
-	if (S1->n - S2->n < 0)return -1;
 	return 0;
 }
 struct uno {
@@ -871,10 +857,10 @@ int ComplStr(char* d)
 		}
 	}
 	return 1;
-}//EvalMahControl(&pop[iter][j][0], nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, fp_rate[j], cnt_count[j], n_any_tot[j], seq_real, seq_back, olen, len, lenb, dav, dcv, qp, prc[j], outlog);
-int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* xporti, int* xportj, double* fp_rate, int n_cntrl_tot, int n_any_tot, int*** seq, int*** seq_back, int olen, int* len, int* lenb, double** dav, double** dcv, double* qp, qbs* prc, FILE* outlog)
+}
+int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* xporti, int* xportj, double* tp_sco, double* fp_rate, double* fp_count, int n_cntrl_tot, int*** seq, int*** seq_back, int olen, int* len, int* lenb, double** dav, double** dcv, double* qp, FILE* outlog)
 {
-	int k, n, m, o, b, u, z = n_any_tot;
+	int k, n, m, o, b, u;
 	double av[POPSIZE], buf[POPSIZE];
 	double df[POPSIZE];
 
@@ -948,7 +934,15 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 		c0 -= av[k] * buf[k];
 	}
 	//best_sel_ext->get_copy(c0, buf, a->size);
+	double sga_min = c0, sga_max = c0;
+	for (k = 0; k < a->size; k++)
+	{
+		if (buf[k] < 0)sga_min += buf[k];
+		else sga_max += buf[k];
+	}
+	double sga_raz = sga_max - sga_min;
 	for (b = 0; b < n_cntrl; b++)fp_rate[n_cntrl_tot + b] = 0;
+	for (b = 0; b < n_cntrl; b++)fp_count[n_cntrl_tot + b] = 0;
 	int n_cnt = 0;
 	for (b = 0; b < n_cntrl; b++)//control
 	{
@@ -983,8 +977,8 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 						sco += buf[k] * fs;
 					}
 				}
-				if (gom == -1)sco = -1;
-				else sco = 1 - fabs(1 - sco);
+				if (gom == -1)sco = 0;
+				else sco = (sco - sga_min) / sga_raz;
 				if (m == 0 && o == 0)sco_pos = sco;
 				else
 				{
@@ -995,10 +989,8 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 				}
 			}
 		}
-		qp[n_cnt] = prc[z].q = sco_pos;
-		prc[z].n = 1;
-		n_cnt++;
-		z++;
+		qp[n_cnt] = sco_pos;		
+		n_cnt++;		
 	}
 	qsort(qp, n_cntrl, sizeof(double), compare_qq);
 	int nseqn = 0;
@@ -1034,8 +1026,8 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 						sco += buf[k] * fs;
 					}
 				}
-				if (gom == -1)sco = -1;
-				else sco = 1 - fabs(1 - sco);
+				if (gom == -1)sco = 0;
+				else sco = (sco - sga_min) / sga_raz;
 				if (sco_max < sco)sco_max = sco;
 				if (sco >= qp[0])
 				{
@@ -1050,16 +1042,25 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 				}
 			}
 		}
-		prc[z].q = sco_max;
-		prc[z].n = 0;
-		z++;
+		if (sco_max >= qp[0])
+		{
+			for (k = 0; k < n_cntrl; k++)
+			{
+				if (sco_max >= qp[k])
+				{
+					fp_count[n_cntrl_tot + k]++;
+				}
+				else break;
+			}
+		}
 	}
 	for (k = 0; k < n_cntrl; k++)
 	{
 		int kk = n_cntrl_tot + k;
-		//fp_rate[kk] = 0.0001;
 		if (fp_rate[kk] > 0)fp_rate[kk] /= nseqn;
 		else fp_rate[kk] = 0.5 / (double)nseqn;
+		fp_count[k] /= nseqb;
+		tp_sco[kk] = qp[k];
 	}
 	//n_cntrl_tot += n_cntrl;
 	return 1;
@@ -1928,45 +1929,6 @@ void DelChar(char* str, char c)
 	}
 	str[size] = '\0';
 }
-int Fun(char* d, town sta, int len0, double* p, double* rec_buf, double rec_c)
-{
-	int i, j, ret, len;
-	int k;
-	char d1[200];
-
-	len = (int)strlen(d);
-	ret = 1;
-	for (k = 0; k <= len - len0; k++)
-	{
-		for (j = 0; j < len0; j++)d1[j] = d[k + j]; d1[len0] = '\0';
-		p[k] = 0;
-		double sco = rec_c;
-		for (j = 0; j < sta.size; j++)
-		{
-			int rlenj = (sta.tot[j].end - sta.tot[j].sta + 1);
-			double fm = 0;
-			for (i = sta.tot[j].sta; i <= sta.tot[j].end; i++)
-			{
-				int c1 = IdeLet(d1[i]);
-				int c2 = IdeLet(d1[i + 1]);
-				if (c1 < 0 || c2 < 0)
-				{
-					p[k] = 0;
-					return 0;
-				}
-				int cod = 4 * c1 + c2;
-				if (sta.tot[j].num == cod) { fm++; break; }
-			}
-			if (fm != 0)
-			{
-				fm /= rlenj;
-				sco += rec_buf[j] * fm;
-			}
-		}
-		p[k] = 1 - fabs(sco - 1);
-	}
-	return 1;
-}
 void GetSost(char* d, int word, int size, int* sost)
 {
 	int i, j, k, i_sost, let;
@@ -2658,32 +2620,6 @@ int main(int argc, char* argv[])
 		n_both_sam += n_cntrl[i];
 		n_both_sam += nseqb;
 	}
-	qbs** prc;
-	prc = new qbs * [CELL];
-	for (i = 0; i < CELL; i++)
-	{
-		prc[i] = new qbs[n_both_sam];
-		if (prc[i] == NULL) { puts("Out of memory..."); exit(1); }
-	}
-	for (j = 0; j < CELL; j++)
-	{
-		for (i = 0; i < n_both_sam; i++)
-		{
-			prc[j][i].n = 0;
-			prc[j][i].q = 0;
-		}
-	}
-	/*	qbs* prc_best;
-		prc_best = new qbs[n_both_sam];
-		if (prc == NULL)
-		{
-			puts("Out of memory..."); exit(1);
-		}
-		for (i = 0; i < n_both_sam; i++)
-		{
-			prc_best[i].n = 0;
-			prc_best[i].q = 0;
-		}*/
 	double** fp_rate;
 	fp_rate = new double* [CELL];
 	for (i = 0; i < CELL; i++)
@@ -2691,6 +2627,21 @@ int main(int argc, char* argv[])
 		fp_rate[i] = new double[n_cnt_tot + 10];
 		if (fp_rate[i] == NULL) { puts("Out of memory..."); exit(1); }
 	}
+	double** fp_count;
+	fp_count = new double* [CELL];
+	for (i = 0; i < CELL; i++)
+	{
+		fp_count[i] = new double[n_cnt_tot + 10];
+		if (fp_count[i] == NULL) { puts("Out of memory..."); exit(1); }
+	}
+	double** tp_sco;
+	tp_sco = new double* [CELL];
+	for (i = 0; i < CELL; i++)
+	{
+		tp_sco[i] = new double[n_cnt_tot + 10];
+		if (tp_sco[i] == NULL) { puts("Out of memory..."); exit(1); }
+	}
+	for (i = 0; i < CELL; i++)for (k = 0; k < n_cnt_tot + 10; k++)fp_rate[i][k] = fp_count[i][k] = tp_sco[i][k] = 0;
 	int* xport;
 	xport = new int[nseq];
 	if (xport == NULL) { puts("Out of memory..."); exit(1); }
@@ -2909,8 +2860,8 @@ int main(int argc, char* argv[])
 			for (i = 0; i < CELL; i++)for (k = 0; k < n_cnt_tot + 1; k++)fp_rate[i][k] = 0;
 			int big_exit1 = 1;// local exit (separ +-) global exit (separation do not exceeded the previous run)
 			double fit_prev[CELL], fit_after_mut[CELL];
-			int cnt_count[CELL], n_any_tot[CELL];
-			for (i = 0; i < CELL; i++)cnt_count[i] = n_any_tot[i] = 0;
+			int cnt_count[CELL];
+			for (i = 0; i < CELL; i++)cnt_count[i] = 0;
 			//Test(peak_real[0],len,0,2);	
 			for (iter = 0; iter < iteration; iter++)
 			{
@@ -3853,8 +3804,7 @@ int main(int argc, char* argv[])
 				}
 				for (j = 0; j < CELL; j++)
 				{
-					EvalMahControl(&pop[iter][j][0], nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, fp_rate[j], cnt_count[j], n_any_tot[j], seq_real, seq_back, olen, len, lenb, dav, dcv, qp, prc[j], outlog);
-					n_any_tot[j] += (n_train[iter] + nseqb);
+					EvalMahControl(&pop[iter][j][0], nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, tp_sco[j], fp_rate[j], fp_count[j], cnt_count[j], seq_real, seq_back, olen, len, lenb, dav, dcv, qp, outlog);					
 					cnt_count[j] += n_cntrl[iter];
 				}
 				{
@@ -3877,70 +3827,89 @@ int main(int argc, char* argv[])
 				big_exit1 = 1;
 			}
 			for (j = 0; j < CELL; j++)qsort(fp_rate[j], n_cnt_tot, sizeof(double), compare_qq);
-			for (j = 0; j < CELL; j++)qsort(prc[j], n_both_sam, sizeof(prc[j][0]), compare_qbs);
+			for (j = 0; j < CELL; j++)qsort(fp_count[j], n_cnt_tot, sizeof(double), compare_qq);
+			for (j = 0; j < CELL; j++)qsort(tp_sco[j], n_cnt_tot, sizeof(double), compare_qq2);
 			double auc_roc[CELL], auc_pr[CELL];
 			for (j = 0; j < CELL; j++)auc_roc[j] = auc_pr[j] = 0;
 			for (j = 0; j < CELL; j++)
 			{
 				fprintf(outlog, "\nROC\n");
 				fprintf(out_roc, "\tROC_%d_%d\n", olen, size0[j]);
-				fprintf(out_roc, "0\t0\n");
-				int tproc_pred = 0;
+				fprintf(out_roc, "0\t0\n");				
+				double tproc_pred = 0;
 				double fproc_pred = 0;
+				double auc_roc = 0;
 				int n_cnt_tot1 = n_cnt_tot - 1;
 				for (n = 0; n < n_cnt_tot; n++)
 				{
 					if (fp_rate[j][n] > fproc_pred && (n == n_cnt_tot1 || fp_rate[j][n + 1] > fp_rate[j][n]))
 					{
-						int tproc_cur = n + 1;
-						double fproc_cur = fp_rate[j][n], fproc_cur_pauc = fproc_cur;
-						if (fproc_cur >= fp2 || n == n_cnt_tot1)fproc_cur_pauc = fp2;
-						double dauc = (tproc_cur + tproc_pred) * (fproc_cur_pauc - fproc_pred) / 2 / n_cnt_tot;
+						double tproc_cur = (double)(n + 1) / n_cnt_tot;
+						double fproc_cur = fp_rate[j][n];
+						if (fproc_cur >= fp2)
+						{
+							double wei = (fp2 - fproc_pred) / (fproc_cur - fproc_pred);
+							tproc_cur = tproc_pred + (tproc_cur - tproc_pred) * wei;
+							fproc_cur = fp2;
+						}
+						double dauc = (tproc_cur + tproc_pred) * (fproc_cur - fproc_pred) / 2;
 						//fprintf(out,"%d\t%d\t%g\t%g\t%g\n", tproc_cur, tproc_pred, fproc_cur, fproc_pred, dauc);
-						fprintf(out_roc, "%g\t%f\n", fproc_cur, (double)tproc_cur / n_cnt_tot);
-						if (fproc_cur <= fp2)auc_roc[j] += dauc;
+						fprintf(out_roc, "%g\t%f\n", fproc_cur, tproc_cur);
+						if (fproc_cur <= fp2)auc_roc += dauc;
+						else break;
 						//	if (fproc_cur >= fp2)break;
 						tproc_pred = tproc_cur;
 						fproc_pred = fproc_cur;
 					}
 				}
+				auc_roc /= fp2;
 			}
 			fclose(out_roc);
 			for (j = 0; j < CELL; j++)
 			{
 				fprintf(out_prc, "\tPRC_%d_%d\n", olen, size0[j]);
-				int tpc = 0, fpc = 0;
-				fprintf(outlog, "\nPRC\n");
 				//prc
-				int tpc_pred = tpc;
-				double prec_pred;
-				if (prc[j][0].n == 1)prec_pred = 1;
-				else prec_pred = 0;
-				int prc_count = 0;
-				int n_both_sam1 = n_both_sam - 1;
-				for (n = 0; n < n_both_sam; n++)
+				double auc_pr = 0;//prc
+				double tpc, tpc_pred = 0;
+				double fpc, fpc_pred = 0;
+				double prec_pred = 1;
+				int prc_count = 1;
+				double fp_pred = 0;
+				double nseq_fb = (double)nseq / nseqb;
+				double prec_exp = 0.5;
+				fprintf(out_prc, "0\t1\n");
+				int n_cnt_tot1 = n_cnt_tot - 1;
+				for (i = 0; i < n_cnt_tot; i++)
 				{
-					if (prc[j][n].n == 0)fpc++;
-					else tpc++;
-					if (tpc == tpc_pred)continue;
-					int n1 = n + 1;
-					if (n == n_both_sam1 || ((prc[j][n].n == 1 && prc[j][n1].n == 0) && prc[j][n].q > prc[j][n1].q))
+					int i1 = i + 1;
+					if (i == n_cnt_tot1 || (fp_rate[j][i1] != fp_rate[j][i] || tp_sco[j][i1] != tp_sco[j][i]))
 					{
-						prc_count++;
-						double prec = (double)tpc / (tpc + fpc);
-						if (prc_count == 1)
+						tpc = (double)(i1);
+						fpc = fp_count[j][i];
+						if (fp_rate[j][i] >= fp2)
 						{
-							prec_pred = prec;
-							fprintf(out_prc, "0\t%f\n", prec);
+							double dtpc = tpc - tpc_pred;
+							double dfpc = fpc - fpc_pred;
+							double wei = (fp2 - fp_pred) / (fp_rate[j][i] - fp_pred);
+							tpc = tpc_pred + wei * dtpc;
+							fpc = fpc_pred + wei * dfpc;
 						}
-						double dauc = (prec + prec_pred) * (tpc - tpc_pred) / 2 / n_cnt_tot;
-						auc_pr[j] += dauc;
+						double prec_cur = tpc / (tpc + nseq_fb * fpc);
+						double prec_av = (prec_pred + prec_cur) / 2;
+						double dauc = (prec_av - prec_exp) * (tpc - tpc_pred);
+						auc_pr += dauc;
 						//fprintf(out,"%g\t%g\t%d\t%d\t%g\n", prec_pred, prec, tpc_pred, tpc, dauc);
-						fprintf(out_prc, "%f\t%f\n", (double)tpc / n_cnt_tot, prec);
+						fprintf(out_prc, "%f\t%f\n", tpc / n_cnt_tot, prec_cur);
 						tpc_pred = tpc;
-						prec_pred = prec;
+						fpc_pred = fpc;
+						fp_pred = fp_rate[j][i];
+						prec_pred = prec_cur;
+						prc_count++;
+						if (fp_rate[j][i] >= fp2)break;
 					}
 				}
+				auc_pr *= 2;
+				auc_pr /= n_cnt_tot;
 			}
 			fclose(out_prc);
 			//printf("\n");
@@ -4017,10 +3986,13 @@ int main(int argc, char* argv[])
 	delete[] octa_prows;
 	for (i = 0; i < CELL; i++)
 	{
-		delete[] prc[i];
+		delete[] fp_count[i];
+		delete[] tp_sco[i];
 		delete[] fp_rate[i];
 	}
 	delete[] fp_rate;
+	delete[] fp_count;
+	delete[] tp_sco;
 	delete[] octa_pro1p;
 	delete[] len;
 	delete[] lenb;
@@ -4033,6 +4005,5 @@ int main(int argc, char* argv[])
 	delete[] n_cntrl;
 	delete[] octa_rat;
 	delete[] qp;
-	delete[] prc;
 	return 0;
 }

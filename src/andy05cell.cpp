@@ -1265,8 +1265,7 @@ double EvalMahFITTrain(town* a, int nseq, int*** seq, char* file, int olen, int 
 		if (buf[k] < 0)sga_min += buf[k];
 		else sga_max += buf[k];
 	}
-	double sga_raz = sga_max - sga_min;
-	double thr_bot = sga_min / sga_raz;
+	double sga_raz = sga_max - sga_min;	
 	for (b = 0; b < nseq; b++)
 	{
 		double fs[POPSIZE];
@@ -2140,45 +2139,6 @@ void DelChar(char* str, char c)
 		if (str[i] != c)str[size++] = str[i];
 	}
 	str[size] = '\0';
-}
-int Fun(char* d, town sta, int len0, double* p, double* rec_buf, double rec_c)
-{
-	int i, j, ret, len;
-	int k;
-	char d1[200];
-
-	len = (int)strlen(d);
-	ret = 1;
-	for (k = 0; k <= len - len0; k++)
-	{
-		for (j = 0; j < len0; j++)d1[j] = d[k + j]; d1[len0] = '\0';
-		p[k] = 0;
-		double sco = rec_c;
-		for (j = 0; j < sta.size; j++)
-		{
-			int rlenj = (sta.tot[j].end - sta.tot[j].sta + 1);
-			double fm = 0;
-			for (i = sta.tot[j].sta; i <= sta.tot[j].end; i++)
-			{
-				int c1 = IdeLet(d1[i]);
-				int c2 = IdeLet(d1[i + 1]);
-				if (c1 < 0 || c2 < 0)
-				{
-					p[k] = 0;
-					return 0;
-				}
-				int cod = 4 * c1 + c2;
-				if (sta.tot[j].num == cod) { fm++; break; }
-			}
-			if (fm != 0)
-			{
-				fm /= rlenj;
-				sco += rec_buf[j] * fm;
-			}
-		}
-		p[k] = 1 - fabs(sco - 1);
-	}
-	return 1;
 }
 int ComplStr(char* d)
 {
