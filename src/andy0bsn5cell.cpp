@@ -12,9 +12,9 @@
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
-#define CELL 16//no. of cell populations
-#define MEGE 84//population size 1st stage
-#define ELIT 84//population size 2nd stage
+#define CELL 2//no. of cell populations
+#define MEGE 10//population size 1st stage
+#define ELIT 10//population size 2nd stage
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 80
@@ -1059,7 +1059,7 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 		int kk = n_cntrl_tot + k;
 		if (fp_rate[kk] > 0)fp_rate[kk] /= nseqn;
 		else fp_rate[kk] = 0.5 / (double)nseqn;
-		fp_count[k] /= nseqb;
+		fp_count[kk] /= nseqb;
 		tp_sco[kk] = qp[k];
 	}
 	//n_cntrl_tot += n_cntrl;
@@ -3837,8 +3837,7 @@ int main(int argc, char* argv[])
 				fprintf(out_roc, "\tROC_%d_%d\n", olen, size0[j]);
 				fprintf(out_roc, "0\t0\n");				
 				double tproc_pred = 0;
-				double fproc_pred = 0;
-				double auc_roc = 0;
+				double fproc_pred = 0;				
 				int n_cnt_tot1 = n_cnt_tot - 1;
 				for (n = 0; n < n_cnt_tot; n++)
 				{
@@ -3855,27 +3854,31 @@ int main(int argc, char* argv[])
 						double dauc = (tproc_cur + tproc_pred) * (fproc_cur - fproc_pred) / 2;
 						//fprintf(out,"%d\t%d\t%g\t%g\t%g\n", tproc_cur, tproc_pred, fproc_cur, fproc_pred, dauc);
 						fprintf(out_roc, "%g\t%f\n", fproc_cur, tproc_cur);
-						if (fproc_cur <= fp2)auc_roc += dauc;
-						else break;
+						auc_roc[j] += dauc;
+						if(fp_rate[j][n] >= fp2)break;
 						//	if (fproc_cur >= fp2)break;
 						tproc_pred = tproc_cur;
 						fproc_pred = fproc_cur;
 					}
 				}
-				auc_roc /= fp2;
+				auc_roc[j] /= fp2;
 			}
 			fclose(out_roc);
 			for (j = 0; j < CELL; j++)
 			{
+				printf("PR %d\n",j+1);
+				for (i = 0; i < n_cnt_tot; i+=50)
+				{
+					printf("FPsites %g FPpeak %g TPpeak %g\n", fp_rate[j][i], fp_count[j][i], (double)(i+1)/nseq);
+				}
 				fprintf(out_prc, "\tPRC_%d_%d\n", olen, size0[j]);
 				//prc
-				double auc_pr = 0;//prc
 				double tpc, tpc_pred = 0;
 				double fpc, fpc_pred = 0;
 				double prec_pred = 1;
 				int prc_count = 1;
 				double fp_pred = 0;
-				double nseq_fb = (double)nseq / nseqb;
+				//double nseq_fb = (double)nseq / nseqb;
 				double prec_exp = 0.5;
 				fprintf(out_prc, "0\t1\n");
 				int n_cnt_tot1 = n_cnt_tot - 1;
@@ -3884,7 +3887,7 @@ int main(int argc, char* argv[])
 					int i1 = i + 1;
 					if (i == n_cnt_tot1 || (fp_rate[j][i1] != fp_rate[j][i] || tp_sco[j][i1] != tp_sco[j][i]))
 					{
-						tpc = (double)(i1);
+						tpc = (double)(i1)/ n_cnt_tot;
 						fpc = fp_count[j][i];
 						if (fp_rate[j][i] >= fp2)
 						{
@@ -3894,12 +3897,12 @@ int main(int argc, char* argv[])
 							tpc = tpc_pred + wei * dtpc;
 							fpc = fpc_pred + wei * dfpc;
 						}
-						double prec_cur = tpc / (tpc + nseq_fb * fpc);
+						double prec_cur = tpc / (tpc + fpc);
 						double prec_av = (prec_pred + prec_cur) / 2;
 						double dauc = (prec_av - prec_exp) * (tpc - tpc_pred);
-						auc_pr += dauc;
+						auc_pr[j] += dauc;
 						//fprintf(out,"%g\t%g\t%d\t%d\t%g\n", prec_pred, prec, tpc_pred, tpc, dauc);
-						fprintf(out_prc, "%f\t%f\n", tpc / n_cnt_tot, prec_cur);
+						fprintf(out_prc, "%f\t%f\n", tpc, prec_cur);
 						tpc_pred = tpc;
 						fpc_pred = fpc;
 						fp_pred = fp_rate[j][i];
@@ -3908,8 +3911,8 @@ int main(int argc, char* argv[])
 						if (fp_rate[j][i] >= fp2)break;
 					}
 				}
-				auc_pr *= 2;
-				auc_pr /= n_cnt_tot;
+				auc_pr[j] *= 2;
+			//	auc_pr[j] /= n_cnt_tot;
 			}
 			fclose(out_prc);
 			//printf("\n");
