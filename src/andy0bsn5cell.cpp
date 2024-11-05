@@ -12,9 +12,9 @@
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
-#define CELL 2//no. of cell populations
-#define MEGE 10//population size 1st stage
-#define ELIT 10//population size 2nd stage
+#define CELL 16//no. of cell populations
+#define MEGE 21//population size 1st stage
+#define ELIT 21//population size 2nd stage
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 80
@@ -3866,11 +3866,11 @@ int main(int argc, char* argv[])
 			fclose(out_roc);
 			for (j = 0; j < CELL; j++)
 			{
-				printf("PR %d\n",j+1);
+				/*printf("PR %d\n",j+1);
 				for (i = 0; i < n_cnt_tot; i+=50)
 				{
 					printf("FPsites %g FPpeak %g TPpeak %g\n", fp_rate[j][i], fp_count[j][i], (double)(i+1)/nseq);
-				}
+				}*/
 				fprintf(out_prc, "\tPRC_%d_%d\n", olen, size0[j]);
 				//prc
 				double tpc, tpc_pred = 0;
