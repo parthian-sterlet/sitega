@@ -12,9 +12,9 @@
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
-#define CELL 16//no. of cell populations
-#define MEGE 21//population size 1st stage
-#define ELIT 21//population size 2nd stage
+#define CELL 8//no. of cell populations
+#define MEGE 5//population size 1st stage
+#define ELIT 5//population size 2nd stage
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 80
@@ -93,6 +93,7 @@ struct town {
 	void fprint_all(char* file, char* add);
 	void fprint_allfi(char* file, char* add, int len, double sd, double c0, double* buf);
 	void fprint_allfi_mat(char* file, char* add, char* name, int len, double c0, double* buf, int iter, int size_start, int olen_min);
+	void fprint_seq(char* file, int olen, int nseq, char*** seq, double* best_sco, int* len);
 	int check(int min, int max, FILE* out);
 	int mem_in(int nseq);
 	void mem_out(void);
@@ -247,7 +248,38 @@ int town::check(int min, int max, FILE* out)
 	}
 	return 1;
 }
-void town::fprint_allfi_mat(char* file, char* add, char* name, int len, double c0, double* buf, int iter, int size_start, int olen_min)
+void town::fprint_seq(char* file, int olen, int nseq, char*** seq, double* best_sco, int* len)
+{
+	int i, j, k, x1, x2;
+	char d[POPSIZE], dir[] = "+-";
+	FILE* out;
+	if ((out = fopen(file, "wt")) == NULL)
+	{
+		printf("Ouput file can't be opened!\n");
+		exit(1);
+	}
+	for (i = 0; i < nseq; i++)
+	{
+		x1 = pos[i], x2 = pos[i] + olen;
+		int cep = ori[i];
+		k = 0;
+		for (j = x1; j < x2; j++)d[k++] = seq[cep][i][j];
+		d[olen] = '\0';
+		if (cep == 1)
+		{
+			int x10 = x1, x20 = x2;
+			x1 = len[i] - x20 + 1;
+			x2 = len[i] - x10;
+		}
+		else
+		{
+			x1++;
+		}
+		fprintf(out, "%d\t%d\t%d\t%c\t%f\t%s\n", i + 1, x1, x2, dir[ori[i]], best_sco[i], d);
+	}
+	fclose(out);
+}
+void town::fprint_allfi_mat(char* file, char* add, char* name, int len, double c0, double* buf, int iter, int size_start, int j)
 {
 	int i;
 	FILE* out;
@@ -255,7 +287,7 @@ void town::fprint_allfi_mat(char* file, char* add, char* name, int len, double c
 	strcpy(file_out, file);
 	strcat(file_out, add);
 
-	if (iter == 0 && (olen_min == len && size_start == size))
+	if (iter == 0 && (j==0 && size_start == size))
 	{
 		if ((out = fopen(file_out, "wt")) == NULL)
 		{
@@ -282,18 +314,17 @@ void town::fprint_allfi_mat(char* file, char* add, char* name, int len, double c
 	}
 	fclose(out);
 }
-/*struct town_ext {
+struct town_ext {
 	double c0;
 	double buf[POPSIZE];
 	void get_copy(double c1, double* b1, int size);
-} pop_ext;
+};
 void town_ext::get_copy(double c1, double* b1, int size)
 {
 	c0 = c1;
 	int i;
 	for (i = 0; i < size; i++)buf[i] = b1[i];
 }
-*/
 void MixI(int* a, int* b)
 {
 	int buf = *a;
@@ -858,7 +889,7 @@ int ComplStr(char* d)
 	}
 	return 1;
 }
-int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* xporti, int* xportj, double* tp_sco, double* fp_rate, double* fp_count, int n_cntrl_tot, int*** seq, int*** seq_back, int olen, int* len, int* lenb, double** dav, double** dcv, double* qp, FILE* outlog)
+int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* xporti, int* xportj, double* tp_sco, double* fp_rate, double* fp_count, int n_cntrl_tot, int*** seq, int*** seq_back, int olen, int* len, int* lenb, double** dav, double** dcv, double* qp, town_ext* best_sel_ext,FILE* outlog)
 {
 	int k, n, m, o, b, u;
 	double av[POPSIZE], buf[POPSIZE];
@@ -933,7 +964,7 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 		buf[k] /= a->mah;
 		c0 -= av[k] * buf[k];
 	}
-	//best_sel_ext->get_copy(c0, buf, a->size);
+	best_sel_ext->get_copy(c0, buf, a->size);
 	double sga_min = c0, sga_max = c0;
 	for (k = 0; k < a->size; k++)
 	{
@@ -2118,7 +2149,7 @@ void EvalLen(char* file, int* len, int olen, int len_peak_max, FILE* outlog)
 		strcat(d, l);
 	}
 }
-void ReadSeq(char* file, int nseq, int* len, int*** seq_real, int olen, double* octaf, int* octa1, int octa, int octa_size, double** octa_pro1, int len_peak_max, FILE* outlog)
+void ReadSeq(char* file, int nseq, int* len, int*** seq_real, int olen, double* octaf, int* octa1, int octa, int octa_size, double** octa_pro1, char*** peak_real, int len_peak_max, FILE* outlog)
 {
 	char l[SEQLEN], d[2][SEQLEN], head[400];
 	int fl = 0, i, j;
@@ -2152,6 +2183,11 @@ void ReadSeq(char* file, int nseq, int* len, int*** seq_real, int olen, double* 
 				strcpy(d[1], d[0]);
 				ComplStr(d[1]);
 				d[1][len[n]] = '\0';
+				for (j = 0; j < 2; j++)
+				{
+					strcpy(peak_real[j][n], d[j]);
+					peak_real[j][n][len[n]] = '\0';
+				}
 				GetSostPro(d[0], octa, octa_size, octa1, octa_pro1[n]);
 				for (i = 0; i < octa_size; i++)octaf[i] += octa1[i];
 				GetSost(d[1], octa, octa_size, octa1);
@@ -2386,6 +2422,7 @@ int main(int argc, char* argv[])
 	char file_for[500], file_back[500], path_fasta[500], path_out[500], pfile_for[500], pfile_back[500], file_log[500];
 	char file_out_roc[500], file_out_prc[500], file_out_auc[500];
 	int*** seq_real, *** seq_back;
+	char*** peak_real;
 	double** dav;//dinucl.content background
 	double** dcv;//self covariations for regions LPD
 	//	double **frp;//LPD frequencies
@@ -2421,7 +2458,7 @@ int main(int argc, char* argv[])
 
 	int size0[CELL];
 	for (i = 0; i < CELL; i++)size0[i] = size_start + i * size_dif;
-	double fp2 = 0.001;// FPR threshold for pAUC	
+	double fp2 = 0.005;// FPR threshold for pAUC	
 	int len_peak_max = atoi(argv[12]); //2500;
 	strcpy(file_log, path_out);
 	strcat(file_log, argv[13]);
@@ -2494,6 +2531,17 @@ int main(int argc, char* argv[])
 	{
 		for (i = 0; i < 16; i++)dcv[j][i] = dav[j][i] = 0;
 	}
+	peak_real = new char** [2];
+	if (peak_real == NULL) { puts("Out of memory..."); exit(1); }
+	for (i = 0; i < 2; i++)
+	{
+		peak_real[i] = new char* [nseq];
+		for (j = 0; j < nseq; j++)
+		{
+			peak_real[i][j] = new char[len[j] + 1];
+			if (peak_real[i][j] == NULL) { puts("Out of memory..."); exit(1); }
+		}
+	}
 	int octa_size = 1;
 	for (i = 0; i < octa; i++)octa_size *= 4;
 	octa_pro1 = new double* [nseq];
@@ -2526,7 +2574,7 @@ int main(int argc, char* argv[])
 	if (octa1 == NULL) { puts("Out of memory..."); exit(1); }
 	for (i = 0; i < octa_size; i++)octa_av[i] = 0;
 	for (i = 0; i < octa_size; i++)octa1[i] = 0;
-	ReadSeq(pfile_for, nseq, len, seq_real, olen, octa_av, octa1, octa, octa_size, octa_pro1, len_peak_max, outlog);
+	ReadSeq(pfile_for, nseq, len, seq_real, olen, octa_av, octa1, octa, octa_size, octa_pro1, peak_real, len_peak_max, outlog);
 	for (i = 0; i < octa_size; i++)octa_rat[i] = log10(octa_av[i]);
 	for (i = 0; i < octa_size; i++)octa_av[i] = 0;
 	for (i = 0; i < octa_size; i++)octa1[i] = 0;
@@ -2654,8 +2702,7 @@ int main(int argc, char* argv[])
 	{
 		char word[] = "acgt";
 		GetWords(2, 0, 16, word);
-	}
-	//town_ext pop_ext;
+	}	
 	pop = new town * *[iteration];
 	if (pop == NULL) { puts("Out of memory...!"); exit(1); }
 	for (iter = 0; iter < iteration; iter++)
@@ -2855,6 +2902,8 @@ int main(int argc, char* argv[])
 		}
 		fprintf(outlog, "FractHoxa %f\n", (double)len_wei / len_tot);
 		double auc_roc_len = 0, auc_pr_len = 0;
+		int empty_cell_thr = 3;
+		int empty_cell[CELL]; // porog izmeneniy v kletkr\e na iteraciyu
 		//for (size0 = size_start; size0 <= size_end; size0 += size_dif)
 		{
 			for (i = 0; i < CELL; i++)for (k = 0; k < n_cnt_tot + 1; k++)fp_rate[i][k] = 0;
@@ -2862,6 +2911,7 @@ int main(int argc, char* argv[])
 			double fit_prev[CELL], fit_after_mut[CELL];
 			int cnt_count[CELL];
 			for (i = 0; i < CELL; i++)cnt_count[i] = 0;
+			for (i = 0; i < CELL; i++)empty_cell[i] = 0;
 			//Test(peak_real[0],len,0,2);	
 			for (iter = 0; iter < iteration; iter++)
 			{
@@ -3043,7 +3093,7 @@ int main(int argc, char* argv[])
 					for (j = 0; j < CELL; j++)mut_jump[j] = 0;
 					double exp_rec_rate[CELL][MEGE];
 					for (j = 0; j < CELL; j++)for (i = 0; i < mege_h; i++)exp_rec_rate[j][i] = 0;
-					//mutations																			
+					//mutations																								
 					int asuccess[NMUT], atry[NMUT];
 					for (k = 0; k < NMUT; k++)asuccess[k] = atry[k] = 0;
 					int success_mi[CELL][MEGE], try_mi[CELL][MEGE];
@@ -3059,6 +3109,7 @@ int main(int argc, char* argv[])
 						if (gen == 0)fprintf(outlog, "Mut cycle %d\n", step_max_tot / step_max);
 						for (j = 0; j < CELL; j++)
 						{
+							if(empty_cell[i]>empty_cell_thr)continue;
 							if (mdo_cell[j] != 1)continue;
 							for (i = 0; i < mege_h; i++)
 							{
@@ -3343,6 +3394,9 @@ int main(int argc, char* argv[])
 					fprintf(outlog, "\t");
 					fprintf(outlog, "Mut jump ");
 					for (j = 0; j < CELL; j++)fprintf(outlog, " %d", mut_jump[j]);
+					fprintf(outlog, "\n");
+					fprintf(outlog, "Empty cells ");
+					for (j = 0; j < CELL; j++)fprintf(outlog, " %d", empty_cell[j]);
 					fprintf(outlog, "\n");
 					int loc_rec, loc_rec_tot = 0;
 					for (m = 0; m < CELL; m++)fit_after_mut[m] = pop[iter][m][0].fit;
@@ -3709,6 +3763,10 @@ int main(int argc, char* argv[])
 						if (change_level_here > change_level)change_level = change_level_here;
 						if (change_level_rec_here > change_level_rec)change_level_rec = change_level_rec_here;
 						if (change_level_mut_here > change_level_mut)change_level_mut = change_level_mut_here;
+						if (pop[iter][i][0].fit == fit_prev[i])
+						{
+							empty_cell[i]++;
+						}
 					}
 					double exit_1st = 0.05, exit_2nd = 0.01;
 					if (change_level < exit_2nd && gen > 1)// 3rd iteration at least
@@ -3802,28 +3860,53 @@ int main(int argc, char* argv[])
 						if (xport[k] == 0)xportj[ic++] = k;
 					}
 				}
-				for (j = 0; j < CELL; j++)
 				{
-					EvalMahControl(&pop[iter][j][0], nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, tp_sco[j], fp_rate[j], fp_count[j], cnt_count[j], seq_real, seq_back, olen, len, lenb, dav, dcv, qp, outlog);					
-					cnt_count[j] += n_cntrl[iter];
-				}
-				{
-					/*char name[500];
+					char name[500];
 					for (i = 0;; i++)
 					{
 						if (file_for[i] == '.') { name[i] = '\0'; break; }
 						if (file_for[i] == '\n') { name[i] = '\0'; break; }
 						if (file_for[i] == '\0') { name[i] = '\0'; break; }
 						name[i] = file_for[i];
-					}*/
-					/*	char extmat[20];
-						char extmat0[] = "_mat";
+					}
+					for (j = 0; j < CELL; j++)
+					{
+						town_ext pop_ext;
+						EvalMahControl(&pop[iter][j][0], nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, tp_sco[j], fp_rate[j], fp_count[j], cnt_count[j], seq_real, seq_back, olen, len, lenb, dav, dcv, qp, &pop_ext, outlog);
+						cnt_count[j] += n_cntrl[iter];
+						char extmat[20];
+						char extmat0[] = "_cmat";
 						strcpy(extmat, extmat0);
-						char file_for1[500];
+						char file_for1[500], file_mat[500], file_map[500];
 						strcpy(file_for1, path_out);
-						strcat(file_for1, file_for);
-						pop[iter][0].fprint_allfi_mat(file_for1, extmat, name, olen, pop_ext.c0, pop_ext.buf, iter, size_start, olen_min);*/
-				}
+						int file_fasta_len = (int)strlen(file_for1);
+						k = 0;
+						for (i = 0; i < file_fasta_len; i++)
+						{
+							char cc = file_for[i];
+							if (cc == '.' || cc == '\0')
+							{
+								file_for1[k++] = '\0';
+								break;
+							}
+							file_for1[k++] = cc;
+						}						
+						{
+							char buf1[5], buf2[5];
+							strcat(file_for1, "_");
+							sprintf(buf1, "%d", iter+1);
+							strcat(file_for1, buf1);
+							strcat(file_for1, "_");
+							sprintf(buf2, "%d", size0[j]);
+							strcat(file_for1, buf2);							
+						}
+						strcpy(file_mat, file_for1);
+						pop[iter][j][0].fprint_allfi_mat(file_mat, extmat, name, olen, pop_ext.c0, pop_ext.buf, iter, size_start, j);
+						strcpy(file_map, file_for1);
+						strcat(file_map, "_bs.seq");
+						pop[iter][j][0].fprint_seq(file_map, olen, nseq, peak_real, tp_sco[j], len);
+					}
+				}								
 				big_exit1 = 1;
 			}
 			for (j = 0; j < CELL; j++)qsort(fp_rate[j], n_cnt_tot, sizeof(double), compare_qq);
@@ -3878,7 +3961,7 @@ int main(int argc, char* argv[])
 				double prec_pred = 1;
 				int prc_count = 1;
 				double fp_pred = 0;
-				//double nseq_fb = (double)nseq / nseqb;
+				//double nseq_fb = (double)n_cnt_tot / nseqb;
 				double prec_exp = 0.5;
 				fprintf(out_prc, "0\t1\n");
 				int n_cnt_tot1 = n_cnt_tot - 1;
@@ -3955,6 +4038,14 @@ int main(int argc, char* argv[])
 		delete[] seq_real[k];
 	}
 	delete[] seq_real;
+	for (k = 0; k < 2; k++)
+	{
+		for (i = 0; i < nseq; i++)
+		{
+			delete[] peak_real[k][i];
+		}
+		delete[] peak_real[k];
+	}
 	for (i = 0; i < reg_max; i++)
 	{
 		delete[] dcv[i];
