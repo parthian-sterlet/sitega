@@ -12,9 +12,9 @@
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
-#define CELL 8//no. of cell populations
-#define MEGE 18//population size 1st stage
-#define ELIT 18//population size 2nd stage
+#define CELL 4//no. of cell populations
+#define MEGE 6//population size 1st stage
+#define ELIT 6//population size 2nd stage
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 80
@@ -93,7 +93,7 @@ struct town {
 	void fprint_all(char* file, char* add);
 	void fprint_allfi(char* file, char* add, int len, double sd, double c0, double* buf);
 	void fprint_allfi_mat(char* file, char* add, char* name, int len, double c0, double* buf, int iter, int size_start, int olen_min);
-	void fprint_seq(char* file, int olen, int nseq, char*** seq, double* best_sco, int* len);
+	void fprint_seq(char* file, int olen, int nseq, char*** seq, double* best_sco, int* len, int* xportj);
 	int check(int min, int max, FILE* out);
 	int mem_in(int nseq);
 	void mem_out(void);
@@ -248,9 +248,9 @@ int town::check(int min, int max, FILE* out)
 	}
 	return 1;
 }
-void town::fprint_seq(char* file, int olen, int nseq, char*** seq, double* best_sco, int* len)
+void town::fprint_seq(char* file, int olen, int nseq, char*** seq, double* best_sco, int* len, int *xportj)
 {
-	int i, j, k, x1, x2;
+	int i, j, k, x1, x2, m;
 	char d[POPSIZE], dir[] = "+-";
 	FILE* out;
 	if ((out = fopen(file, "wt")) == NULL)
@@ -258,8 +258,9 @@ void town::fprint_seq(char* file, int olen, int nseq, char*** seq, double* best_
 		printf("Ouput file can't be opened!\n");
 		exit(1);
 	}
-	for (i = 0; i < nseq; i++)
+	for (m = 0; m < nseq; m++)
 	{
+		i = xportj[m];
 		x1 = pos[i], x2 = pos[i] + olen;
 		int cep = ori[i];
 		k = 0;
@@ -3904,7 +3905,7 @@ int main(int argc, char* argv[])
 						pop[iter][j][0].fprint_allfi_mat(file_mat, extmat, name, olen, pop_ext.c0, pop_ext.buf, iter, size_start, j);
 						strcpy(file_map, file_for1);
 						strcat(file_map, "_bs.seq");
-						pop[iter][j][0].fprint_seq(file_map, olen, nseq, peak_real, tp_sco[j], len);
+						pop[iter][j][0].fprint_seq(file_map, olen, n_cntrl[iter] , peak_real, tp_sco[j], len, xportj);
 					}
 				}								
 				big_exit1 = 1;
