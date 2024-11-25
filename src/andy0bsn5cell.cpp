@@ -13,8 +13,8 @@
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
 #define CELL 8//no. of cell populations
-#define MEGE 5//population size 1st stage
-#define ELIT 5//population size 2nd stage
+#define MEGE 18//population size 1st stage
+#define ELIT 18//population size 2nd stage
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 80
