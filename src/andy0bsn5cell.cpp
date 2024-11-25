@@ -91,9 +91,8 @@ struct town {
 	void sort_all(void);
 	int sum(int j);
 	void fprint_all(char* file, char* add);
-	void fprint_allfi(char* file, char* add, int len, double sd, double c0, double* buf);
 	void fprint_allfi_mat(char* file, char* add, char* name, int len, double c0, double* buf, int iter, int size_start, int olen_min);
-	void fprint_seq(char* file, int olen, int nseq, char*** seq, double* best_sco, int* len, int* xportj);
+	void fprint_seq(char* file, int olen, int nseq, char*** seq, double* best_sco, int* len, int* xportj, int cnt_shift);
 	int check(int min, int max, FILE* out);
 	int mem_in(int nseq);
 	void mem_out(void);
@@ -248,7 +247,7 @@ int town::check(int min, int max, FILE* out)
 	}
 	return 1;
 }
-void town::fprint_seq(char* file, int olen, int nseq, char*** seq, double* best_sco, int* len, int *xportj)
+void town::fprint_seq(char* file, int olen, int nseq, char*** seq, double* best_sco, int* len, int *xportj, int cnt_shift)
 {
 	int i, j, k, x1, x2, m;
 	char d[POPSIZE], dir[] = "+-";
@@ -276,7 +275,7 @@ void town::fprint_seq(char* file, int olen, int nseq, char*** seq, double* best_
 		{
 			x1++;
 		}
-		fprintf(out, "%d\t%d\t%d\t%c\t%f\t%s\n", i + 1, x1, x2, dir[ori[i]], best_sco[i], d);
+		fprintf(out, "%d\t%d\t%d\t%c\t%f\t%s\n", i + 1, x1, x2, dir[ori[i]], best_sco[cnt_shift+m], d);
 	}
 	fclose(out);
 }
@@ -661,37 +660,6 @@ void town::fprint_all(char* file, char* add)
 		fprintf(out, "[%d;%d]%s\t", tot[i].sta, tot[i].end, s[tot[i].num].oli);
 		if (tot[i].num != tot[i + 1].num)fprintf(out, "\n");
 	}
-	fclose(out);
-}
-void town::fprint_allfi(char* file, char* add, int len, double sd, double c0, double* buf)
-{
-	int i;
-	FILE* out;
-	char file_out[40];
-	strcpy(file_out, file);
-	strcat(file_out, add);
-	if ((out = fopen(file_out, "at")) == NULL)
-	{
-		fprintf(out, "Ouput file can't be opened!\n");
-		exit(1);
-	}
-	fprintf(out, "if(strcmp(site,\"%s\")==0)\n", file);// 0 - one window system
-	fprintf(out, "{\n\tcity a1 = {");
-	fprintf(out, "\n\t//site,size,len,c0,sd\n\t\"%s\",%d,%d,%f,%f,\n\t", file, size, len, c0, sd);
-	fprintf(out, "{//buf,sta,end,num\t");
-	for (i = 0; odg[i] != -1; i++)fprintf(out, "%d ", odg[i]); fprintf(out, "\n\t");
-	for (i = 0; i < size; i++)
-	{
-		fprintf(out, "{%9f,%d,%d,%d}", buf[i], tot[i].sta, tot[i].end, tot[i].num);
-		if (i == size - 1)
-		{
-			fprintf(out, "}};\t//%s\n", s[tot[i].num].oli);
-			break;
-		}
-		else fprintf(out, ",");
-		if (tot[i].num != tot[i + 1].num)fprintf(out, "\t//%s\n\t", s[tot[i].num].oli);
-	}
-	fprintf(out, "\ta1.get_copy(&sta[win]);\n\twin++;\n}\n");
 	fclose(out);
 }
 void GetWords(int word, int size0, int size, char* w0)
@@ -3873,8 +3841,7 @@ int main(int argc, char* argv[])
 					for (j = 0; j < CELL; j++)
 					{
 						town_ext pop_ext;
-						EvalMahControl(&pop[iter][j][0], nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, tp_sco[j], fp_rate[j], fp_count[j], cnt_count[j], seq_real, seq_back, olen, len, lenb, dav, dcv, qp, &pop_ext, outlog);
-						cnt_count[j] += n_cntrl[iter];
+						EvalMahControl(&pop[iter][j][0], nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, tp_sco[j], fp_rate[j], fp_count[j], cnt_count[j], seq_real, seq_back, olen, len, lenb, dav, dcv, qp, &pop_ext, outlog);						
 						char extmat[20];
 						char extmat0[] = "_cmat";
 						strcpy(extmat, extmat0);
@@ -3905,7 +3872,8 @@ int main(int argc, char* argv[])
 						pop[iter][j][0].fprint_allfi_mat(file_mat, extmat, name, olen, pop_ext.c0, pop_ext.buf, iter, size_start, j);
 						strcpy(file_map, file_for1);
 						strcat(file_map, "_bs.seq");
-						pop[iter][j][0].fprint_seq(file_map, olen, n_cntrl[iter] , peak_real, tp_sco[j], len, xportj);
+						pop[iter][j][0].fprint_seq(file_map, olen, n_cntrl[iter] , peak_real, tp_sco[j], len, xportj, cnt_count[j]);
+						cnt_count[j] += n_cntrl[iter];
 					}
 				}								
 				big_exit1 = 1;
