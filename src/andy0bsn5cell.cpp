@@ -13,8 +13,8 @@
 #define SEQLEN 12000
 #define MOTLEN 12 //max LPD length
 #define CELL 4//no. of cell populations
-#define MEGE 18//population size 1st stage
-#define ELIT 18//population size 2nd stage
+#define MEGE 6//population size 1st stage
+#define ELIT 6//population size 2nd stage
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 80
@@ -942,7 +942,7 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 		u = xportj[b];
 		//if (len[u] < olen)continue;		
 		int lenp = len[u] - olen + 1;
-		double sco_pos = 0;
+		double sco_pos = -1000;
 		obest = 0, pbest = 0;
 		for (m = 0; m < lenp; m++)
 		{
@@ -971,18 +971,14 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 						sco += buf[k] * fs;
 					}
 				}
-				if (gom == -1)sco = 0;
-				else sco = (sco - sga_min) / sga_raz;
-				if (m == 0 && o == 0)sco_pos = sco;
-				else
+				if (gom == -1)sco = -1000;
+				else sco = (sco - sga_min) / sga_raz;				
+				if (sco > sco_pos)
 				{
-					if (sco > sco_pos)
-					{
-						sco_pos = sco;
-						obest = o;
-						pbest = m;
-					}
-				}
+					sco_pos = sco;
+					obest = o;
+					pbest = m;
+				}				
 			}
 		}
 		qp[n_cnt] = sco_pos;				
@@ -1039,7 +1035,7 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 						sco += buf[k] * fs;
 					}
 				}
-				if (gom == -1)sco = 0;
+				if (gom == -1)sco = -1000;
 				else sco = (sco - sga_min) / sga_raz;
 				if (sco_max < sco)sco_max = sco;
 				if (sco >= qp[0])
