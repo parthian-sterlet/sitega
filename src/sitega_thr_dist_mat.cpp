@@ -315,8 +315,8 @@ struct city {
 	char site[300];
 	int size;
 	int len;
-	double c;
-	double std;
+	double min;
+	double raz;	
 	struct due tot[DIM];
 	void get_copy(city *a);
 	void sort_all(void);
@@ -340,8 +340,9 @@ int city::get_file(char *file)
 	fgets(d, sizeof(d), in);
 	len = atoi(d);
 	fgets(d, sizeof(d), in);
-	c = atof(d);
-	std = 0.05;
+	min = atof(d);
+	fgets(d, sizeof(d), in);
+	raz = atof(d);	
 	char sep = '\t', s[30];
 	int i, test;
 	for (i = 0; i < size; i++)
@@ -365,9 +366,9 @@ void city::get_copy(city *a)
 {
 	strcpy(a->site, site);
 	a->size = size;
-	a->std = std;
+	a->min = min;
 	a->len = len;
-	a->c = c;
+	a->raz = raz;
 	int i;
 	for (i = 0; i < size; i++)
 	{
@@ -438,26 +439,20 @@ int main(int argc, char *argv[])
 		printf("Site %s function not found!", file_sitega);
 		exit(1);
 	}
-	double sga_min = sta.c, sga_max = sta.c;
-	for (j = 0; j < sta.size; j++)
-	{
-		if (sta.tot[j].buf < 0)sga_min += sta.tot[j].buf;
-		else sga_max += sta.tot[j].buf;		
-	}
-	double sga_raz = sga_max - sga_min;
-	double thr_bot = sga_min / sga_raz;
+	double thr_bot = 0;
 	int len1 = sta.len;	
 	for (i = 0; i < nthr; i++)thr[i] = thr_bot;
 	int rlen[DIM];
 	for (j = 0; j < sta.size; j++)rlen[j] = (sta.tot[j].end - sta.tot[j].sta + 1);
 	for (n = 0; n < nseq_pro; n++)
 	{
-		if (n % 500 == 0)
+		if (n % 50 == 0)
 		{			
-			/*int di = nthr_max / 20;
+			int di = nthr_max / 10;
+			printf("%d\t", n + 1);
 			for (i = 0; i < nthr_max; i += di)printf("%d %f ", i+1, thr[i]);
-			printf("\n");*/
-			printf("%5d %f\n", n, thr[nthr_max]);
+			printf("\n");
+			//printf("%5d %f\n", n, thr[nthr_max]);
 		}
 		fgets(head, sizeof(head), in);
 		memset(dp, 0, len_pro + 1);
@@ -487,7 +482,7 @@ int main(int argc, char *argv[])
 				d2[len1] = '\0';
 				if (strstr(d2, "n") != NULL) { continue; }
 				all_pos_rec++;
-				double score = sta.c;
+				double score = 0;
 				for (j = 0; j < sta.size; j++)
 				{
 					double fm = 0;
@@ -501,9 +496,8 @@ int main(int argc, char *argv[])
 						fm /= rlen[j];
 						score += sta.tot[j].buf*fm;
 					}
-				}
-				//score = 1 - fabs(score - 1);
-				score = (score - sga_min) / sga_raz;
+				}				
+				score = (score - sta.min) / sta.raz;
 				double thr_check = Max(thr_bot, thr[nthr_max]);
 				if (score >= thr_check)
 				{
