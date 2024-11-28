@@ -98,8 +98,8 @@ struct city {
 	char site[120];
 	int size;
 	int len;
-	double c;
-	double std;
+	double min;
+	double raz;
 	struct due tot[DIM];
 	void get_copy(city *a);
 	int get_file(char *file);
@@ -123,9 +123,10 @@ int city::get_file(char *file)
 	fgets(d, sizeof(d), in);
 	len = atoi(d);
 	fgets(d, sizeof(d), in);
-	c = atof(d);
-	std = 0.05;
-	char sep = '\t', s[20];
+	min = atof(d);
+	fgets(d, sizeof(d), in);
+	raz = atof(d);
+	char sep = '\t', s[30];
 	int i, test;
 	for (i = 0; i < size; i++)
 	{
@@ -148,9 +149,9 @@ void city::get_copy(city *a)
 {
 	strcpy(a->site, site);
 	a->size = size;
-	a->std = std;
+	a->min = min;
 	a->len = len;
-	a->c = c;
+	a->raz = raz;
 	int i;
 	for (i = 0; i < size; i++)
 	{
@@ -716,7 +717,7 @@ double Rmah(char *d1, char *d2, city a, char *alfabet)
 	}
 	return ret;
 }
-int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, int &len0, int end, int nseq, int cmpl, char *alfabet, double sga_min, double sga_raz)//double score was 5th argument
+int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, int &len0, int end, int nseq, int cmpl, char *alfabet)//double score was 5th argument
 {
 	int i, j, err, ret, len;
 	/*if (GetFun(sitename, &sta) == -1)
@@ -815,7 +816,7 @@ int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, in
 					continue;
 				}
 			}
-			double sco = sta->c;
+			double sco = 0;
 			for (j = 0; j < sta->size; j++)
 			{
 				int rlenj = (sta->tot[j].end - sta->tot[j].sta + 1);
@@ -831,7 +832,7 @@ int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, in
 					sco += sta->tot[j].buf*fm;
 				}
 			}
-			p[k] = (sco - sga_min) / sga_raz; 
+			p[k] = (sco - sta->min) / sta->raz;
 		}
 	}
 	if (site_desc == 1)
@@ -1076,14 +1077,7 @@ int main(int argc, char *argv[])
 	}
 	city sta;
 	sta.get_file(sitename);
-	double sga_min = sta.c, sga_max = sta.c;
-	for (i = 0; i < sta.size; i++)
-	{
-		if (sta.tot[i].buf < 0)sga_min += sta.tot[i].buf;
-		else sga_max += sta.tot[i].buf;
-	}
-	double sga_raz = sga_max - sga_min;
-	double thr_bot = sga_min / sga_raz;
+	double thr_bot = 0;
 	for (n = 0; n < nseq; n++)
 	{
 		//printf("%d\n",n);
@@ -1135,7 +1129,7 @@ int main(int argc, char *argv[])
 			int share;
 			if (nseq == 1)share = 1;
 			else share = n / (nseq - 1);
-			ret = Fun(d, head, mess, &sta, p, site_desc, len0, share, nseq, cmpl, alfabet,sga_min,sga_raz);
+			ret = Fun(d, head, mess, &sta, p, site_desc, len0, share, nseq, cmpl, alfabet);
 			if (ret != 1)
 			{
 				printf("Fun ret error %s", mess);
