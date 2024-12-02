@@ -48,6 +48,7 @@ struct uno {
 	int num;
 	void get_copy(uno* a);
 	void print_all(FILE* out);
+	void print_all2();
 };
 void uno::get_copy(uno* a)
 {
@@ -58,6 +59,10 @@ void uno::get_copy(uno* a)
 void uno::print_all(FILE* out)
 {
 	fprintf(out, "[%d;%d]%s\t", sta, end, s[num].oli);
+}
+void uno::print_all2()
+{
+	printf("[%d;%d]%s\t", sta, end, s[num].oli);
 }
 struct town {
 	uno tot[POPSIZE];
@@ -87,6 +92,7 @@ struct town {
 	void swap(int n1, int n2);
 	int order(int n);
 	void print_all(int reg_max, int nseq, FILE* out);
+	void print_all2(int reg_max);
 	void print_sta(int reg_max, FILE* out);
 	void sort_all(void);
 	int sum(int j);
@@ -345,6 +351,32 @@ void town::print_all(int reg_max, int nseq, FILE* out)
 	{
 		tot[i].print_all(out);
 		if (i == size1)fprintf(out, "\n");
+		// else if(tot[i + 1].num != tot[i].num)fprintf(out,"\n");
+		//	 fprintf(out," ");
+	}
+	// fprintf(out,"\n");
+
+	/*for (i = 0; i < nseq; i++)
+	{
+		fprintf(out, "%2d", pos[i]);
+		fprintf(out, "%c", strand[ori[i]]);
+		fprintf(out, " ");
+	}
+	fprintf(out, "\n");*/
+}
+void town::print_all2(int reg_max)
+{
+	int i;
+	char strand[] = "+-";
+	printf("M %f FP %f F %f S %d\t", mah, fpr, fit, size);
+	for (i = 0; i < 16; i++)printf("%d ", deg[i]); printf("\tLEN ");
+	for (i = 0; i < reg_max; i++)printf("%d ", odg[i]); printf("\t");
+	int size1 = size - 1;
+	printf(" ");
+	for (i = 0; i < size; i++)
+	{
+		tot[i].print_all2();
+		if (i == size1)printf("\n");
 		// else if(tot[i + 1].num != tot[i].num)fprintf(out,"\n");
 		//	 fprintf(out," ");
 	}
@@ -664,9 +696,7 @@ void DelHole(char* str)
 {
 	char* hole;
 	hole = strstr(str, "\n");
-	if (hole != NULL) *hole = 0;
-	hole = strstr(str, "\r");
-	if (hole != NULL) *hole = 0;
+	if (hole != NULL) *hole = '\0';
 }
 char* TransStr(char* d)
 {
@@ -895,7 +925,11 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 	if (BackMat(a->size, outlog) == -1)
 	{
 		a->fit = 0;
-		for (k = 0; k < n_cntrl; k++)fp_rate[k] = 0.5;//n_cntrl_tot 
+		for (k = 0; k < n_cntrl; k++)
+		{
+			fp_count[k] = fp_rate[k] = 0.5;//n_cntrl_tot 
+			tp_sco[k] = 0;
+		}
 		return 0;
 	}
 	a->mah = 0;
@@ -927,10 +961,11 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 		printf("Ouput file can't be opened!\n");
 		exit(1);
 	}
+	int olen1 = olen - 1;
 	for (b = 0; b < n_cntrl; b++)//control
 	{
 		u = xportj[b];
-		int lenp = len[u] - olen + 1;
+		int lenp = len[u] - olen1;
 		double sco_pos = -1000;
 		int obest = 0, pbest = 0;
 		for (m = 0; m < lenp; m++)
@@ -975,8 +1010,7 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 			char d[50];
 			char letter[5] = "acgt";
 			char err = 'n';
-			memset(d, '\0', olen+1);
-			int olen1 = olen - 1;			
+			memset(d, '\0', olen+1);			
 			for (m = 0; m < olen1; m++)
 			{
 				int cod2 = seq[obest][u][pbest+m];
@@ -1008,11 +1042,10 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 	}	
 	fclose(outmap);
 	qsort(tp_sco, n_cntrl, sizeof(double), compare_qq);
-	int nseqn = 0;
+	int nseqn = 0;	
 	for (b = 0; b < nseqb; b++)
 	{
-		int lenp = lenb[b] - olen + 1;
-		nseqn += 2 * lenp;
+		int lenp = lenb[b] - olen1;
 		double sco_max = -1000;
 		for (o = 0; o < 2; o++)
 		{
@@ -1034,7 +1067,7 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 						}
 						if (a->tot[k].num == sym)fs++;
 					}
-					if (gom == -1)break;
+					if (gom == -1)break;					
 					if (fs > 0)
 					{
 						fs /= rlenk;
@@ -1042,7 +1075,11 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 					}
 				}
 				if (gom == -1)sco = -1000;
-				else sco = (sco - sga_min) / sga_raz;
+				else
+				{
+					sco = (sco - sga_min) / sga_raz;
+					nseqn++;
+				}
 				if (sco_max < sco)sco_max = sco;
 				if (sco >= tp_sco[0])
 				{
@@ -1071,6 +1108,12 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 			}
 		}
 	}
+	/*fprintf(outlog, "1 Internal Size %d\n", a->size);
+	for (k = 0; k < n_cntrl; k += 100)
+	{
+		//int kk = n_cntrl_tot + k;
+		fprintf(outlog, "ERR %f Count %d FPsites %f FPpeak %f TPpeak %f\n", tp_sco[k], k + 1, fp_rate[k], fp_count[k], (double)(k + 1) / n_cntrl);
+	}*/
 	for (k = 0; k < n_cntrl; k++)
 	{
 		//int kk = n_cntrl_tot + k;		
@@ -2725,24 +2768,24 @@ int main(int argc, char* argv[])
 	fp_rate = new double* [CELL];
 	for (i = 0; i < CELL; i++)
 	{
-		fp_rate[i] = new double[n_cnt_tot + 10];
+		fp_rate[i] = new double[n_cnt_tot];
 		if (fp_rate[i] == NULL) { puts("Out of memory..."); exit(1); }
 	}
 	double** fp_count;
 	fp_count = new double* [CELL];
 	for (i = 0; i < CELL; i++)
 	{
-		fp_count[i] = new double[n_cnt_tot + 10];
+		fp_count[i] = new double[n_cnt_tot];
 		if (fp_count[i] == NULL) { puts("Out of memory..."); exit(1); }
 	}
 	double** tp_sco;
 	tp_sco = new double* [CELL];
 	for (i = 0; i < CELL; i++)
 	{
-		tp_sco[i] = new double[n_cnt_tot + 10];
+		tp_sco[i] = new double[n_cnt_tot];
 		if (tp_sco[i] == NULL) { puts("Out of memory..."); exit(1); }
 	}
-	for (i = 0; i < CELL; i++)for (k = 0; k < n_cnt_tot + 10; k++)fp_rate[i][k] = fp_count[i][k] = tp_sco[i][k] = 0;
+	for (i = 0; i < CELL; i++)for (k = 0; k < n_cnt_tot; k++)fp_rate[i][k] = fp_count[i][k] = tp_sco[i][k] = 0;
 	int* xport;
 	xport = new int[nseq];
 	if (xport == NULL) { puts("Out of memory..."); exit(1); }
@@ -2784,25 +2827,37 @@ int main(int argc, char* argv[])
 	}
 	det1.mem_in(nseq);
 	{
+		char name[200];
+		memset(name, '\0', sizeof(name));
+		for (i = 0;; i++)
+		{
+			if (file_for[i] == '.') { name[i] = '\0'; break; }
+			if (file_for[i] == '\n') { name[i] = '\0'; break; }
+			if (file_for[i] == '\0') { name[i] = '\0'; break; }
+			name[i] = file_for[i];
+		}
 		char add_auc[500], add_roc1[500], add_prc1[500]; //add_prc[500],
 		strcpy(add_auc, "_auc_bs.txt"); // common
 		strcpy(add_prc1, "_prc_bs1.txt"); //PRC
 		strcpy(add_roc1, "_roc_bs1.txt"); //ROC
 		memset(file_out_roc, 0, sizeof(file_out_roc));
 		strcpy(file_out_roc, path_out);
-		strcat(file_out_roc, argv[2]);
+		//strcat(file_out_roc, argv[2]);
+		strcat(file_out_roc, name);
 		strcat(file_out_roc, "_");
 		strcat(file_out_roc, argv[7]);
 		strcat(file_out_roc, add_roc1);
 		memset(file_out_prc, 0, sizeof(file_out_prc));
 		strcpy(file_out_prc, path_out);
-		strcat(file_out_prc, argv[2]);
+		//strcat(file_out_prc, argv[2]);
+		strcat(file_out_prc, name);
 		strcat(file_out_prc, "_");
 		strcat(file_out_prc, argv[7]);
 		strcat(file_out_prc, add_prc1);
 		memset(file_out_auc, 0, sizeof(file_out_auc));
 		strcpy(file_out_auc, path_out);
-		strcat(file_out_auc, argv[2]);
+		//strcat(file_out_auc, argv[2]);
+		strcat(file_out_auc, name);
 		strcat(file_out_auc, "_");
 		strcat(file_out_auc, argv[7]);
 		strcat(file_out_auc, add_auc);		
@@ -3000,7 +3055,7 @@ int main(int argc, char* argv[])
 				//initiation		
 				int gen = 0;
 				int success_m;
-				int success_r1[NREC];
+				int success_r1[NREC];				
 				int check_lpd = 1;
 				int stop_oi[CELL][MEGE], stop_li[CELL][MEGE], stop_pi[CELL][MEGE];
 				int success_rcell[CELL];
@@ -3009,7 +3064,7 @@ int main(int argc, char* argv[])
 				for (i = 0; i < CELL; i++)for (j = 0; j < MEGE; j++)stop_oi[i][j] = stop_li[i][j] = stop_pi[i][j] = 0;
 				for (i = 0; i < CELL; i++)for (j = 0; j < MEGE; j++)success_ri[i][j] = 1;
 				int mege_h;
-				int restart_full = 0, restart_half = 0;
+				//int restart_full = 0, restart_half = 0;
 				do
 				{
 					int success_o, success_l, success_p;
@@ -3076,11 +3131,11 @@ int main(int argc, char* argv[])
 					}
 					else
 					{
-						if (restart_full == 0)
+						if (gen == 1)
 						{
 							jwei = jwei0[1];
-							step = 25000;
-							step_max = 500 * kn_train_max;//250000 if n_train_max = 500							
+							step = 4000;//25000;
+							step_max = 200 * kn_train_max;//200 -> 100000, 500 -> 250000 if n_train_max = 500							
 							elit_rec = ELIT / 5;
 							mege_h = ELIT;
 							ratio_rec_cycle = 0.001;
@@ -3089,10 +3144,10 @@ int main(int argc, char* argv[])
 						}
 						else
 						{
-							step = 50000;
-							step_max = 1000 * kn_train_max;//500000 if n_train_max = 500							
-							elit_rec = ELIT / 5;
 							jwei = jwei0[2];
+							step = 5000;
+							step_max = 200 * kn_train_max;//200 -> 100000, 1000 -> 500000 if n_train_max = 500							
+							elit_rec = ELIT / 5;							
 							mege_h = ELIT;
 							ratio_rec_cycle = 0.001;
 							sr_step = 1000 * kn_train_max;
@@ -3106,267 +3161,289 @@ int main(int argc, char* argv[])
 					int step2 = 2 * step;
 					int mege_h1 = mege_h - 1;
 					int n_mut_tot = 0, success_m_tot = 0, mdo = 1;
-					double sm0_rate1[2] = { 0,0 }, sm0_rate;
+					double sm0_rate = 0.001;
 					int mut_jump[CELL];
 					for (j = 0; j < CELL; j++)mut_jump[j] = 0;
 					double exp_rec_rate[CELL][MEGE];
 					for (j = 0; j < CELL; j++)for (i = 0; i < mege_h; i++)exp_rec_rate[j][i] = 0;
 					double fit_pre_rec[CELL][MEGE];
 					//mutations																													
-					fprintf(outlog, "Enter mutations Gen %d Iteration %d\n", gen+1, iter + 1);					
+					//if(gen<=1)
 					{
-						int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12], argv[13],
-							path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, ratio_train_to_control, iteration, octa, path_out, len_peak_max, file_log, outlog);
-						if (testar != 0)
+						fprintf(outlog, "Enter mutations Gen %d Iteration %d\n", gen + 1, iter + 1);
 						{
-							printf("TestArgv Before Mut: %s argument %d error\n", argv[testar], testar);
-							exit(1);
-						}
-					}
-					int asuccess[NMUT], atry[NMUT];
-					for (k = 0; k < NMUT; k++)asuccess[k] = atry[k] = 0;
-					int success_mi[CELL][MEGE], try_mi[CELL][MEGE];
-					for (j = 0; j < CELL; j++)for (i = 0; i < mege_h; i++)success_mi[j][i] = try_mi[j][i] = 0;
-					asuccess[2] = atry[2] = 0;
-					int mdo_cell[CELL];
-					for (j = 0; j < CELL; j++)mdo_cell[j] = 1;
-					do
-					{
-						step_max_tot += step_max;
-						for (j = 0; j < CELL; j++)for (i = 0; i < mege_h; i++)pop[iter][j][i].sm = pop[iter][j][i].tm = 0;									
-						if (gen == 0)fprintf(outlog, "Mut cycle %d\n", step_max_tot / step_max);
-						for (j = 0; j < CELL; j++)
-						{
-							if (mdo_cell[j] != 1)continue;
-							for (i = 0; i < mege_h; i++)
+							int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12], argv[13],
+								path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, ratio_train_to_control, iteration, octa, path_out, len_peak_max, file_log, outlog);
+							if (testar != 0)
 							{
-								if (stop_pi[j][i] == 0 || (stop_li[j][i] == 0 || stop_oi[j][i] == 0))
-								{
-									pop[iter][j][i].get_copy(&det1, nseq, reg_max);
-									int success_o_local = 0, success_l_local = 0, success_p_local = 0;
-									int success_m_local = 0;
-									double ratio[NMUT];
-									if (stop_oi[j][i] == 0)ratio[0] = 1;
-									else ratio[0] = 0;
-									if (stop_li[j][i] == 0)ratio[1] = 1;
-									else ratio[1] = 0;
-									if (stop_pi[j][i] == 0)ratio[2] = 1;
-									else ratio[2] = 0;
-									int step_success[NMUT];
-									int step_try[NMUT];
-									for (k = 0; k < NMUT; k++)step_success[k] = step_try[k] = 0;
-									int n_mut_here = 0;
-									double fit_mut_prev0 = pop[iter][j][i].fit;
-									int n_mut_min_cyc = step;
-									int m_iter = 0;
-									while (ratio[2] > ratio_thr || (ratio[0] > ratio_thr || ratio[1] > ratio_thr))
-									{
-										int sm;
-										//else
-										{
-											int rs = step + step_success[2];
-											if (ratio[1] > ratio_thr && stop_li[j][i] == 0)rs += step + step_success[1];
-											if (ratio[0] > ratio_thr && stop_oi[j][i] == 0)rs += step + step_success[0];
-											int rs1 = rand() % rs;
-											if (rs1 < step + step_success[2])sm = 2;
-											else
-											{
-												if (rs1 < step2 + step_success[2] + step_success[1])sm = 1;
-												else sm = 0;
-											}
-										}
-										int muto, muto1;
-										int npeak = -1, nori = -1, npos = -1;
-										if (sm == 0)muto = MutOlig0(&det1);
-										else
-										{
-											if (sm == 1)muto = MutCry0(&det1, olen, reg_max);
-											else muto = MutRegShiftHoxaW(&det1, n_train[iter], xporti, npeak, nori, npos, len_octa, octa_prowb, octa_prows);
-										}
-										int gom = 0;
-										if (muto != -1)
-										{
-											muto1 = det1.order(muto);
-											if (muto1 == -1)
-											{
-												puts("MUTO Error");
-												gom = -1;
-											}
-											if (gom == 0)
-											{
-												for (m = 0; m < mege_h; m++)
-												{
-													if (m == i)continue;
-													gom = GomTown(det1, pop[iter][j][m], n_train[iter], xporti, check_lpd);
-													if (gom == -1) { break; }
-												}
-											}
-										}
-										double dd = 0;
-										if (gom != -1)
-										{
-											n_mut_here++;
-											EvalMahFIT(&det1, n_train[iter], octa, xporti, seq_real, olen, dav, dcv, octa_prow, len, outlog);//hoxa_wei,qps, frp, octa_rat,
-											dd = det1.fit / pop[iter][j][i].fit;
-											pop[iter][j][i].tm++;
-											if (dd > 1)
-											{
-												step_success[sm]++;
-												pop[iter][j][i].sm++;
-												if (sm == 0)success_o_local++;
-												else
-												{
-													if (sm == 1)success_l_local++;
-													else success_p_local++;
-												}
-												success_m_local++;
-												det1.get_copy(&pop[iter][j][i], nseq, reg_max);
-												success_mi[j][i]++;
-											}
-										}
-										if (dd <= 1)
-										{
-											pop[iter][j][i].get_copy(&det1, nseq, reg_max);
-										}
-										step_try[sm]++;
-										try_mi[j][i]++;
-										if (n_mut_here % step == 0)
-										{
-											m_iter++;
-											for (k = 0; k < 3; k++)
-											{
-												if (step_success[k] != 0 && step_try[k] != 0)
-												{
-													ratio[k] = (double)step_success[k] / step_try[k];
-												}
-												else ratio[k] = 0;
-											}
-											if (ratio[0] <= ratio_thr)stop_oi[j][i] = 1;
-											if (ratio[1] <= ratio_thr)stop_li[j][i] = 1;
-											if (ratio[2] <= ratio_thr)stop_pi[j][i] = 1;
-											double ratio_per_cycle = pop[iter][j][i].fit / fit_mut_prev0 - 1;
-											for (k = 0; k < 3; k++)atry[k] += step_try[k];
-											for (k = 0; k < 3; k++)asuccess[k] += step_success[k];
-											int step_success_tot = step_success[0] + step_success[1] + step_success[2];
-											if (step_success_tot < n_mut_min_cyc)n_mut_min_cyc = step_success_tot;
-											if (try_mi[j][i] != 0)exp_rec_rate[j][i] = (double)success_mi[j][i] / try_mi[j][i];
-											else exp_rec_rate[j][i] = 0;
-											success_mi[j][i] = try_mi[j][i] = 0;
-											for (k = 0; k < 3; k++)step_try[k] = step_success[k] = 0;
-											if (n_mut_here >= step_max)
-											{
-												if (gen == 0)break;
-												else if (stop_li[j][i] == 1)break;
-											}
-											if (ratio_per_cycle <= ratio_mut_cycle)
-											{
-												stop_pi[j][i] = 1;
-												break;
-											}
-											fit_mut_prev0 = pop[iter][j][i].fit;
-										}
-									}
-									success_o += success_o_local;
-									success_l += success_l_local;
-									success_p += success_p_local;
-									success_m_tot += success_m_local;
-									if ((gen == 0 && i == 0) || gen > 0)
-									{
-										fprintf(outlog, "M Pop%d %d %d,%d,%d = %d Try %d M %f H %g F %f", size0[j], i + 1, success_o_local, success_l_local, success_p_local, success_m_local, n_mut_here, pop[iter][j][i].mah, pop[iter][j][i].fpr, pop[iter][j][i].fit);
-										if (gen == 0)fprintf(outlog, "\tOLP %d%d%d RatioP %f", stop_oi[j][i], stop_li[j][i], stop_pi[j][i], ratio[2]);
-										fprintf(outlog, "\tGen %d Iter %d\n",gen+1,iter+1);										
-									}
-									n_mut_tot += n_mut_here;
-									if (success_m_local != 0)success_m++;
-								}
-							}
-							mut_jump[j] = 0;
-							for (i = 1; i < mege_h; i++)
-							{
-								if (pop[iter][j][i].fit >= pop[iter][j][0].fit)mut_jump[j]++;
-							}
-							qsort((void*)(&pop[iter][j][0]), mege_h, sizeof(pop[iter][j][0]), compare_pop);
-						}
-						sm0_rate1[0] = sm0_rate1[1];
-						int trym = 0, sucm = 0;
-						for (j = 0; j < CELL; j++)
-						{
-							int is = 0;
-							for (i = 0; i < mege_h; i++)
-							{
-								if (pop[iter][j][i].tr > 0) { is = i; break; }
-							}
-							int ie;
-							if (gen == 0) { ie = Min(is + elit_rec, mege_h1); }
-							else { ie = Min(is + mut_jump[j], mege_h1); }							
-							for (i = is; i <= ie; i++)
-							{
-								sucm += pop[iter][j][i].sm;
-								trym += pop[iter][j][i].tm;
+								printf("TestArgv Before Mut: %s argument %d error\n", argv[testar], testar);
+								exit(1);
 							}
 						}
-						sm0_rate1[1] = (double)sucm / trym;
-						if (gen > 0)
+						int asuccess[NMUT], atry[NMUT];
+						for (k = 0; k < NMUT; k++)asuccess[k] = atry[k] = 0;
+						int success_mi[CELL][MEGE], try_mi[CELL][MEGE];
+						for (j = 0; j < CELL; j++)for (i = 0; i < mege_h; i++)success_mi[j][i] = try_mi[j][i] = 0;
+						int mdo_cell[CELL];
+						for (j = 0; j < CELL; j++)mdo_cell[j] = 1;
+						do
 						{
-							mdo = 0;
-							for (j = 0; j < CELL; j++)mdo_cell[j] = 0;
-							break;
-						}
-						else
-						{
-							int mege_half = mege_h / 2;
-							double rat0 = 0;
-							if (atry[2] > 0)
-							{
-								rat0 = (double)asuccess[2] / atry[2];
-							}
-							mdo = 0;
-							int m_nostoplo_cell[CELL], m_stopp_cell[CELL];
-							for (j = 0; j < CELL; j++)mdo_cell[j] = m_stopp_cell[j] = m_nostoplo_cell[j] = 0;
+							step_max_tot += step_max;
+							for (j = 0; j < CELL; j++)for (i = 0; i < mege_h; i++)pop[iter][j][i].sm = pop[iter][j][i].tm = 0;
+							if (gen == 0)fprintf(outlog, "Mut cycle %d\n", step_max_tot / step_max);
 							for (j = 0; j < CELL; j++)
 							{
-								if (mut_jump[j] >= mege_half)
+								if (mdo_cell[j] != 1)continue;
+								for (i = 0; i < mege_h; i++)
 								{
-									mdo = 1;
-									mdo_cell[j] = 1;
-									fprintf(outlog, "Pop %d Mut jump %d\tSM rate %g\n", size0[j], mut_jump[j], sm0_rate1[1]);
-								}
-								else
-								{
-									int m_nostoplo = 0, m_stopp = 0;
-									for (i = 0; i < mege_h; i++)
-									{
-										if ((stop_li[j][i] == 0 || stop_oi[j][i] == 0) && stop_pi[j][i] == 0)
+									if (stop_pi[j][i] == 0 || (stop_li[j][i] == 0 || stop_oi[j][i] == 0))
+									{										
+										int success_o_local = 0, success_l_local = 0, success_p_local = 0;
+										int success_m_local = 0;
+										double ratio[NMUT];
+										if (stop_oi[j][i] == 0)ratio[0] = 1;
+										else ratio[0] = 0;
+										if (stop_li[j][i] == 0)ratio[1] = 1;
+										else ratio[1] = 0;
+										if (stop_pi[j][i] == 0)ratio[2] = 1;
+										else ratio[2] = 0;
+										int step_success[NMUT];
+										int step_try[NMUT];
+										for (k = 0; k < NMUT; k++)step_success[k] = step_try[k] = 0;
+										int n_mut_here = 0;
+										double fit_mut_prev0 = pop[iter][j][i].fit;
+										int n_mut_min_cyc = step;
+										int m_iter = 0;
+										while (ratio[2] > ratio_thr || (ratio[0] > ratio_thr || ratio[1] > ratio_thr))
 										{
-											m_nostoplo++;
+											pop[iter][j][i].get_copy(&det1, nseq, reg_max);
+											int sm;											
+											if (stop_oi[j][i] == 1)
+											{
+												if (stop_li[j][i] == 1)sm = 2;
+												else
+												{
+													sm = rand() % 2;// 1 or 2
+													sm++;
+												}
+											}
+											else
+											{												
+												if (stop_li[j][i] == 1)
+												{
+													sm = rand() % 2;
+													if (sm == 1)sm++;// 0 or 2
+												}
+												else sm = rand() % 3;
+											}
+											/*{
+												int rs = step + step_success[2];
+												if (ratio[1] > ratio_thr && stop_li[j][i] == 0)rs += step + step_success[1];
+												if (ratio[0] > ratio_thr && stop_oi[j][i] == 0)rs += step + step_success[0];
+												int rs1 = rand() % rs;
+												if (rs1 < step + step_success[2])sm = 2;
+												else
+												{
+													if (rs1 < step2 + step_success[2] + step_success[1])sm = 1;
+													else sm = 0;
+												}
+											}*/
+										//	det1.print_all2(reg_max);
+											int muto;
+											int npeak = -1, nori = -1, npos = -1;
+											if (sm == 0)muto = MutOlig0(&det1);
+											else
+											{
+												if (sm == 1)muto = MutCry0(&det1, olen, reg_max);
+												else muto = MutRegShiftHoxaW(&det1, n_train[iter], xporti, npeak, nori, npos, len_octa, octa_prowb, octa_prows);
+											}
+											int gom = 0;
+											if (muto != -1)
+											{
+												int muto1 = det1.order(muto);
+												if (muto1 == -1)
+												{
+													puts("MUTO Error");
+													gom = -1;
+												}
+												if (gom == 0)
+												{
+													for (m = 0; m < mege_h; m++)
+													{
+														if (m == i)continue;
+														gom = GomTown(det1, pop[iter][j][m], n_train[iter], xporti, check_lpd);
+														if (gom == -1) { break; }
+													}
+												}
+											}
+											double ret = 0, dd = 0;											
+											if (gom != -1)
+											{												
+												ret = EvalMahFIT(&det1, n_train[iter], octa, xporti, seq_real, olen, dav, dcv, octa_prow, len, outlog);//hoxa_wei,qps, frp, octa_rat,
+												if (ret > 0)
+												{
+													n_mut_here++;
+													step_try[sm]++;
+													try_mi[j][i]++;
+													dd = det1.fit / pop[iter][j][i].fit;
+													pop[iter][j][i].tm++;
+													if (dd > 1)
+													{
+														/*if (det1.fit > pop[iter][j][0].fit)
+														{
+															printf("Cell %d Rank %d SM %d DD %f\n", j + 1, i + 1, sm, dd);
+															det1.print_all2(reg_max);
+															pop[iter][j][i].print_all2(reg_max);
+														}*/
+														step_success[sm]++;
+														pop[iter][j][i].sm++;
+														if (sm == 0)success_o_local++;
+														else
+														{
+															if (sm == 1)success_l_local++;
+															else success_p_local++;
+														}
+														success_m_local++;
+														det1.get_copy(&pop[iter][j][i], nseq, reg_max);
+														success_mi[j][i]++;
+													}
+												}
+												//else pop[iter][j][i].get_copy(&det1, nseq, reg_max);
+											}
+											//else pop[iter][j][i].get_copy(&det1, nseq, reg_max);											
+											if (n_mut_here % step == 0)
+											{
+												m_iter++;
+												for (k = 0; k < 3; k++)
+												{
+													if (step_success[k] != 0 && step_try[k] != 0)
+													{
+														ratio[k] = (double)step_success[k] / step_try[k];
+													}
+													else ratio[k] = 0;
+												}
+												if (ratio[0] <= ratio_thr)stop_oi[j][i] = 1;
+												if (ratio[1] <= ratio_thr)stop_li[j][i] = 1;
+												if (ratio[2] <= ratio_thr)stop_pi[j][i] = 1;
+												double ratio_per_cycle = pop[iter][j][i].fit / fit_mut_prev0 - 1;
+												for (k = 0; k < 3; k++)atry[k] += step_try[k];
+												for (k = 0; k < 3; k++)asuccess[k] += step_success[k];
+												int step_success_tot = step_success[0] + step_success[1] + step_success[2];
+												if (step_success_tot < n_mut_min_cyc)n_mut_min_cyc = step_success_tot;
+												if (try_mi[j][i] != 0)exp_rec_rate[j][i] = (double)success_mi[j][i] / try_mi[j][i];
+												else exp_rec_rate[j][i] = 0;
+												success_mi[j][i] = try_mi[j][i] = 0;
+												for (k = 0; k < 3; k++)step_try[k] = step_success[k] = 0;
+												if (n_mut_here >= step_max)
+												{
+													if (gen == 0)break;
+													else if (stop_li[j][i] == 1)break;
+												}
+												if (ratio_per_cycle <= ratio_mut_cycle)
+												{
+													stop_pi[j][i] = 1;
+													break;
+												}
+												fit_mut_prev0 = pop[iter][j][i].fit;
+											}
 										}
-										if (stop_pi[j][i] == 1)
+										success_o += success_o_local;
+										success_l += success_l_local;
+										success_p += success_p_local;
+										success_m_tot += success_m_local;
+										//if ((gen == 0 && i == 0) || gen > 0)
 										{
-											m_stopp++;
+											fprintf(outlog, "M Pop%d %d %d,%d,%d = %d Try %d M %f H %g F %f", size0[j], i + 1, success_o_local, success_l_local, success_p_local, success_m_local, n_mut_here, pop[iter][j][i].mah, pop[iter][j][i].fpr, pop[iter][j][i].fit);
+											if (gen == 0)fprintf(outlog, "\tOLP %d%d%d RatioP %f", stop_oi[j][i], stop_li[j][i], stop_pi[j][i], ratio[2]);
+											fprintf(outlog, "\tGen %d Iter %d\n", gen + 1, iter + 1);
 										}
+										n_mut_tot += n_mut_here;
+										if (success_m_local != 0)success_m++;
 									}
-									m_nostoplo_cell[j] = m_nostoplo;
-									m_stopp_cell[j] = m_stopp;
-									if (rat0 == 0)mdo_cell[j] = 0;
-									if (m_nostoplo > mege_half || rat0 > ratio2_gen0)mdo_cell[j] = 1;
-									if (m_stopp >= mege_half)mdo_cell[j] = 0;
+								}
+								mut_jump[j] = 0;
+								for (i = 1; i < mege_h; i++)
+								{
+									if (pop[iter][j][i].fit >= pop[iter][j][0].fit)mut_jump[j]++;
+								}
+								qsort((void*)(&pop[iter][j][0]), mege_h, sizeof(pop[iter][j][0]), compare_pop);
+							}							
+							int trym = 0, sucm = 0;
+							for (j = 0; j < CELL; j++)
+							{
+								for (i = 0; i < mege_h; i++)
+								{
+									sucm += pop[iter][j][i].sm;
+									trym += pop[iter][j][i].tm;
 								}
 							}
-							fprintf(outlog, "Pop "); for (j = 0; j < CELL; j++)fprintf(outlog, "%d ", size0[j]);
-							fprintf(outlog, "\tMut Jump "); for (j = 0; j < CELL; j++)fprintf(outlog, "%d ", mut_jump[j]);
-							fprintf(outlog, "\tyLOnP "); for (j = 0; j < CELL; j++)fprintf(outlog, "%d ", m_nostoplo_cell[j]);
-							fprintf(outlog, "\tyP "); for (j = 0; j < CELL; j++)fprintf(outlog, " %d ", m_stopp_cell[j]);
-							fprintf(outlog, "\tCommon RatioP %f SM rate %g\n", rat0, sm0_rate1[1]);
-							tnow = time(NULL);
-							fprintf(outlog, "Gen %d Iter %d\n", gen+1, iter + 1);
-							fprintf(outlog, "%s", ctime(&tnow));
-						}
-						mdo = 0;
-						for (j = 0; j < CELL; j++)
+							if (trym != 0)sm0_rate = (double)sucm / trym;
+							else sm0_rate = 0;
+							if (gen > 0)
+							{
+								mdo = 0;
+								for (j = 0; j < CELL; j++)mdo_cell[j] = 0;
+								break;
+							}
+							else
+							{
+								int mege_half = mege_h / 2;
+								double rat0 = 0;
+								if (atry[2] > 0)
+								{
+									rat0 = (double)asuccess[2] / atry[2];
+								}
+								mdo = 0;
+								int m_nostoplo_cell[CELL], m_stopp_cell[CELL];
+								for (j = 0; j < CELL; j++)mdo_cell[j] = m_stopp_cell[j] = m_nostoplo_cell[j] = 0;
+								for (j = 0; j < CELL; j++)
+								{
+									if (mut_jump[j] >= mege_half)
+									{
+										mdo = 1;
+										mdo_cell[j] = 1;
+										fprintf(outlog, "Pop %d Mut jump %d\tSM rate %g\n", size0[j], mut_jump[j], sm0_rate);
+									}
+									else
+									{										
+										int m_nostoplo = 0, m_stopp = 0;
+										for (i = 0; i < mege_h; i++)
+										{
+											if ((stop_li[j][i] == 0 || stop_oi[j][i] == 0) && stop_pi[j][i] == 0)
+											{
+												m_nostoplo++;
+											}
+											if (stop_pi[j][i] == 1)
+											{
+												m_stopp++;
+											}
+										}
+										m_nostoplo_cell[j] = m_nostoplo;
+										m_stopp_cell[j] = m_stopp;
+										if (rat0 == 0)mdo_cell[j] = 0;
+										if (m_nostoplo > mege_half || rat0 > ratio2_gen0)mdo_cell[j] = 1;
+										if (m_stopp >= mege_half)mdo_cell[j] = 0;
+									}
+								}
+								fprintf(outlog, "Pop "); for (j = 0; j < CELL; j++)fprintf(outlog, "%d ", size0[j]);
+								fprintf(outlog, "\tMut Jump "); for (j = 0; j < CELL; j++)fprintf(outlog, "%d ", mut_jump[j]);
+								fprintf(outlog, "\tyLOnP "); for (j = 0; j < CELL; j++)fprintf(outlog, "%d ", m_nostoplo_cell[j]);
+								fprintf(outlog, "\tyP "); for (j = 0; j < CELL; j++)fprintf(outlog, " %d ", m_stopp_cell[j]);
+								fprintf(outlog, "\tCommon RatioP %f SM rate %f\n", rat0, sm0_rate);
+								tnow = time(NULL);
+								fprintf(outlog, "Gen %d Iter %d\n", gen + 1, iter + 1);
+								fprintf(outlog, "%s", ctime(&tnow));
+							}
+							mdo = 0;
+							for (j = 0; j < CELL; j++)
+							{
+								if (mdo_cell[j] == 1) { mdo = 1; break; }
+							}
+						} while (mdo == 1);
 						{
-							if (mdo_cell[j] == 1) { mdo = 1; break; }
+							//sm0_rate = 0.001;
 						}
-					} while (mdo == 1);
+					}
 					{
 						int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12], argv[13],
 							path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, ratio_train_to_control, iteration, octa, path_out, len_peak_max, file_log, outlog);
@@ -3375,19 +3452,12 @@ int main(int argc, char* argv[])
 							printf("TestArgv After Mut: %s argument %d error\n", argv[testar], testar);
 							exit(1);
 						}
-					}
-					{
-						//sm0_rate = 0.001;
-						if (gen == 0)
-						{
-							sm0_rate = sm0_rate1[1] * sm0_rate1[1] / sm0_rate1[0];
-						}
-						else sm0_rate = sm0_rate1[1];
-					}
-					if (gen == 0)success_m /= (step_max_tot / step_max);
-					if (restart_full == 0)ratio_thr_r[0] = ratio_thr;		//OL								
+					}					
+										
+				//	if (gen == 0)success_m /= (step_max_tot / step_max);
+					if (gen <= 1)ratio_thr_r[0] = ratio_thr;		//OL								
 					else ratio_thr_r[0] = 1;
-					for (j = 0; j < CELL; j++)for (i = 0; i < mege_h; i++)pop[iter][j][i].sr = pop[iter][j][i].tr = 0;
+					for (j = 0; j < CELL; j++)for (i = 0; i < mege_h; i++)pop[iter][j][i].sr = pop[iter][j][i].tr = 0;					
 					for (j = 0; j < CELL; j++)
 					{
 						int recount = 0;
@@ -3401,8 +3471,10 @@ int main(int argc, char* argv[])
 						}
 						if (recount != 0)ratio_thr_r[1] = resum / recount;
 						else ratio_thr_r[1] = ratio_thr;
-					}
-					//recombinations											
+					}					
+					for (m = 0; m < CELL; m++)fit_after_mut[m] = pop[iter][m][0].fit;
+					for (m = 0; m < NREC; m++)success_r1[m] = 0;
+					//recombinations																
 					fprintf(outlog, "Total mut %d\t", n_mut_tot);
 					fprintf(outlog, "SM rate %f", sm0_rate);
 					fprintf(outlog, "\t");
@@ -3411,9 +3483,7 @@ int main(int argc, char* argv[])
 					fprintf(outlog, "\n");
 					fprintf(outlog, "Enter recombinations Gen %d Iteration %d\n", gen+1, iter + 1);
 					fprintf(outlog, "\n");
-					int loc_rec, loc_rec_tot = 0;
-					for (m = 0; m < CELL; m++)fit_after_mut[m] = pop[iter][m][0].fit;
-					for (m = 0; m < NREC; m++)success_r1[m] = 0;
+					int loc_rec, loc_rec_tot = 0;					
 					int rwei[MEGE];
 					double jwei1 = jwei;
 					int jmax = mege_h / 2 - 1, jmax1 = jmax - 1;
@@ -3453,7 +3523,7 @@ int main(int argc, char* argv[])
 					}
 					for (k = 0; k < pair_all; k++)pair_take[k] = k;
 					int n_rec_cycle, sr_step_cycle = sr_step;
-					if (restart_full == 0) { n_rec_cycle = Min(n_mut_tot / 4, n_rec_cycle_max); }
+					if (gen <= 1) { n_rec_cycle = Min(n_mut_tot / 4, n_rec_cycle_max); }
 					else n_rec_cycle = n_rec_cycle_max;
 					n_rec_cycle /= pair_all;
 					if (n_rec_cycle < 1)n_rec_cycle = 1;
@@ -3510,8 +3580,9 @@ int main(int argc, char* argv[])
 							fit_parent_max = Max(det2[0].fit, det2[1].fit);
 							int nsn[2], nsi[2], num[2];
 							int r_cy;
-							if (restart_full == 0)r_cy = rand() % 6;
-							else r_cy = 5;
+							//if (restart_full == 0)r_cy = rand() % 6;
+							//else r_cy = 5;
+							r_cy = rand() % 6;
 							switch (r_cy)
 							{
 							case(0):
@@ -3574,31 +3645,28 @@ int main(int argc, char* argv[])
 								for (m = 0; m < 2; m++)
 								{
 									det2[m].fit = EvalMahFIT(&det2[m], n_train[iter], octa, xporti, seq_real, olen, dav, dcv, octa_prow, len, outlog);//hoxa_wei, qps, frp, octa_rat,
+									if(det2[m].fit>0)pop[iter][pair_size[m]][kk[m]].tr++;
 								}
-								step_rtry[r_cy]++;
-								for (m = 0; m < 2; m++)pop[iter][pair_size[m]][kk[m]].tr++;
-								{
+								if (det2[0].fit > 0 || det2[1].fit > 0)step_rtry[r_cy]++;
+								{									
+									for (m = 0; m < 2; m++)
 									{
-										for (m = 0; m < 2; m++)
+										if (det2[m].fit > pop[iter][pair_size[m]][kk[m]].fit)
 										{
-											if (det2[m].fit > pop[iter][pair_size[m]][kk[m]].fit)
+											det2[m].get_copy(&pop[iter][pair_size[m]][kk[m]], nseq, reg_max);
+											success_rcell[pair_size[m]]++;
+											pop[iter][pair_size[m]][kk[m]].sr++;
+											success_r1[r_cy]++;
+											step_rsuccess[r_cy]++;
+											success_r_cycle++;
+											success_ri[pair_size[m]][kk[m]]++;
+											loc_rec++;
+											if (det2[m].fit > fit_rec_prev[pair_size[m]])
 											{
-												det2[m].get_copy(&pop[iter][pair_size[m]][kk[m]], nseq, reg_max);
-												success_rcell[pair_size[m]]++;
-												pop[iter][pair_size[m]][kk[m]].sr++;
-												success_r1[r_cy]++;
-												step_rsuccess[r_cy]++;
-												success_r_cycle++;
-												success_ri[pair_size[m]][kk[m]]++;
-												loc_rec++;
-												if (det2[m].fit > fit_rec_prev[pair_size[m]])
-												{
-													rec_jump[pair_size[m]][kk[m]]++;
-												}
+												rec_jump[pair_size[m]][kk[m]]++;
 											}
 										}
-									}
-
+									}									
 								}
 							}
 						}
@@ -3619,11 +3687,11 @@ int main(int argc, char* argv[])
 							{
 								for (i = 0; i < mege_h; i++)
 								{
+									sucr += pop[iter][m][i].sr;
+									tryr += pop[iter][m][i].tr;
 									if (rec_jump[m][i] > 0)
 									{
-										rec_jump1++;
-										sucr += pop[iter][m][i].sr;
-										tryr += pop[iter][m][i].tr;
+										rec_jump1++;									
 									}
 									else break;
 								}
@@ -3660,6 +3728,7 @@ int main(int argc, char* argv[])
 						}
 					} 
 					while (loc_rec >= 0);										
+										
 					{
 						int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12], argv[13],
 							path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, ratio_train_to_control, iteration, octa, path_out, len_peak_max, file_log, outlog);
@@ -3714,6 +3783,7 @@ int main(int argc, char* argv[])
 								exit(1);
 							}
 						}
+						/*
 						if (restart_half > 0 && change_level < exit_1st)
 						{
 							big_exit1 = 0;
@@ -3768,6 +3838,8 @@ int main(int argc, char* argv[])
 								for (i = 0; i < CELL; i++)for (j = best_alive; j < mege_h; j++)stop_oi[i][j] = stop_li[i][j] = 0;
 							}
 						}
+						*/
+						for (i = 0; i < CELL; i++)for (j = 0; j < mege_h; j++)stop_pi[i][j] = stop_oi[i][j] = stop_li[i][j] = 0;
 					}
 					gen++;
 					for (j = 0; j < CELL; j++)fit_prev[j] = pop[iter][j][0].fit;
@@ -3814,10 +3886,9 @@ int main(int argc, char* argv[])
 					strcpy(extmap,"_cmap");
 					strcpy(extmat, "_cmat");
 					extmap[5] = '\0', extmat[5] = '\0';
-					char file_base[500], name[100];
-					memset(name, '\0', sizeof(name));
-					int ff_len = strlen(file_for);
-					for (i = 0; i < ff_len; i++)
+					char file_base[500], name[200];
+					memset(name, '\0', sizeof(name));					
+					for (i = 0;; i++)
 					{
 						if (file_for[i] == '.') { name[i] = '\0'; break; }
 						if (file_for[i] == '\n') { name[i] = '\0'; break; }
