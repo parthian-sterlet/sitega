@@ -394,7 +394,7 @@ void city::sort_all(void)
 
 int main(int argc, char *argv[])
 {
-	int i, j, k, n;
+	int i, j, k, n, m;
 	char head[1000], file_out_distt[300], file_out_distb[300], file_sitega[300], path_fasta[300], file_fasta[300];
 	FILE *in, *out_distt, * out_distb;
 
@@ -423,9 +423,22 @@ int main(int argc, char *argv[])
 	thr = new double[nthr];
 	if (thr == NULL) { puts("Out of memory..."); return -1; }	
 	int nthr_max = nthr - 1;
-	char *dp;
-	dp = new char[len_pro + 10];
+	int **dpi;
+	dpi = new int* [2];
+	if (dpi == NULL) { puts("Out of memory..."); return -1; }
+	for (i = 0; i < 2; i++)
+	{
+		dpi[i] = new int[len_pro];
+		if (dpi[i] == NULL) { puts("Out of memory..."); return -1; }
+	}
+	char** dp;
+	dp = new char* [2];
 	if (dp == NULL) { puts("Out of memory..."); return -1; }
+	for (i = 0; i < 2; i++)
+	{
+		dp[i] = new char[len_pro + 1];
+		if (dp[i] == NULL) { puts("Out of memory..."); return -1; }
+	}
 	if ((in = fopen(file_fasta, "rt")) == NULL)
 	{
 		printf("Input file %s can't be opened!", file_fasta);
@@ -455,75 +468,81 @@ int main(int argc, char *argv[])
 			//printf("%5d %f\n", n, thr[nthr_max]);
 		}
 		fgets(head, sizeof(head), in);
-		memset(dp, 0, len_pro + 1);
-		fgets(dp, len_pro + 2, in);
-		DelChar(dp, '\n');
-		TransStr(dp);
-		int len_pro1 = strlen(dp);
-		int gom = 1;
-		for (i = 0; i < len_pro1; i++)
+		memset(dp[0], 0, len_pro + 1);
+		fgets(dp[0], len_pro + 1, in);
+		DelChar(dp[0], '\n');
+		TransStr(dp[0]);
+		int len_pro1 = strlen(dp[0]);
+		strcpy(dp[1], dp[0]);
+		ComplStr(dp[1]);
+		int len1 = len_pro1 - 1;
+		int gomn = 0;
+		for (j = 0; j < 2; j++)
 		{
-			int di = (int)dp[i];
-			if (strchr(letter, di) == NULL)
+			int cod[2];
+			cod[0] = IdeLet(dp[j][0],letter);			
+			for (i = 0; i < len1; i++)
 			{
-				gom = 0;
-				break;
+				cod[1] = IdeLet(dp[j][i + 1], letter);
+				if (cod[0] >= 0 && cod[1] >= 0)dpi[j][i] = 4 * cod[0] + cod[1];
+				else
+				{					
+					gomn = -1;
+					break;
+				}
+				cod[0] = cod[1];
 			}
+			if (gomn == -1)break;
 		}
-		if (gom == 0)continue;
+		if (gomn == -1)continue;
 		int len21 = len_pro1 - len1;
-		for (int compl1 = 0; compl1 < 2; compl1++)
-		{
-			if (compl1 == 1) if (ComplStr(dp) != 1) { puts("Out of memory..."); return -1; }
-			char d2[SEQLEN];
-			for (i = 0; i <= len21; i++)
+		for (i = 0; i <= len21; i++)
+		{						
+			double score[2] = { 0,0 };
+			for (m = 0; m < 2; m++)
 			{
-				strncpy(d2, &dp[i], len1);
-				d2[len1] = '\0';
-				if (strstr(d2, "n") != NULL) { continue; }
-				all_pos_rec++;
-				double score = 0;
+				int im;
+				if (m == 0)im = i;
+				else im = len21 - i;				
 				for (j = 0; j < sta.size; j++)
 				{
 					double fm = 0;
 					for (k = sta.tot[j].sta; k <= sta.tot[j].end; k++)
 					{
-						int cod = 4 * IdeLet(d2[k], letter) + IdeLet(d2[k + 1], letter);
-						if (sta.tot[j].num == cod) { fm++; }
+						if (sta.tot[j].num == dpi[m][im+k]) { fm++; }
 					}
 					if (fm != 0)
 					{
 						fm /= rlen[j];
-						score += sta.tot[j].buf*fm;
+						score[m] += sta.tot[j].buf * fm;
 					}
-				}				
-				score = (score - sta.min) / sta.raz;
-				double thr_check = Max(thr_bot, thr[nthr_max]);
-				if (score >= thr_check)
-				{
-					int gom = 0;
-					for (j = 0; j < nthr; j++)
-					{
-						if (score >= thr[j])
-						{
-							//if (thr[j] != 0)
-							{
-								int ksta = Min(nthr_max, count_val);
-								for (k = ksta; k > j; k--)
-								{
-									//									if (thr[k] == 0)continue;
-									Mix(&thr[k - 1], &thr[k]);
-								}
-							}
-							thr[j] = score;
-							gom = 1;
-							break;
-						}
-						if (gom == 1)break;
-					}
-					count_val++;
-				}
+				}								
 			}
+			double score2 = Max(score[0], score[1]);
+			score2 = (score2 - sta.min) / sta.raz;
+			double thr_check = Max(thr_bot, thr[nthr_max]);
+			if (score2 >= thr_check)
+			{
+				int gom = 0;
+				for (j = 0; j < nthr; j++)
+				{
+					if (score2 >= thr[j])
+					{
+						int ksta = Min(nthr_max, count_val);
+						for (k = ksta; k > j; k--)
+						{
+							//									if (thr[k] == 0)continue;
+							Mix(&thr[k - 1], &thr[k]);
+						}
+						thr[j] = score2;
+						gom = 1;
+						break;
+					}
+					if (gom == 1)break;
+				}
+				count_val++;
+			}
+			all_pos_rec++;
 		}
 	}
 	fclose(in);
@@ -610,7 +629,10 @@ int main(int argc, char *argv[])
 	delete[] thr_dist;
 	delete[] fpr_dist;
 	delete[] thr;
+	for (i = 0; i < 2; i++)delete[] dp[i];
 	delete[] dp;
+	for (i = 0; i < 2; i++)delete[] dpi[i];
+	delete[] dpi;
 	return 1;
 }
 
