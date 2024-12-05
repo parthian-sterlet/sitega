@@ -54,7 +54,7 @@ separate compilation of all source files in VC++
 
 Scheme of modules functioning is given below
 
-![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/scheme_github_sitega9.png)
+![scheme](https://github.com/parthian-sterlet/sitega/blob/master/examples/github_sitega.jpg)
 
 Modules **Set parameters of a model through accuracy estimation** and **Train a model** take the input data of the foreground and background sequence sets, the background set is prepared by the **Background set generation** module
 
