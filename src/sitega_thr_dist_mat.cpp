@@ -444,7 +444,7 @@ int main(int argc, char *argv[])
 		printf("Input file %s can't be opened!", file_fasta);
 		return -1;
 	}
-	double all_pos_rec = 0;
+	int all_pos_rec = 0;
 	int count_val = 0;
 	city sta;
 	if(sta.get_file(file_sitega)==-1)
@@ -453,7 +453,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	double thr_bot = 0;
-	int len1 = sta.len;	
+	int olen = sta.len;	
 	for (i = 0; i < nthr; i++)thr[i] = thr_bot;
 	int rlen[DIM];
 	for (j = 0; j < sta.size; j++)rlen[j] = (sta.tot[j].end - sta.tot[j].sta + 1);
@@ -495,7 +495,7 @@ int main(int argc, char *argv[])
 			if (gomn == -1)break;
 		}
 		if (gomn == -1)continue;
-		int len21 = len_pro1 - len1;
+		int len21 = len_pro1 - olen;
 		for (i = 0; i <= len21; i++)
 		{						
 			double score[2] = { 0,0 };
@@ -544,6 +544,7 @@ int main(int argc, char *argv[])
 			}
 			all_pos_rec++;
 		}
+		int yy = 0;
 	}
 	fclose(in);
 	int nthr_dist = 0;

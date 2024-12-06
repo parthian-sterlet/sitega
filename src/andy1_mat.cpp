@@ -500,8 +500,7 @@ void ReadSeq(char *file, char *file1, int &n, int &len1)
 	char head[5000];
 	int fl = 0, len;
 	char symbol;
-	int c;
-	//	char cyfr[]="0123456789";
+	int c;	
 	FILE  *in, *out;
 	len1 = len = n = 0;
 	if ((in = fopen(file, "rt")) == NULL)
@@ -717,39 +716,28 @@ double Rmah(char *d1, char *d2, city a, char *alfabet)
 	}
 	return ret;
 }
-int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, int &len0, int end, int nseq, int cmpl, char *alfabet)//double score was 5th argument
+int Fun(char* d, char* head, char* mess, city* sta, double* p, int nseq, char* alfabet)
 {
-	int i, j, err, ret, len;
-	/*if (GetFun(sitename, &sta) == -1)
-	{
-	printf("Site %s function not found!", sitename);
-	exit(1);
-	}*/
+	int i, j, t, err, ret, len;
 	char sitename[300];
-	strcpy(sitename, sta->site);
-	len0 = sta->len;
+	strcpy(sitename, sta->site);	
 	len = strlen(d);
-	FILE *out;
+	FILE* out;
 	char addsite[300];
 	strcpy(addsite, sitename);
-	//	sprintf(tatabuf, "%d", sta.len);
-	//	strcat(addsite, "_");
-	//	strcat(addsite, tatabuf);
 	char file3[300];
 	strcpy(file3, "freq_");
 	strcat(file3, addsite);
-	if (site_desc == 1)sta->sort_all();
-	int iend = sta->size - 1;
+	sta->sort_all();
+	int iend = sta->size - 1;	
 	static int m = 0;
-	if (site_desc == 1 && m == 0)
+	if (m == 0)
 	{
-		//sta.sort_all();		
 		if ((out = fopen(file3, "wt")) == NULL)
 		{
 			printf("Input file %s can't be opened!\n", file3);
 			exit(1);
 		}
-		//	fprintf(out, "\t\t");
 		for (i = 0; i < sta->size; i++)sost1[i] = 0;
 		for (i = 0; i < sta->size; i++)
 		{
@@ -789,70 +777,24 @@ int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, in
 	err = CheckStr(d);
 	if (err != 0)
 	{
-		{strcpy(mess, "All ambiguos bases replaced at random..."); ret = 1; }
+		{ strcpy(mess, "All ambiguos bases replaced at random..."); ret = 1; }
 	}
 	else ret = 1;
-	int k, n, t;
-	char *d1;
-	if ((d1 = new char[len + 1]) == NULL)
+	int k, n;		
 	{
-		strcpy(mess, "Not enough memory....");
-		return(-1);
-	}
-	for (k = 0; k <= len - sta->len; k++)
-	{
-		/*if ((k + 1) % 100000 == 0)
-		{
-			printf("\b\b\b\b\b\b\b\b\b%9d", k);
-		}*/
-		p[k] = 0;
-		{
-			memset(d1, 0, len + 1);
-			for (j = 0; j < sta->len; j++)d1[j] = d[k + j]; d1[sta->len] = '\0';
-			{
-				if (strchr(d1, 'n') != 0)
-				{
-					p[k] = -1000;
-					continue;
-				}
-			}
-			double sco = 0;
-			for (j = 0; j < sta->size; j++)
-			{
-				int rlenj = (sta->tot[j].end - sta->tot[j].sta + 1);
-				double fm = 0;
-				for (i = sta->tot[j].sta; i <= sta->tot[j].end; i++)
-				{
-					int cod = 4 * IdeLet(d1[i], alfabet) + IdeLet(d1[i + 1], alfabet);
-					if (sta->tot[j].num == cod) { fm++; }
-				}
-				if (fm != 0)
-				{
-					fm /= rlenj;
-					sco += sta->tot[j].buf*fm;
-				}
-			}
-			p[k] = (sco - sta->min) / sta->raz;
-		}
-	}
-	if (site_desc == 1)
-	{
-	//	printf("%d\n", m + 1);
 		if ((out = fopen(file3, "at")) == NULL)
 		{
 			printf("Input file %s can't be opened!\n", file3);
 			exit(1);
 		}
-		m++;
-		memset(d1, 0, len + 1);
-		strcpy(d1, d);
+		m++;				
 		for (k = 0; k < sta->size; k++)
 		{
 			int rlenk = (sta->tot[k].end - sta->tot[k].sta + 1);
 			double fm = 0;
 			for (n = sta->tot[k].sta; n <= sta->tot[k].end; n++)
 			{
-				int cod = 4 * IdeLet(d1[n], alfabet) + IdeLet(d1[n + 1], alfabet);
+				int cod = 4 * IdeLet(d[n], alfabet) + IdeLet(d[n + 1], alfabet);
 				if (sta->tot[k].num == cod)fm++;
 			}
 			fm /= rlenk;
@@ -865,7 +807,7 @@ int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, in
 					double fn = 0;
 					for (t = sta->tot[n].sta; t <= sta->tot[n].end; t++)
 					{
-						int cod = 4 * IdeLet(d1[t], alfabet) + IdeLet(d1[t + 1], alfabet);
+						int cod = 4 * IdeLet(d[t], alfabet) + IdeLet(d[t + 1], alfabet);
 						if (sta->tot[n].num == cod)fn++;
 					}
 					fn /= rlenn;
@@ -878,8 +820,7 @@ int Fun(char *d, char *head, char *mess, city *sta, double *p, int site_desc, in
 		}
 		fprintf(out, "\n");
 		fclose(out);
-	}
-	delete[] d1;
+	}	
 	return(ret);
 }
 void GetWords(int word, int size0, int size, char *w0)
@@ -915,14 +856,13 @@ void BigMix1(char *d)
 }
 int main(int argc, char *argv[])
 {
-	char *d, head[5000];
-	char head1[5000];
-	int n, ret = 0, len, i, k, len0;
+	char *d, head[500];	
+	int n, ret = 0, len, i, k, j, t;
 	char mess[300];
 	char sitename[120], file1[500], file_thr_fpr[500], file_test[500], file_out_base[500];
-	int cmpl, rec_pos = 0, all_pos = 0, rec_seq = 0;
+	int rec_pos = 0, all_pos = 0, rec_seq = 0;
 	double *p, thr;
-	FILE  *out, *out1;
+	FILE  *out;
 	if (argc != 7)
 	{
 		printf("andy1.exe 1file.seq  2sitename 3file thr_fpr 4site_desc(0 no 1 yes) 5pval_crit 6file output_profile ");//7seq_head 8print_pos 9site_desc 10bit
@@ -933,13 +873,8 @@ int main(int argc, char *argv[])
 	strcpy(file_thr_fpr, argv[3]);
 	double pval_crit = atof(argv[5]);
 	strcpy(file_out_base, argv[6]);
-	int bit = 300;
 	int site_desc = atoi(argv[4]);
-	int head_pr = 1;//atoi(argv[7]);
-	int pos_pr = 1;//atoi(argv[8]);
-	cmpl = 2;// atoi(argv[5]);	
 	pval_crit = -log10(pval_crit);
-	if (site_desc == 1)cmpl = 0;
 	{
 
 		FILE *in_thr;
@@ -974,65 +909,41 @@ int main(int argc, char *argv[])
 		fclose(in_thr);
 	}
 	char alfabet[5];
-	double p_zero = 0.9, dp_zero = 1 - p_zero, step_zero = dp_zero / TEN;
 	strcpy(alfabet, "acgt");
-	//if(strstr(sitename,"chipseq")!=NULL)strcpy(alfabet,"acgt");
-	//else strcpy(alfabet,"atgc");
 	alfabet[4] = '\0';
 
-	int cnt_mode = 0;
-
-	int cmpl2[2] = { 0, 1 };
-	int cmpl1;
-	if (cmpl == 0)cmpl2[1] = -1;
-	if (cmpl == 1)cmpl2[0] = -1;
 	GetWords(2, 0, 16, alfabet);
 	memset(mess, 0, sizeof(mess));
 	strcpy(file1, file_out_base);
 	strcat(file1, "_strings1.txt");
-	struct thresh {
-		int sit;
-		int seq;
-	};
-	thresh den[TEN];
-	int nseq = 0;
-	int vmix = 100;
-	int print_size = 32;
-	FILE *in;
-	int len1 = 0, len2 = 0;
-	ReadSeq(file_test, file1, nseq, len1);
-	len = len1;
+	int nseq = 0;	
+	FILE *in;	
+	ReadSeq(file_test, file1, nseq, len);	
 	d = new char[len + 2];
-	if (d == NULL) { puts("Out of memory..."); exit(1); }
-	//memset(d,0,sizeof(d));
+	if (d == NULL) { puts("Out of memory..."); exit(1); }	
 	p = new double[len];
 	if (p == NULL) { puts("Out of memory..."); exit(1); }
-	int nseq1 = nseq;
-	nseq = nseq1;
+	char** d1;
+	d1 = new char* [2];
+	if (d1 == NULL)
+	{
+		puts("Out of memory...");
+		return(-1);
+	}
+	for (t = 0; t < 2; t++)
+	{
+		if ((d1[t] = new char[len + 2]) == NULL)
+		{
+			puts("Out of memory...");
+			return(-1);
+		}
+	}
 	if ((in = fopen(file1, "rt")) == NULL)
 	{
 		printf("Input file %s can't be opened!\n", file1);
 		//getch();
 		exit(1);
 	}
-	char plfile[500];
-	char plfile0[500];
-	strcpy(plfile, file_out_base);
-	strcat(plfile, ".dns");
-	if ((out1 = fopen(plfile, "wt")) == NULL)
-	{
-		printf("Input file can't be opened!\n");
-		exit(1);
-	}
-	fclose(out1);
-	strcpy(plfile0, file_out_base);
-	strcat(plfile0, ".lst");
-	if ((out1 = fopen(plfile0, "wt")) == NULL)
-	{
-		printf("Input file can't be opened!\n");
-		exit(1);
-	}
-	fclose(out1);
 	FILE *out_best;
 	char file_best_score[500];
 	memset(file_best_score, 0, sizeof(file_best_score));
@@ -1053,23 +964,7 @@ int main(int argc, char *argv[])
 		printf("Input file can't be opened!\n");
 		exit(1);
 	}
-	for (i = 0; i < TEN; i++)den[i].sit = den[i].seq = 0;
-	int *pl, *alive;
-	int *pl_all, *alive_all;
-	int bit_count, bit_count_all = 1 + len / bit;
-	pl = new int[bit_count_all];
-	if (pl == NULL) { puts("Out of memory..."); exit(1); }
-	pl_all = new int[bit_count_all];
-	if (pl_all == NULL) { puts("Out of memory..."); exit(1); }
-	alive = new int[bit_count_all];
-	if (alive == NULL) { puts("Out of memory..."); exit(1); }
-	alive_all = new int[bit_count_all];
-	if (alive_all == NULL) { puts("Out of memory..."); exit(1); }
-	for (i = 0; i < bit_count_all; i++)
-	{
-		pl_all[i] = 0;
-		alive_all[i] = 0;
-	}
+	
 	if ((out = fopen(file_out_base, "wt")) == NULL)
 	{
 		printf("Input file can't be opened!\n");
@@ -1077,18 +972,13 @@ int main(int argc, char *argv[])
 	}
 	city sta;
 	sta.get_file(sitename);
-	double thr_bot = 0;
+	int olen = sta.len;	
 	for (n = 0; n < nseq; n++)
-	{
-		//printf("%d\n",n);
-		//printf("\tSeq %d\n",n+1);
-		int rec_pos_seq[2] = { 0, 0 };
-		for (i = 0; i < bit_count_all; i++)
+	{		
+		if (n % 100 == 0)
 		{
-			pl[i] = 0;
-			alive[i] = -1;
+			printf("\b\b\b\b\b%5d", n + 1);
 		}
-		int fl_n = 0;
 		if (fgets(head, sizeof(head), in) == NULL)
 		{
 			printf("Head String %d reading error!", n);
@@ -1096,8 +986,7 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 		DelChar(head, '\n');
-		strcpy(head1, head);
-		//ReplaceChar(head1,'\t', ' ');
+		fprintf(out, "%s\n", head);
 		if (fgets(d, len + 2, in) == NULL)
 		{
 			printf("String %d reading error!", n);
@@ -1107,565 +996,81 @@ int main(int argc, char *argv[])
 		DelChar(d, '\n');
 		TransStr(d);
 		int lens = strlen(d);
-		int bit_count_here = 1 + lens / bit;
-		int dall_pos = 0;
-		int rec_pos_was = rec_pos;
-		clust *cur[2];
-		int p_score_seq = -5;
-		double score_best = -5;
-		int pos_best = -1;
-		char cep_best = '+';
-		int add_flanks = 100;
-		for (cmpl1 = 0; cmpl1 < 2; cmpl1++)
+		for (i = 0; i < lens; i++)p[i] = -1000;		
+		if (site_desc == 1)
 		{
-			rec_pos_seq[cmpl1] = 0;
-			//printf("%d\t%d\n",n,cmpl1);
-			if (cmpl2[cmpl1] == -1)continue;
-			if (cmpl2[cmpl1] == 1) if (ComplStr(d) != 1) { puts("Out of memory..."); exit(1); }
-			//len=strlen(d);
-			//printf("\n%d               ",len);		
-			if (n % 100 == 0)printf("\b\b\b\b\b\b%6d", n);
-			for (i = 0; i < lens; i++)p[i] = -1000;
-			int share;
-			if (nseq == 1)share = 1;
-			else share = n / (nseq - 1);
-			ret = Fun(d, head, mess, &sta, p, site_desc, len0, share, nseq, cmpl, alfabet);
+			ret = Fun(d, head, mess, &sta, p, nseq, alfabet);
 			if (ret != 1)
 			{
 				printf("Fun ret error %s", mess);
 			}
-			int lenp = lens - len0 + 1;
-			int half0 = len0 / 2;
-			//int dpos=(len0+1)%2;
-			int dprint = Max(0, (len0 - print_size) / 2);
-			char dir[] = "+-";
-			/*		if(head_pr==1)
+		}
+		for (t = 0; t < 2; t++)strcpy(d1[t], d);
+		ComplStr(d1[1]);
+		for (t = 0; t < 2; t++)d1[t][lens] = '\0';
+		int len2 = lens - olen;		
+		double sco_best=-1000;
+		int nsite = 0;
+		for (k = 0; k <= len2; k++)
+		{
+			char d2[50];
+			memset(d2, '\0', sizeof(d2));
+			p[k] = -1000;
+			double sco2 = 0, sco[2] = { 0,0 };
+			for (t = 0; t < 2; t++)
 			{
-			fprintf(out,"\t%s\t%c\t%s\n",sitename,dir[cmpl2[cmpl1]],head);
-			}*/
-			if (ret != -1)
-			{
-				bit_count = 0;
-				int dircep = (1 - 2 * cmpl2[cmpl1]);
+				if (t == 0)strncpy(d2, &d1[0][k],olen);
+				else strncpy(d2, &d1[1][len2 - k],olen);
+				d2[olen] = '\0';
+				if (strchr(d2, 'n') != 0)
 				{
-					int sst, sen;
-					if (cmpl2[cmpl1] == 0)
-					{
-						sst = 0;
-						sen = lenp;
-					}
-					else
-					{
-						sen = -1;
-						sst = lenp - 1;
-					}
-					bit_count = half0 / bit;
-					//if(empty_pos!=0){double zero=0;for(i=1;i<i_sta;i++)fprintf(out,"%d\t%f\n",i,zero);}								
-					i = sst;
-					do
-					{
-						if (p[i] != -1000)
-						{
-							dall_pos++;
-							if (alive[bit_count] == -1)
-							{
-								alive[bit_count] = pl[bit_count] = 0;
-							}
-							alive[bit_count]++;
-						}
-						if (p[i] > score_best)
-						{
-							score_best = p[i];
-							if (cmpl1 == 0)
-							{
-								cep_best = '+';
-								pos_best = 1 + i + half0;//ibest=pos_best-half0-1;
-							}
-							else
-							{
-								cep_best = '-';
-								pos_best = lens - i - half0;//ibest=len_pro1-pos_best-half0;
-							}
-						}
-						if ((i + half0) % bit == 0)
-						{
-							bit_count++;
-						}
-						//int p_score=(int)(TEN*((p[i]/4+0.75)));// from - 3 to 0
-						int p_score;
-						if (p[i] < p_zero)p_score = 0;
-						else p_score = (int)((p[i] - p_zero) / step_zero);// from - 1 to 1
-						//	if(p_score<0)p_score=0;
-						if (p_score > p_score_seq)p_score_seq = p_score;
-						for (k = 0; k < p_score; k++)
-						{
-							den[k].sit++;
-						}
-						if (p[i] >= thr)
-						{
-							rec_pos_seq[cmpl1]++;
-							pl[bit_count]++;
-							//printf("%d: %d\t",i,pl[bit_count]);//add
-							rec_pos++;
-							if (fl_n == 0)
-							{
-								rec_seq++;
-								fl_n = 1;
-							}
-						}
-						else// && empty_pos==0
-						{
-							i += dircep;
-							continue;
-						}
-						int posc;
-						if (cmpl2[cmpl1] == 0)posc = 1 + i + half0;
-						else posc = lens - i - half0;
-						/*
-						int posc1,  posc2;
-						posc1=i+dprint;
-						posc2=i+len0-dprint;
-						if(pos_pr==1)fprintf(out,"%d\t",posc);
-						fprintf(out,"%f\t",p[i]);
-						for(int n1=i;n1<posc1;n1++)fprintf(out,"%c",d[n1]);
-						for(n1=posc1;n1<posc2;n1++)fprintf(out,"%c",(char)((int)d[n1]-32));
-						for(n1=posc2;n1<i+len0;n1++)fprintf(out,"%c",d[n1]);
-						fprintf(out,"\n");	*/
-						/*fprintf(outsite, "%s\t%s\t", head1, sitename);
-						fprintf(outsite, "%d(%c)\n", posc, dir[cmpl1]);
-						int j;
-						for (j = -add_flanks; j < 0; j++)
-						{
-						if (i + j >= 0)fprintf(outsite, "%c", d[i + j]);
-						else fprintf(outsite, "%c", 'n');
-						}
-						for (j = i; j < i + len0; j++)fprintf(outsite, "%c", d[j]);
-						int iend = i + len0;
-						for (j = 0; j < add_flanks; j++)
-						{
-						if (iend + j < lens)fprintf(outsite, "%c", d[iend + j]);
-						else fprintf(outsite, "%c", 'n');
-						}
-						fprintf(outsite, "\n");*/
-						//int p_score=(int)(TEN*(p[i]-thr)/(1-thr));															
-						i += dircep;
-					} while (i != sen);
-					//if(empty_pos!=0){double zero=0;for(i=len-i_end;i<=len;i++)fprintf(out,"%d\t%f\n",i,zero);}
-					//printf("\n");
+					sco2 = -1;
+					break;
 				}
-			}
-			int rec_pos_here = rec_pos - rec_pos_was;
-			cur[cmpl1] = new clust[rec_pos_here];
-			if (cur[cmpl1] == NULL) { puts("Out of memory..."); exit(1); }
-			int k1 = 0;
-			if (cmpl1 != 0 && rec_pos_seq[0] != 0)
-			{
-				for (i = 0; i < rec_pos_seq[0]; i++)
+				for (j = 0; j < sta.size; j++)
 				{
-					cur[1][k1].cep = cur[0][k1].cep;
-					cur[1][k1].sta = cur[0][k1].sta;
-					cur[1][k1].pos = cur[0][k1].pos;
-					cur[1][k1].sco = cur[0][k1].sco;
-					k1++;
-				}
-			}
-			for (i = 0; i < lenp; i++)
-			{
-				if (p[i] >= thr)
-				{
-					cur[cmpl1][k1].cep = cmpl2[cmpl1];
-					cur[cmpl1][k1].sco = p[i];
-					if (cmpl2[cmpl1] == 0)
+					int rlenj = (sta.tot[j].end - sta.tot[j].sta + 1);
+					double fm = 0;
+					for (i = sta.tot[j].sta; i <= sta.tot[j].end; i++)
 					{
-						cur[cmpl1][k1].pos = 1 + i + half0;
-						cur[cmpl1][k1].sta = i;
+						int cod = 4 * IdeLet(d2[i], alfabet) + IdeLet(d2[i + 1], alfabet);
+						if (sta.tot[j].num == cod) { fm++; }
 					}
-					else
+					if (fm != 0)
 					{
-						cur[cmpl1][k1].pos = lens - i - half0;
-						cur[cmpl1][k1].sta = lenp - i - 1;
-					}
-					k1++;
-				}
-			}
-			if (((cmpl == 2 && cmpl1 == 1) || cmpl != 2) && strstr(file_test, "~") == NULL)// random omitted!
-			{
-				int j;
-				if (cmpl >= 1) if (ComplStr(d) != 1) { puts("Out of memory..."); exit(1); }
-				int rec_total = rec_pos_seq[0] + rec_pos_seq[1];
-				int cur_in = 1;
-				if (cmpl == 0)cur_in = 0;
-				char dir[] = "+-";
-				//	fprintf(out_nsite,"%d\t%s\t%d\n",n+1,head1,rec_total);	
-				fprintf(out_nsite, "%d\n", rec_total);
-				//	fprintf(out_best,"%d%c\t%f\t",pos_best,cep_best,score_best);			
-				fprintf(out_best, "%.12f", score_best);
-				//fprintf(out_best,"\t");			
-				/*{
-				int n1, posc1, posc2;
-				char d3[200];
-				int ipos;
-				if(cep_best=='+')ipos=pos_best-half0-1;
-				else ipos=pos_best+half0-len0;
-				posc1=ipos+dprint;
-				posc2=ipos+len0-dprint;
-				if(posc1<0)posc1=0;
-				if(posc2>lens-1)posc2=lens-1;
-				memset(d3,0,sizeof(d3));
-				for(n1=posc1;n1<posc2;n1++)d3[n1-posc1]=d[n1];
-				if(cep_best=='-')if(ComplStr(d3)!=1) {puts("Out of memory...");exit(1);}
-				fprintf(out_best,"%s",d3);
-				}*/
-				fprintf(out_best, "\n");
-				if (rec_total > 0)
-				{
-					FILE *outpos;
-					if ((outpos = fopen(plfile, "at")) == NULL)
-					{
-						printf("Input file can't be opened!\n");
-						exit(1);
-					}
-					int bit0 = half0 / bit;
-					if (rec_seq == 1)
-					{
-						//fprintf(outpos,"%.2f\n#\tHead\tSite\tPos+\tPos-\tSeq+\tSeq-\tSco+\tSco-\t",thr);
-						fprintf(outpos, "%.3f\t%s\tSite\tPosition\tStrand\tSequence\tScore\tLength", thr, argv[0]);
-						/*	for(i=bit0;i<bit_count_all-bit0-1;i++)
-						{
-						fprintf(outpos,"\t");
-						fprintf(outpos,"%d",bit*i+bit/2);
-
-						}*/
-						fprintf(outpos, "\n");
-					}
-					//fprintf(outpos,"%d\t%s\t%s\t",n+1,head1,sitename);
-					for (j = 0; j < rec_total; j++)
-					{
-						//if(j==rec_pos_seq[0])fprintf(outpos,"\t");
-						fprintf(outpos, "%d\t%s\t%s\t", n + 1, head1, sitename);
-						fprintf(outpos, "%d\t(%c)\t", cur[cur_in][j].pos, dir[cur[cur_in][j].cep]);
-						int n1, posc1, posc2;
-						int ipos;
-						//int dprint=Max(0,len1/2-5);	
-						int dprint = Max(0, len0 / 2 - 5);
-						//int dprint=Max(0,len1/2+25);	
-						if (cur[cur_in][j].cep == 0)ipos = cur[cur_in][j].pos - half0 - 1;
-						else
-						{
-							//ipos=cur[cur_in][j].pos+half0-len1;
-							ipos = cur[cur_in][j].pos + half0 - len0;
-						}
-						posc1 = cur[cur_in][j].pos - dprint;
-						posc2 = cur[cur_in][j].pos + dprint;
-						char d3[200];
-						memset(d3, 0, sizeof(d3));
-						for (n1 = ipos; n1 < posc1; n1++)d3[n1 - ipos] = d[n1];
-						for (n1 = posc1; n1 < posc2; n1++)d3[n1 - ipos] = (char)((int)(d[n1] - 32));
-						for (n1 = posc2; n1 < ipos + len0; n1++)d3[n1 - ipos] = d[n1];
-						//strcpy(d3,dp);
-						if (cur[cur_in][j].cep == 1)if (ComplStr(d3) != 1) { puts("Out of memory..."); exit(1); }
-						fprintf(outpos, "%s\t", d3);
-						fprintf(outpos, "%.6f\t%d\n", cur[cur_in][j].sco, lens);
-					}
-					fclose(outpos);
-					/*
-					for(j=0;j<rec_total;j++)
-					{
-					if(j==rec_pos_seq[0])fprintf(outpos,"\t");
-					fprintf(outpos,"%d(%c) ",cur[cur_in][j].pos,dir[cur[cur_in][j].cep]);
-					}
-					if(rec_pos_seq[1]==0)fprintf(outpos,"\t");
-					fprintf(outpos,"\t");
-					int dprint=Max(0,len0/2-5);
-					for(j=0;j<rec_total;j++)
-					{
-					if(j==rec_pos_seq[0])fprintf(outpos,"\t");
-					int n1, posc1, posc2;
-					char d3[200];
-					int ipos;
-					if(cur[cur_in][j].cep==0)ipos=cur[cur_in][j].pos-half0-1;
-					else
-					{
-					ipos=cur[cur_in][j].pos+half0-len0;
-					}
-					posc1=ipos+dprint;
-					posc2=ipos+len0-dprint;
-					if(posc1<0)posc1=0;
-					if(posc2>lens-1)posc2=lens-1;
-					memset(d3,0,sizeof(d3));
-					for(n1=posc1;n1<posc2;n1++)d3[n1-posc1]=d[n1];
-					if(cur[cur_in][j].cep==1)if(ComplStr(d3)!=1) {puts("Out of memory...");exit(1);}
-					fprintf(outpos,"%s",d3);
-					fprintf(outpos," ");
-					}
-					if(rec_total==rec_pos_seq[0])fprintf(outpos,"\t");
-					if(rec_pos_seq[1]==0)fprintf(outpos,"\t");
-					for(j=0;j<rec_total;j++)if(cur[cur_in][j].cep==0){fprintf(outpos,"%.3f",cur[cur_in][j].sco);if(j!=rec_total-1)fprintf(outpos,",");}
-					fprintf(outpos,"\t");
-					for(j=0;j<rec_total;j++)if(cur[cur_in][j].cep==1){fprintf(outpos,"%.3f",cur[cur_in][j].sco);if(j!=rec_total-1)fprintf(outpos,",");}
-					fprintf(outpos,"\t");
-					*/
-					//fprintf(outpos,"\t");				
-				}
-				{
-					FILE *outpos;
-					if ((outpos = fopen(plfile0, "at")) == NULL)
-					{
-						printf("Input file can't be opened!\n");
-						exit(1);
-					}
-					int bit0 = half0 / bit;
-					if (n == 0)
-					{
-						fprintf(outpos, "#\tHead\tSite\tPos+\tPos-\tSco+\tSco-\tSeq+\tSeq-");
-						for (i = bit0; i < bit_count_all - bit0 - 1; i++)
-						{
-							fprintf(outpos, "\t");
-							fprintf(outpos, "%d", bit*i + bit / 2);
-
-						}
-						fprintf(outpos, "\n");
-					}
-					fprintf(outpos, "%d\t%s\t%s\t", n + 1, head1, sitename);
-					int tss_pos = 3000;
-					for (j = 0; j < rec_total; j++)
-					{
-						if (j == rec_pos_seq[0])fprintf(outpos, "\t");
-						fprintf(outpos, "%d(%c) ", tss_pos - cur[cur_in][j].pos, dir[cur[cur_in][j].cep]);
-					}
-					if (rec_pos_seq[1] == 0)fprintf(outpos, "\t");
-					fprintf(outpos, "\t");
-					for (j = 0; j < rec_total; j++)
-					{
-						if (j == rec_pos_seq[0])fprintf(outpos, "\t");
-						fprintf(outpos, "%.3f ", cur[cur_in][j].sco);
-					}
-					if (rec_pos_seq[1] == 0)fprintf(outpos, "\t");
-					fprintf(outpos, "\t");
-					for (j = 0; j < rec_total; j++)
-					{
-						if (j == rec_pos_seq[0])fprintf(outpos, "\t");
-						int n1, posc1, posc2;
-						char d3[200];
-						int ipos;
-						if (cur[cur_in][j].cep == 0)ipos = cur[cur_in][j].pos - half0 - 1;
-						else
-						{
-							//	ipos=cur[cur_in][j].pos-half0-1-dpos;
-							ipos = cur[cur_in][j].pos + half0 - len0;
-						}
-						posc1 = ipos + dprint;
-						posc2 = ipos + len0 - dprint;
-						if (posc1 < 0)posc1 = 0;
-						if (posc2 > lens - 1)posc2 = lens - 1;
-						memset(d3, 0, sizeof(d3));
-						for (n1 = posc1; n1 < posc2; n1++)d3[n1 - posc1] = d[n1];
-						if (cur[cur_in][j].cep == 1)if (ComplStr(d3) != 1) { puts("Out of memory..."); exit(1); }
-						fprintf(outpos, "%s", d3);
-						fprintf(outpos, " ");
-					}
-					if (rec_pos_seq[1] == 0)fprintf(outpos, "\t");
-					//fprintf(outpos,"\t");
-					fclose(outpos);
-				}
-				qsort(cur[cmpl1], rec_pos_here, sizeof(cur[cmpl1][0]), compare_cur);
-				fprintf(out, "%s\t%s\tSEQ %d\tTHR %f\n", head, argv[2], n + 1, thr);
-				{
-					for (j = 0; j < rec_total; j++)
-					{
-						fprintf(out, "%d\t%.18f\t%c\t", cur[cur_in][j].sta, cur[cur_in][j].sco, dir[cur[cur_in][j].cep]);
-						int n1, posc1, posc2;
-						int dprint = 4;//Max(10,len1/2);
-						char d3[200];
-						int ipos;
-						if (cur[cur_in][j].cep == 0)ipos = cur[cur_in][j].pos - half0 - 1;
-						else
-						{
-							ipos = cur[cur_in][j].pos + half0 - len0;
-						}
-						//posc1=cur[cur_in][j].pos-dprint;											
-						//posc2=cur[cur_in][j].pos+dprint;
-						posc1 = cur[cur_in][j].sta;
-						posc2 = posc1 + len0;
-						if (posc1 < 0)posc1 = 0;
-						if (posc2 > lens)posc2 = lens;
-						memset(d3, 0, sizeof(d3));
-						for (n1 = posc1; n1 < posc2; n1++)d3[n1 - posc1] = d[n1];
-						d3[len0] = '\0';
-						if (cur[cur_in][j].cep == 1)if (ComplStr(d3) != 1) { puts("Out of memory..."); exit(1); }
-						int poscap1 = half0 - dprint, poscap2 = half0 + dprint;
-						//if(poscap1<0)poscap1=0;
-						//if(poscap2>lens-1)poscap2=lens-1;
-						for (n1 = poscap1; n1 < poscap2; n1++)d3[n1] = (char)((int)(d3[n1] - 32));
-						fprintf(out, "%s", d3);
-						fprintf(out, "\n");
+						fm /= rlenj;
+						sco[t] += sta.tot[j].buf * fm;
 					}
 				}
 			}
-		}
-		//	if(i_best!=-1)
-		if (p_score_seq != -1)
-		{
-
-			for (i = 0; i < p_score_seq; i++)
+			if (sco2 == 0)
 			{
-				den[i].seq++;
-			}
-		}
-		/*if (fl_n != 0)
-		{
-		FILE *out1;
-		if ((out1 = fopen("yes.txt", "at")) == NULL)
-		{
-		printf("Input file can't be opened!\n");
-		exit(1);
-		}
-		if (cmpl2[cmpl1] == 1)if (ComplStr(d) != 1) { puts("Out of memory..."); exit(1); }
-		fprintf(out1, "%s\n%s\n", head1, d);
-		fclose(out1);
-		}*/
-		if (cmpl == 2)dall_pos /= 2;
-		all_pos += dall_pos;
-		/*	if(bit_count_all>255)
-		{
-		fprintf(out,"\t%s_(%d,%.2f)\n",file_test,tata,thr);
-		for(bit0=0;i<bit_count_here-bit0;i++)
-		{
-		fprintf(out,"%d",bit*(1+i));
-		fprintf(out,"\t");
-		if(alive[i]!=-1)fprintf(out,"%d",pl[i]);
-		fprintf(out,"\n");
-		}
-		}
-		else*/
-		int bit0 = len0 / bit / 2;
-		/*
-		if(rec_pos_seq[0]+rec_pos_seq[1]!=0)
-		{
-		if((out1=fopen(plfile,"at"))==NULL)
-		{
-		printf("Input file can't be opened!\n");
-		exit(1);
-		}
-		//int a1=cmpl2[cmpl1]*(bit_count+1)*bit;
-		//int a2=(-2*cmpl2[cmpl1]+1)*bit;
-		int alive_all_here=0;
-		for(i=bit0;i<bit_count_here-bit0-1;i++)
-		{
-		fprintf(out1,"\t");
-		if(alive[i]!=-1)
-		{
-		alive_all_here++;
-		fprintf(out1,"%d",pl[i]);
-		}
-		}
-		fprintf(out1,"\t%d",alive_all_here*bit);
-		fprintf(out1,"\n");
-		fclose(out1);
-		}*/
-		{
-			if ((out1 = fopen(plfile0, "at")) == NULL)
-			{
-				printf("Input file can't be opened!\n");
-				exit(1);
-			}
-			//int a1=cmpl2[cmpl1]*(bit_count+1)*bit;
-			//int a2=(-2*cmpl2[cmpl1]+1)*bit;	
-			int alive_all_here = 0;
-			for (i = bit0; i < bit_count_here - bit0 - 1; i++)
-			{
-				fprintf(out1, "\t");
-				if (alive[i] != -1)
+				all_pos++;
+				sco2 = Max(sco[0], sco[1]);
+				p[k] = (sco2 - sta.min) / sta.raz;
+				if (p[k] >= thr)
 				{
-					alive_all_here++;
-					fprintf(out1, "%d", pl[i]);
+					char ori;
+					if (sco[0] >= sco[1])ori = '+';
+					else ori = '-';
+					fprintf(out,"%d\t%.18f\t%c\t%s\n", k+1, p[k],ori,d2);
+					nsite++;
 				}
+				if (p[k] >= sco_best)sco_best = p[k];
 			}
-			fprintf(out1, "\t%d", alive_all_here*bit);
-			fprintf(out1, "\n");
-			fclose(out1);
-		}
-		/*	if((out=fopen("site_table.txt","at"))==NULL)
+		}		
+		fprintf(out_best, "%f\n", sco_best);
+		fprintf(out_nsite, "%d\n", nsite);		
+		if (nsite > 0)
 		{
-		printf("Input file can't be opened!\n");
-		exit(1);
+			rec_seq++;
+			rec_pos += nsite;
 		}
-		fprintf(out,"%s\t",head1);
-		for(i=0;i<lenp;i++)
-		{
-		fprintf(out,"%f\t",p[i]);
-		}
-		fprintf(out,"\n");
-		fclose (out);
-		*/	for (i = bit0; i < bit_count_here - bit0; i++)
-		{
-			pl_all[i] += pl[i];
-			if (cmpl == 2)alive[i] /= 2;
-			alive_all[i] += alive[i];
-			//printf("%d: %d\t",i,pl_all[i]);//add
-		}
-		//printf("\n");
 	}
 	fclose(in);
 	fclose(out);
-	//	fclose(outsite);
-	fclose(out_best);
+	fclose(out_best);	
 	fclose(out_nsite);
-	int bit0 = len0 / bit / 2;
-	char dnsfile[500];
-	strcpy(dnsfile, file_out_base);
-	strcat(dnsfile, "_dns_pos.txt");
-	if (cmpl != 1)
-	{
-		if ((out = fopen(dnsfile, "at")) == NULL)
-		{
-			printf("Input file can't be opened!\n");
-			exit(1);
-		}
-		fprintf(out, "\t");
-		for (i = bit0; i < 1 + bit_count_all - bit0; i++)
-		{
-			fprintf(out, "%d", bit*(1 + i) - bit / 2);
-			fprintf(out, "\t");
-		}
-		fprintf(out, "\n");
-	}
-	else
-	{
-		if ((out = fopen(dnsfile, "at")) == NULL)
-		{
-			printf("Input file can't be opened!\n");
-			exit(1);
-		}
-	}
-	if (cmpl != 2)
-	{
-		fprintf(out, "SITE(%d)\t", cmpl);
-		for (i = bit0; i < 1 + bit_count_all - bit0; i++)
-		{
-			if (alive_all[i] != 0)fprintf(out, "%d", pl_all[i]);
-			fprintf(out, "\t");
-		}
-		fprintf(out, "\n");
-		fprintf(out, "ALIVE(%d)\t", cmpl);
-		for (i = bit0; i < 1 + bit_count_all - bit0; i++)
-		{
-			fprintf(out, "%d", alive_all[i]);
-			fprintf(out, "\t");
-		}
-		fprintf(out, "\n");
-	}
-	else
-	{
-		fprintf(out, "%s_DENS(%d)", file_test, cmpl);
-		for (i = bit0; i < 1 + bit_count_all - bit0; i++)
-		{
-			if (alive_all[i] != 0)fprintf(out, "\t%f", (double)pl_all[i] / alive_all[i]);
-		}
-		fprintf(out, "\n");
-	}
-	//	delete(p);
-	fclose(out);
 	char recfile[500];
 	strcpy(recfile, file_out_base);
 	strcat(recfile, "_rec_pos.txt");
@@ -1675,57 +1080,12 @@ int main(int argc, char *argv[])
 		printf("Input file can't be opened!\n");
 		exit(1);
 	}
-	fprintf(out, "%s_(%s,%d)\t%f\t%f\t%d\t%d\t%f\t%d\t%d\t\n", file_test, sitename, cmpl, thr, (double)rec_seq / nseq, rec_seq, nseq, (double)rec_pos / all_pos, rec_pos, all_pos);
-	printf("%s_(%s,%d, Th %f)\t%.2f\t%d\t%d\t%.2f\t%d\t%d\t\n", file_test, sitename, cmpl, thr, (double)rec_seq / nseq, rec_seq, nseq, (double)rec_pos / all_pos, rec_pos, all_pos);
-	//	delete(p);
-	fclose(out);
-	char pltfile[500];
-	strcpy(pltfile, file_out_base);
-	strcat(pltfile, ".plt");
-	if ((out = fopen(pltfile, "at")) == NULL)
-	{
-		printf("Input file can't be opened!\n");
-		exit(1);
-	}
-	//	fprintf(out,"\t");
-	/*
-	fprintf(out,"Thr\t");
-	fprintf(out,"SEQ_%s_%s\t",file_test,sitename);
-	fprintf(out,"SITE_%s_%s\n",file_test,sitename);
-	for(i=0;i<TEN;i++)
-	{
-	fprintf(out,"%.6f\t",thr+(1-thr)*i/TEN);
-	fprintf(out,"%d\t",den[i].seq);
-	fprintf(out,"%d\n",den[i].sit);
-	}*/
-	fprintf(out, "SEQ_%s", file_test);
-	for (i = TEN - 1; i >= 0; i--)
-	{
-		fprintf(out, "\t%d", den[i].seq);
-	}
-	fprintf(out, "\n");
-	//	if(strstr(file_test,"~")!=NULL)
-	{
-		int ten1 = TEN - 1;
-		fprintf(out, "SITE_%s", file_test);
-		for (i = ten1; i >= 0; i--)
-		{
-			fprintf(out, "\t%d", den[i].sit);
-		}
-		fprintf(out, "\n");
-		fprintf(out, "Thr_%s_%s", file_test, sitename);
-		double thr_max = 1;
-		for (i = TEN; i >= 1; i--)
-		{
-			//fprintf(out,"\t%f",thr+thr_m1*i/ten1);	
-			fprintf(out, "\t%.7f", thr_max);
-			thr_max -= step_zero;
-			//fprintf(out,"\t%f",-3+4*(double)(i)/TEN);	
-		}
-		fprintf(out, "\n");
-	}
+	fprintf(out, "%s\t%s\t%f\t%f\t%d\t%d\t%f\t%d\t%d\t\n", file_test, sitename, thr, (double)rec_seq / nseq, rec_seq, nseq, (double)rec_pos / all_pos, rec_pos, all_pos);
+	printf("%s\t%s\t%f\t%f\t%d\t%d\t%f\t%d\t%d\t\n", file_test, sitename, thr, (double)rec_seq / nseq, rec_seq, nseq, (double)rec_pos / all_pos, rec_pos, all_pos);
 	fclose(out);
 	delete[] d;
+	for (t = 0; t < 2; t++)delete[] d1[t];
+	delete[] d1;		
 	delete[] p;
 	return ret;
 }
