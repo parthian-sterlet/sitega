@@ -1009,16 +1009,16 @@ int main(int argc, char *argv[])
 		int nsite = 0;
 		for (k = 0; k <= len2; k++)
 		{
-			char d2[50];
+			char d2[2][50];
 			memset(d2, '\0', sizeof(d2));
 			p[k] = -1000;
 			double sco2 = 0, sco[2] = { 0,0 };
 			for (t = 0; t < 2; t++)
 			{
-				if (t == 0)strncpy(d2, &d1[0][k],olen);
-				else strncpy(d2, &d1[1][len2 - k],olen);
-				d2[olen] = '\0';
-				if (strchr(d2, 'n') != 0)
+				if (t == 0)strncpy(d2[0], &d1[0][k], olen);
+				else strncpy(d2[1], &d1[1][len2 - k], olen);
+				d2[t][olen] = '\0';
+				if (strchr(d2[t], 'n') != 0)
 				{
 					sco2 = -1;
 					break;
@@ -1029,7 +1029,7 @@ int main(int argc, char *argv[])
 					double fm = 0;
 					for (i = sta.tot[j].sta; i <= sta.tot[j].end; i++)
 					{
-						int cod = 4 * IdeLet(d2[i], alfabet) + IdeLet(d2[i + 1], alfabet);
+						int cod = 4 * IdeLet(d2[t][i], alfabet) + IdeLet(d2[t][i + 1], alfabet);
 						if (sta.tot[j].num == cod) { fm++; }
 					}
 					if (fm != 0)
@@ -1046,10 +1046,10 @@ int main(int argc, char *argv[])
 				p[k] = (sco2 - sta.min) / sta.raz;
 				if (p[k] >= thr)
 				{
-					char ori;
-					if (sco[0] >= sco[1])ori = '+';
-					else ori = '-';
-					fprintf(out,"%d\t%.18f\t%c\t%s\n", k+1, p[k],ori,d2);
+					char ori[] = "+-";
+					if (sco[0] >= sco[1])t = 0;
+					else t = 1;
+					fprintf(out,"%d\t%.18f\t%c\t%s\n", k+1, p[k],ori[t], d2[t]);
 					nsite++;
 				}
 				if (p[k] >= sco_best)sco_best = p[k];
