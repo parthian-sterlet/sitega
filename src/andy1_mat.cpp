@@ -6,9 +6,7 @@
 #include  <ctype.h>
 #include  <math.h>
 #include  <time.h>
-#define DIM 205
-#define NTRAIN 2
-#define NCORCOEF 1000
+#define DIM 80
 
 int StrNStr(char *str, char c, int n)
 {
@@ -62,8 +60,6 @@ struct ss {
 	int num;
 	char oli[3];
 } s[16];
-//#include "andy1.h"
-#define TEN 10000
 double sost[DIM];
 #define Min(a,b) ((a)>(b))? (b):(a);
 #define Max(a,b) ((a)>(b))? (a):(b);

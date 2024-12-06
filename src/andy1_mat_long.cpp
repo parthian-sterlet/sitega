@@ -6,7 +6,7 @@
 #include  <ctype.h>
 #include  <math.h>
 #include  <time.h>
-#define DIM 205
+#define DIM 80
 #define SEQLEN 30000
 #define NCHR 50
 
@@ -98,8 +98,8 @@ struct city {
 	char site[120];
 	int size;
 	int len;
-	double c;
-	double std;
+	double min;
+	double raz;
 	struct due tot[DIM];
 	void get_copy(city* a);
 	int get_file(char* file);
@@ -123,9 +123,10 @@ int city::get_file(char* file)
 	fgets(d, sizeof(d), in);
 	len = atoi(d);
 	fgets(d, sizeof(d), in);
-	c = atof(d);
-	std = 0.05;
-	char sep = '\t', s[20];
+	min = atof(d);
+	fgets(d, sizeof(d), in);
+	raz = atof(d);
+	char sep = '\t', s[30];
 	int i, test;
 	for (i = 0; i < size; i++)
 	{
@@ -148,9 +149,9 @@ void city::get_copy(city* a)
 {
 	strcpy(a->site, site);
 	a->size = size;
-	a->std = std;
+	a->min = min;
 	a->len = len;
-	a->c = c;
+	a->raz = raz;
 	int i;
 	for (i = 0; i < size; i++)
 	{
@@ -566,114 +567,6 @@ int ReadSeq(char* file, char* file1, int& n, int& len1)
 	//printf("\b\b\b\b\b\b\b\b\b%9d", len);
 	//printf("\n");
 }
-void MinusStr1(int size, int j, int j0, double buf, double b[DIM][DIM])
-{
-	int k;
-	b[j][j0] = 0;
-	for (k = j0 + 1; k < size; k++)
-	{
-		if (b[j0][k] == 0)continue;
-		b[j][k] -= buf * b[j0][k];
-	}
-}
-void MinusStr2(int size, int j, int j0, double buf, double b[DIM][DIM])
-{
-	int k;
-	b[j][j0] = 0;
-	for (k = j - 1; k >= j0; k--)
-	{
-		if (b[j0][k] == 0)continue;
-		b[j][k] -= buf * b[j0][k];
-	}
-}
-void MinusStr(int size, int j, int j0, double buf, double b[DIM][DIM])
-{
-	int k;
-	for (k = 0; k < size; k++)
-	{
-		if (b[j0][k] == 0)continue;
-		b[j][k] -= buf * b[j0][k];
-	}
-}
-int BackMat(int size)
-{
-	int i, j;
-	double buf, b[DIM][DIM];
-	if (size == 1)
-	{
-		uw[0][0] = 1 / uw[0][0];
-		return 1;
-	}
-	for (j = 0; j < size; j++)
-	{
-		for (i = 0; i < size; i++)
-		{
-			b[i][j] = 0;
-		}
-	}
-	for (i = 0; i < size; i++)b[i][i] = 1;
-	for (j = 0; j < size - 1; j++)
-	{
-		for (i = j + 1; i < size; i++)
-		{
-			if (uw[i][j] == 0)continue;
-			buf = uw[i][j] / uw[j][j];
-			MinusStr1(size, i, j, buf, uw);
-			MinusStr(size, i, j, buf, b);
-			if (fabs(buf) < 1e-035)
-			{
-				printf("\n1uwij %g(%d,%d) bij%g(%d,%d)\n", uw[i][j], i, j, b[i][j], i, j);
-				printf("%g(%d)\n", uw[j][j], j);
-				return -1;
-				//
-			}
-			uw[i][j] = 0;
-		}
-	}
-	for (j = size - 1; j > 0; j--)
-	{
-		for (i = j - 1; i >= 0; i--)
-		{
-			if (uw[i][j] == 0)continue;
-			buf = uw[i][j] / uw[j][j];
-			MinusStr2(size, i, j, buf, uw);
-			MinusStr(size, i, j, buf, b);
-			if (fabs(buf) < 1e-035)
-			{
-				printf("\n2uwij %g(%d,%d) bij%g(%d,%d)\n", uw[i][j], i, j, b[i][j], i, j);
-				printf("%g(%d)\n", uw[j][j], j);
-				//
-				return -1;
-			}
-			uw[i][j] = 0;
-		}
-	}
-	double mul = 1;
-	for (i = 0; i < size; i++)
-	{
-		buf = uw[i][i];
-		mul *= buf;
-		if (fabs(buf) < 1e-030)
-		{
-			printf("\n3 %g %d\n", uw[i][i], i);
-			return -1;
-		}
-		for (j = 0; j < size; j++)
-		{
-			uw[i][j] /= buf;
-			b[i][j] /= buf;
-		}
-	}
-	if (fabs(mul) < 1e-30)return -1;
-	for (i = 0; i < size; i++)
-	{
-		for (j = 0; j < size; j++)
-		{
-			uw[i][j] = b[i][j];
-		}
-	}
-	return 1;
-}
 int IdeLet(char c, char* alfabet)
 {
 	int i, ret = -1;
@@ -681,100 +574,6 @@ int IdeLet(char c, char* alfabet)
 	{
 		if (c == alfabet[i]) { ret = i; break; }
 	}
-	return(ret);
-}
-//extern
-double Rmah(char* d1, char* d2, city a, char* alfabet)
-{
-	int k, n, i, j;
-	double ret = 0, fn[DIM], fm[DIM];
-	for (k = 0; k < a.size; k++)
-	{
-		int rlenk = (a.tot[k].end - a.tot[k].sta + 1);
-		fn[k] = 0;
-		for (n = a.tot[k].sta; n <= a.tot[k].end; n++)
-		{
-			int cod = 4 * IdeLet(d1[n], alfabet) + IdeLet(d1[n + 1], alfabet);
-			if (a.tot[k].num == cod) { fn[k]++; break; }
-		}
-		fn[k] /= rlenk;
-		fm[k] = 0;
-		for (n = a.tot[k].sta; n <= a.tot[k].end; n++)
-		{
-			int cod = 4 * IdeLet(d2[n], alfabet) + IdeLet(d2[n + 1], alfabet);
-			if (a.tot[k].num == cod) { fm[k]++; break; }
-		}
-		fm[k] /= rlenk;
-	}
-	for (i = 0; i < a.size; i++)
-	{
-		double dret = 0;
-		for (j = 0; j < a.size; j++)
-		{
-			dret += uw[i][j] * (fn[j] - fm[j]);
-		}
-		ret += dret * (fn[i] - fm[i]);
-	}
-	return ret;
-}
-int Fun(char* d, char* mess, city* sta, double* p, int& len0, int& err, char* alfabet)//double score was 5th argument
-{
-	int i, j, ret, len;
-
-	len0 = sta->len;
-	len = strlen(d);
-	ret = 1;
-	err = 0;
-	if (sta->len > len)
-	{
-		strcpy(mess, "Sequence too short...");
-		return(-1);
-	}
-	int k;
-	char* d1;
-	if ((d1 = new char[len + 1]) == NULL)
-	{
-		strcpy(mess, "Not enough memory....");
-		return(-1);
-	}
-	for (k = 0; k <= len - sta->len; k++)
-	{
-		/*if ((k + 1) % 100000 == 0)
-		{
-			printf("\b\b\b\b\b\b\b\b\b%9d", k);
-		}*/
-		p[k] = 0;
-		{
-			memset(d1, 0, len + 1);
-			for (j = 0; j < sta->len; j++)d1[j] = d[k + j]; d1[sta->len] = '\0';
-			{
-				if (strchr(d1, 'n') != 0)
-				{
-					p[k] = -1000;
-					err++;
-					continue;
-				}
-			}
-			double sco = sta->c;
-			for (j = 0; j < sta->size; j++)
-			{
-				int rlenj = (sta->tot[j].end - sta->tot[j].sta + 1);
-				double fm = 0;
-				for (i = sta->tot[j].sta; i <= sta->tot[j].end; i++)
-				{
-					int cod = 4 * IdeLet(d1[i], alfabet) + IdeLet(d1[i + 1], alfabet);
-					if (sta->tot[j].num == cod) { fm++; }
-				}
-				if (fm != 0)
-				{
-					fm /= rlenj;
-					sco += sta->tot[j].buf * fm;
-				}
-			}
-			p[k] = 1 - fabs(sco - 1);			
-		}
-	}
-	delete[] d1;
 	return(ret);
 }
 void GetWords(int word, int size0, int size, char* w0)
@@ -796,21 +595,10 @@ void GetWords(int word, int size0, int size, char* w0)
 		//printf("%d\t%s\n",i,s[i].oli);
 	}
 }
-void Mix(char* a, char* b)
-{
-	char buf = *a;
-	*a = *b;
-	*b = buf;
-}
-void BigMix1(char* d)
-{
-	int r;
-	int len = strlen(d);
-	for (r = 0; r < len - 1; r++) Mix(&d[r], &d[1 + r + (rand() % (len - 1 - r))]);
-}
+
 int main(int argc, char* argv[])
 {
-	int ret = 0, len1, i, len0, nc;
+	int ret = 0, len1, i, j, k, m, nc;
 	char mess[300], path_fasta[500], filesta[10], fileend[10], genome[10];
 	char sitename[120], file1[500], file_thr_fpr[500], file_out_base[500];	
 	double thr;
@@ -1083,18 +871,14 @@ int main(int argc, char* argv[])
 		}
 		fclose(in_thr);
 	}
-	char alfabet[5];
-	double p_zero = 0.9, dp_zero = 1 - p_zero, step_zero = dp_zero / TEN;
+	char alfabet[5];	
 	strcpy(alfabet, "ACGT");
-	alfabet[4] = '\0';
-	int cmpl2[2] = { 0,1 };
-	int cmpl1;
-	double p[2][SEQLEN];
-	char dp[2][SEQLEN + 5];
-	char cep[3] = "+-";
-	int densit[TEN];
+	alfabet[4] = '\0';	
+	double p[SEQLEN];
+	char dp[2][SEQLEN + 5];	
 	int all_pos = 0;
 	int rec_pos = 0;
+	int olen = sta.len;
 
 	if ((out = fopen(file_out_base, "wt")) == NULL)
 	{
@@ -1125,113 +909,65 @@ int main(int argc, char* argv[])
 		fprintf(out, ">Seq %s\tSite %s\tThr %f %f\n", genome, sitename, pval_crit, thr);
 		//fprintf (out,"%s",dp);
 		shift = ftell(in);
-		int shift0 = shift;
-		for (i = 0; i < TEN; i++)densit[i] = 0;
+		int shift0 = shift;				
 		for (int time = 0; time < n_time; time++)
 		{
 			fseek(in, shift, SEEK_SET);
 			fgets(dp[0], (int)SEQLEN + 1, in);
 			int len = strlen(dp[0]);
-			//	if(cmpl1==0)fprintf(out,"forward\n");
-			//	else fprintf(out,"reverse\n");
-				//	printf("%d\t%d\n",n,cmpl1);	
-			int err2[2] = { 0,0 };
-			for (cmpl1 = 0; cmpl1 < 2; cmpl1++)
+			strcpy(dp[1], dp[0]);
+			ComplStr(dp[1]);
+			for (i = 0; i < 2; i++)dp[i][len] = '\0';
+			int len2 = len - sta.len;
+			for (k = 0; k <= len2; k++)
 			{
-				if (cmpl2[cmpl1] == -1)continue;
-				int dir = 1 - 2 * cmpl1;
-				if (cmpl1 != 0)
+				char d2[50];
+				memset(d2, '\0', sizeof(d2));
+				p[k] = -1000;
+				double sco2 = 0, sco[2] = { 0,0 };
+				for (m = 0; m < 2; m++)
 				{
-					strcpy(dp[1], dp[0]);
-					ComplStr(dp[1]);
-				}
-				{
-					//len=strlen(d);
-					//printf("\n%d               ",len);		
-			//		if(n%10==0)printf("\b\b\b\b\b\b%6d",n);		
-					for (i = 0; i < len; i++)p[cmpl1][i] = -1000;
-					int ret = Fun(dp[cmpl1], mess, &sta, p[cmpl1], len0, err2[cmpl1], alfabet);
-					if (ret != 1)
+					if (m == 0)strncpy(d2, &dp[0][k], olen);
+					else strncpy(d2, &dp[1][len2 - k], olen);
+					d2[olen] = '\0';
+					if (strchr(d2, 'n') != 0)
 					{
-						printf("Fun ret error %s", mess);
-						return -1;
+						sco2 = -1;
+						break;
 					}
-				}
-			}
-			int half0 = len0 / 2;
-			int len2 = len - len0 + 1;//len profilya
-			for (cmpl1 = 0; cmpl1 < 2; cmpl1++)all_pos1 += (len2 - err2[cmpl1]);
-			{
-				int sst[2], sen[2];
-				{
-					sst[0] = 0;
-					sen[0] = len2;
-				}
-				{
-					sen[1] = -1;
-					sst[1] = len2 - 1;
-				}
-				//	printf("\n%d\t%d\t%d\t%d\n",sst,sen,i_sta,i_end);										
-				int ib[2];
-				ib[0] = sst[0], ib[1] = sst[1];
-				int print_size = 10;
-				int dprint = Max(0, (len0 - print_size) / 2);
-				int posc[2], posc1[2], posc2[2];
-				do
-				{
-					if (cmpl2[0] != -1)
+					for (j = 0; j < sta.size; j++)
 					{
-						posc[0] = shift - shift0 + 1 + ib[0] + half0;
-					}
-					if (cmpl2[1] != -1)
-					{
-						posc[1] = shift - shift0 + len - ib[1] - half0;
-					}
-					for (cmpl1 = 0; cmpl1 < 2; cmpl1++)
-					{
-						if (cmpl2[cmpl1] == -1)continue;
-						posc1[cmpl1] = ib[cmpl1] + dprint;
-						posc2[cmpl1] = ib[cmpl1] + len0 - dprint;
-						if (p[cmpl1][ib[cmpl1]] > thr)
+						int rlenj = (sta.tot[j].end - sta.tot[j].sta + 1);
+						double fm = 0;
+						for (i = sta.tot[j].sta; i <= sta.tot[j].end; i++)
 						{
-							rec_pos1++;
-							fprintf(out, "%d\t", posc[cmpl1]);
-							fprintf(out, "%.12f\t%c", p[cmpl1][ib[cmpl1]], cep[cmpl1]);
-							fprintf(out, "\t");
-							int n1;
-							for (n1 = ib[cmpl1]; n1 < posc1[cmpl1]; n1++)
-							{
-								char sy = (char)((int)dp[cmpl1][n1] + 32);
-								fprintf(out, "%c", sy);
-							}
-							for (n1 = posc1[cmpl1]; n1 < posc2[cmpl1]; n1++)
-							{								
-								fprintf(out, "%c", dp[cmpl1][n1]);
-							}
-							for (n1 = posc2[cmpl1]; n1 < ib[cmpl1] + len0; n1++)
-							{
-								char sy = (char)((int)dp[cmpl1][n1] + 32);
-								fprintf(out, "%c", sy);
-							}
-							fprintf(out, "\n");
+							int cod = 4 * IdeLet(d2[i], alfabet) + IdeLet(d2[i + 1], alfabet);
+							if (sta.tot[j].num == cod) { fm++; }
 						}
-						double score_here = p[cmpl1][ib[cmpl1]];						
+						if (fm != 0)
 						{
-							int p_score;	
-							if (p[cmpl1][ib[cmpl1]] < p_zero)p_score = 0;
-							else p_score = (int)((p[cmpl1][ib[cmpl1]] - p_zero) / step_zero);// from - 1 to 1
-							for (i = 0; i < p_score; i++)
-							{
-								densit[i]++;
-							}
+							fm /= rlenj;
+							sco[m] += sta.tot[j].buf * fm;
 						}
 					}
-					ib[0]++;
-					ib[1]--;
-				} while (ib[0] != sen[0]);
+				}
+				if (sco2 == 0)
+				{
+					all_pos1++;
+					sco2 = Max(sco[0], sco[1]);
+					p[k] = (sco2 - sta.min) / sta.raz;
+					if (p[k] >= thr)
+					{
+						char ori;
+						if (sco[0] >= sco[1])ori = '+';
+						else ori = '-';
+						fprintf(out, "%d\t%.18f\t%c\t%s\n", k + 1, p[k], ori, d2);
+						rec_pos1++;
+					}					
+				}
 			}
 			if ((time + 1) % 100 == 0)printf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b%10d\t%d", (time + 1) * SEQLEN, rec_pos1);
-			shift += (SEQLEN - len0 + 1);
+			shift += (SEQLEN - sta.len + 1);
 		}		
 		fclose(in);
 		printf("Chr%s %d positions %d sites\n", name_chr[nc], all_pos1, rec_pos1);
@@ -1239,7 +975,6 @@ int main(int argc, char* argv[])
 		rec_pos += rec_pos1;
 	}
 	fclose(out);
-	all_pos /= 2;
 	char recfile[500];
 	strcpy(recfile, file_out_base);
 	strcat(recfile, "_rec_pos.txt");
@@ -1250,33 +985,6 @@ int main(int argc, char* argv[])
 	}
 	fprintf(out, "%s_(%s,Th %.3f)\t%f\t%d\t%d\t\n", genome, sitename, thr, (double)rec_pos / all_pos, rec_pos, all_pos);
 	//	printf("%s_(%s,%d,Z %.3f Th %.3f)\t%.2f\t%d\t%d\t%.2f\t%d\t%d\t\n",argv[1],sitename,cmpl,conf_level,1-conf_level*sigma,(double)rec_seq/nseq,rec_seq,nseq,(double)rec_pos/all_pos,rec_pos,all_pos);	
-	char pltfile[500];
-	strcpy(pltfile, file_out_base);
-	strcat(pltfile, ".plt");
-	if ((out = fopen(pltfile, "wt")) == NULL)
-	{
-		printf("Input file can't be opened!\n");
-		exit(1);
-	}
-	{
-		int ten1 = TEN - 1;
-		fprintf(out, "%s_%s", genome, sitename);
-		for (i = ten1; i >= 0; i--)
-		{
-			fprintf(out, "\t%d", densit[i]);
-		}
-		fprintf(out, "\n");
-		fprintf(out, "Thr_%f_%f", pval_crit, thr);
-		double thr_max = 1;
-		for (i = TEN; i >= 1; i--)
-		{
-			//fprintf(out, "\t%f", -3 + 4 * (double)(i) / TEN);
-			fprintf(out, "\t%.7f", thr_max);
-			thr_max -= step_zero;
-		}
-		fprintf(out, "\n");
-	}
-	fclose(out);	
 	return 0;
 }
 
