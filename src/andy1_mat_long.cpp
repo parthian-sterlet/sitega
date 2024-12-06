@@ -905,7 +905,7 @@ int main(int argc, char* argv[])
 			return -3;
 		}
 		long shift = 0;
-		fgets(dp[0], (int)SEQLEN, in);
+		//fgets(dp[0], (int)SEQLEN, in);
 		fprintf(out, ">Seq %s\tSite %s\tThr %f %f\n", genome, sitename, pval_crit, thr);
 		//fprintf (out,"%s",dp);
 		shift = ftell(in);
@@ -921,16 +921,16 @@ int main(int argc, char* argv[])
 			int len2 = len - sta.len;
 			for (k = 0; k <= len2; k++)
 			{
-				char d2[50];
-				memset(d2, '\0', sizeof(d2));
+				char d2[2][50];				
 				p[k] = -1000;
 				double sco2 = 0, sco[2] = { 0,0 };
 				for (m = 0; m < 2; m++)
 				{
-					if (m == 0)strncpy(d2, &dp[0][k], olen);
-					else strncpy(d2, &dp[1][len2 - k], olen);
-					d2[olen] = '\0';
-					if (strchr(d2, 'n') != 0)
+					memset(d2[m], '\0', sizeof(d2[m]));
+					if (m == 0)strncpy(d2[0], &dp[0][k], olen);
+					else strncpy(d2[1], &dp[1][len2 - k], olen);
+					d2[m][olen] = '\0';
+					if (strchr(d2[m], 'n') != 0)
 					{
 						sco2 = -1;
 						break;
@@ -941,7 +941,7 @@ int main(int argc, char* argv[])
 						double fm = 0;
 						for (i = sta.tot[j].sta; i <= sta.tot[j].end; i++)
 						{
-							int cod = 4 * IdeLet(d2[i], alfabet) + IdeLet(d2[i + 1], alfabet);
+							int cod = 4 * IdeLet(d2[m][i], alfabet) + IdeLet(d2[m][i + 1], alfabet);
 							if (sta.tot[j].num == cod) { fm++; }
 						}
 						if (fm != 0)
@@ -958,10 +958,11 @@ int main(int argc, char* argv[])
 					p[k] = (sco2 - sta.min) / sta.raz;
 					if (p[k] >= thr)
 					{
-						char ori;
-						if (sco[0] >= sco[1])ori = '+';
-						else ori = '-';
-						fprintf(out, "%d\t%.18f\t%c\t%s\n", k + 1, p[k], ori, d2);
+						char ori[] = "+-";
+						if (sco[0] >= sco[1])m = 0;
+						else m = 1;
+						int kpos = shift + k + 1;
+						fprintf(out, "%d\t%.18f\t%c\t%s\n", kpos, p[k], ori[m], d2[m]);
 						rec_pos1++;
 					}					
 				}
