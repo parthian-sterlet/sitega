@@ -77,8 +77,8 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 2. fasta file, set of foreground sequences
 3. fasta file, set of background sequences
 4. integer value, maximal length of one LPD (default value 6)
-5. integer value, minimal number of LPDs (LPDmin, default value in the range from 20 to 50)
-6. integer value, step of the number of LPDs (default value 1, four numbers are {LPDmin, LPDmin + 1, LPDmin + 2, LPDmin + 3} since the default number of distinct numbers of LPDs is four)
+5. integer value, minimal number of LPDs (LPDmin, default value in the range from 20 to 50). The computation time increases with the growth of the number of LPDs.
+6. integer value, step of the number of LPDs (default value 1, four numbers are {LPDmin, LPDmin + 1, LPDmin + 2, LPDmin + 3} since the default number of distinct numbers of LPDs is four). 
 7. integer value, length of motif in nucleotides, the motif length from 8 to 12 nt is recommended. The computation time increases with the growth of motif length. 
 8. double value, Expected Recognition Rate - maximum frequency of motif in the background set. The value is used to restrict the X axes in ROC and PR curves to define partial areas under curves.
 9. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
