@@ -418,7 +418,7 @@ int main(int argc, char *argv[])
 	int nseq_pro = 0, len_pro = 0;
 	int all_pos = 0;
 	ReadSeq(file_fasta, nseq_pro, len_pro, all_pos);
-	int nthr = 2 * (int)(pvalue_large*all_pos*1.05);
+	int nthr = (int)(pvalue_large*all_pos*1.05);
 	double *thr;
 	thr = new double[nthr];
 	if (thr == NULL) { puts("Out of memory..."); return -1; }	
