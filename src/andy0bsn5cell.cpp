@@ -10,10 +10,10 @@
 
 #define Min(a,b) ((a)>(b))? (b):(a);
 #define Max(a,b) ((a)>(b))? (a):(b);
-#define SEQLEN 12000
-#define MOTLEN 12 //max LPD length
+#define SEQLEN 5000
+#define MOTLEN 6 //max LPD length
 #define CELL 4//no. of cell populations
-#define MEGE 6//population size
+#define MEGE 20//population size
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 80
@@ -73,6 +73,8 @@ struct town {
 	double fit;
 	double mah;
 	double fpr;
+	double aucroc;
+	double auprc;
 	int sm;// success mut
 	int sr;// success rec
 	int tm;// try mut
@@ -866,9 +868,9 @@ int ComplStr(char* d)
 	}
 	return 1;
 }
-int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* xporti, int* xportj, double* tp_sco, double* fp_rate, double* fp_count, int*** seq, int*** seq_back, int olen, int* len, int* lenb, double** dav, double** dcv, char* filemap, char* filemat, FILE* outlog)
+int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* xporti, int* xportj, int*** seq, int*** seq_back, int olen, int* len, int* lenb, double** dav, double** dcv, char* filemap, char* filemat, FILE* outlog,FILE *out_roc, FILE *out_prc,char *file_for,double fp2, int iter, int irank)
 {
-	int k, n, m, o, b, u;
+	int i, k, n, m, o, b, u;
 	double av[POPSIZE], buf[POPSIZE];
 	double df[POPSIZE];
 
@@ -921,6 +923,13 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 		av[k] = (df[k] + dav[a->tot[k].end - a->tot[k].sta][a->tot[k].num]) / 2;
 		df[k] = df[k] - dav[a->tot[k].end - a->tot[k].sta][a->tot[k].num];
 	}
+	double* fp_rate;
+	fp_rate = new double[n_cntrl];
+	double* fp_count;
+	fp_count = new double[n_cntrl];
+	double* tp_sco;
+	tp_sco = new double[n_cntrl];
+	for (k = 0; k < n_cntrl; k++)fp_rate[k] = fp_count[k] = tp_sco[k] = 0;
 	if (BackMat(a->size, outlog) == -1)
 	{
 		a->fit = 0;
@@ -950,10 +959,8 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 	}
 	double sga_raz = sga_max - sga_min;
 	a->fprint_allfi_mat(filemat, olen, sga_min, sga_raz, buf);
-	for (b = 0; b < n_cntrl; b++)fp_rate[b] = 0;//n_cntrl_tot + 
+	for (b = 0; b < n_cntrl; b++)fp_rate[b] = 0; 
 	for (b = 0; b < n_cntrl; b++)fp_count[b] = 0;
-	//for (b = 0; b < n_cntrl; b++)fp_count[n_cntrl_tot + b] = 0;
-	//for (b = 0; b < n_cntrl; b++)fp_rate[n_cntrl_tot + b] = 0;	
 	FILE* outmap;
 	if ((outmap = fopen(filemap, "wt")) == NULL)
 	{
@@ -1036,11 +1043,12 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 				pbest_end = len[u] - pbest;
 			}
 			fprintf(outmap, "%d\t%d\t%d\t%c\t%f\t%s\n", u + 1, pbest_sta, pbest_end, dir[obest], sco_pos, d);			
-		}
+		}		
 		tp_sco[b] = sco_pos;
 	}	
 	fclose(outmap);
-	qsort(tp_sco, n_cntrl, sizeof(double), compare_qq);
+	qsort(tp_sco, n_cntrl, sizeof(double), compare_qq2);
+	int n_cntrl1 = n_cntrl - 1;
 	int nseqn = 0;	
 	for (b = 0; b < nseqb; b++)
 	{
@@ -1049,7 +1057,7 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 		for (m = 0; m <= lenp; m++)
 		{
 			double sco[2] = { 0,0 };
-			int gom = 1;
+			int gom = 0;
 			int mc;
 			for (o = 0; o < 2; o++)
 			{		
@@ -1079,14 +1087,14 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 				if (gom == -1)break;
 				sco[o] = (sco[o] - sga_min) / sga_raz;				
 			}
-			if( gom!= -1)
+			if (gom == 0)
 			{
 				nseqn++;
 				double sco2 = Max(sco[0], sco[1]);
 				if (sco_max < sco2)sco_max = sco2;
-				if (sco2 >= tp_sco[0])
-				{
-					for (k = 0; k < n_cntrl; k++)
+				if (sco2 >= tp_sco[n_cntrl1])
+				{					
+					for (k = n_cntrl1; k >=0; k--)
 					{
 						if (sco2 >= tp_sco[k])
 						{
@@ -1098,9 +1106,9 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 			}
 
 		}
-		if (sco_max >= tp_sco[0])
-		{
-			for (k = 0; k < n_cntrl; k++)
+		if (sco_max >= tp_sco[n_cntrl1])
+		{			
+			for (k = n_cntrl1; k >= 0; k--)
 			{
 				if (sco_max >= tp_sco[k])
 				{
@@ -1121,6 +1129,83 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 	{
 		fprintf(outlog,"ERR %f Count %d FPsites %f FPpeak %f TPpeak %f\n", tp_sco[k], k+1, fp_rate[k], fp_count[k],(double)(k+1)/n_cntrl);
 	}
+//	qsort(fp_rate, n_cntrl, sizeof(double), compare_qq);
+//	qsort(fp_count, n_cntrl, sizeof(double), compare_qq);
+//	qsort(tp_sco, n_cntrl, sizeof(double), compare_qq2);	
+	double auc_roc=0, auc_pr =0;
+	{
+		fprintf(outlog, "\nROC\n");
+		fprintf(out_roc, "\tROC_%d_%d_%d_%d\n", olen, a->size,iter+1,irank+1);
+		fprintf(out_roc, "0\t0\n");
+		double tproc_pred = 0;
+		double fproc_pred = 0;
+		for (n = 0; n < n_cntrl; n++)
+		{
+			if (fp_rate[n] > fproc_pred && (n == n_cntrl1 || fp_rate[n + 1] > fp_rate[n]))
+			{
+				double tproc_cur = (double)(n + 1) / n_cntrl;
+				double fproc_cur = fp_rate[n];
+				if (fproc_cur >= fp2)
+				{
+					double wei = (fp2 - fproc_pred) / (fproc_cur - fproc_pred);
+					tproc_cur = tproc_pred + (tproc_cur - tproc_pred) * wei;
+					fproc_cur = fp2;
+				}
+				double dauc = (tproc_cur + tproc_pred) * (fproc_cur - fproc_pred) / 2;
+				fprintf(out_roc, "%g\t%f\n", fproc_cur, tproc_cur);
+				auc_roc += dauc;
+				if (fp_rate[n] >= fp2)break;
+				tproc_pred = tproc_cur;
+				fproc_pred = fproc_cur;
+			}
+		}
+		auc_roc /= fp2;
+		a->aucroc = auc_roc;
+	}
+	{		
+		fprintf(out_prc, "\tPRC_%d_%d_%d_%d\n", olen, a->size, iter+1, irank+1);
+		double tpc, tpc_pred = 0;
+		double fpc, fpc_pred = 0;
+		double prec_pred = 1;
+		int prc_count = 1;
+		double fp_pred = 0;
+		double prec_exp = 0.5;
+		fprintf(out_prc, "0\t1\n");
+		int n_cntrl1 = n_cntrl - 1;
+		for (i = 0; i < n_cntrl; i++)
+		{
+			int i1 = i + 1;
+			if (i == n_cntrl1 || (fp_rate[i1] != fp_rate[i] || tp_sco[i1] != tp_sco[i]))
+			{
+				tpc = (double)(i1) / n_cntrl;
+				fpc = fp_count[i];
+				if (fp_rate[i] >= fp2)
+				{
+					double dtpc = tpc - tpc_pred;
+					double dfpc = fpc - fpc_pred;
+					double wei = (fp2 - fp_pred) / (fp_rate[i] - fp_pred);
+					tpc = tpc_pred + wei * dtpc;
+					fpc = fpc_pred + wei * dfpc;
+				}
+				double prec_cur = tpc / (tpc + fpc);
+				double prec_av = (prec_pred + prec_cur) / 2;
+				double dauc = (prec_av - prec_exp) * (tpc - tpc_pred);
+				auc_pr += dauc;
+				fprintf(out_prc, "%f\t%f\n", tpc, prec_cur);
+				tpc_pred = tpc;
+				fpc_pred = fpc;
+				fp_pred = fp_rate[i];
+				prec_pred = prec_cur;
+				prc_count++;
+				if (fp_rate[i] >= fp2)break;
+			}
+		}
+		auc_pr *= 2;
+		a->auprc = auc_pr;
+	}
+	delete[] fp_rate;
+	delete[] fp_count;
+	delete[] tp_sco;
 	return 1;
 }
 double EvalMahFIT(town* a, int n_train, int octa, int* xporti, int*** seq, int olen, double** dav, double** dcv, double** octa_prow, int* len, FILE* outlog)//double *hoxa_wei, qbs *qps, double **frp, double *octa_rat,
@@ -2527,6 +2612,7 @@ int main(int argc, char* argv[])
 	double** dcv;//self covariations for regions LPD
 	int** octa_prowb, * len_octa, ** octa_prows;// octa position lists, octa position counts, weight sums
 	double** octa_pro1, ** octa_prow, * thr_octa;// , *hoxa_wei;	
+
 	FILE* outlog, * out_roc, * out_prc, * out_auc;
 
 	if (argc != 13)
@@ -2748,28 +2834,7 @@ int main(int argc, char* argv[])
 		n_both_sam += n_cntrl[i];
 		n_both_sam += nseqb;
 	}
-	double** fp_rate;
-	fp_rate = new double* [CELL];
-	for (i = 0; i < CELL; i++)
-	{
-		fp_rate[i] = new double[n_cnt_tot];
-		if (fp_rate[i] == NULL) { puts("Out of memory..."); exit(1); }
-	}
-	double** fp_count;
-	fp_count = new double* [CELL];
-	for (i = 0; i < CELL; i++)
-	{
-		fp_count[i] = new double[n_cnt_tot];
-		if (fp_count[i] == NULL) { puts("Out of memory..."); exit(1); }
-	}
-	double** tp_sco;
-	tp_sco = new double* [CELL];
-	for (i = 0; i < CELL; i++)
-	{
-		tp_sco[i] = new double[n_cnt_tot];
-		if (tp_sco[i] == NULL) { puts("Out of memory..."); exit(1); }
-	}
-	for (i = 0; i < CELL; i++)for (k = 0; k < n_cnt_tot; k++)fp_rate[i][k] = fp_count[i][k] = tp_sco[i][k] = 0;
+
 	int* xport;
 	xport = new int[nseq];
 	if (xport == NULL) { puts("Out of memory..."); exit(1); }
@@ -2986,13 +3051,10 @@ int main(int argc, char* argv[])
 			}
 		}
 		fprintf(outlog, "FractHoxa %f\n", (double)len_wei / len_tot);
-		double auc_roc_len = 0, auc_pr_len = 0;
+		//double auc_roc_len = 0, auc_pr_len = 0;
 		{
-			for (i = 0; i < CELL; i++)for (k = 0; k < n_cnt_tot + 1; k++)fp_rate[i][k] = 0;
 			int big_exit1 = 1;// local exit (separ +-) global exit (separation do not exceeded the previous run)
 			double fit_prev[CELL], fit_after_mut[CELL];
-			int cnt_count[CELL];
-			for (i = 0; i < CELL; i++)cnt_count[i] = 0;
 			for (iter = 0; iter < iteration; iter++)
 			{
 				fprintf(outlog, "\n%s vs %s\tWindowlength %d\tBootStrap %d  the last %d\t", file_for, file_back, olen, iter + 1, iteration);
@@ -3741,6 +3803,7 @@ int main(int argc, char* argv[])
 						if (change_level_mut_here > change_level_mut)change_level_mut = change_level_mut_here;
 					}
 					double exit_1st = 0.05, exit_2nd = 0.01;
+					//double exit_1st = 2, exit_2nd = 0.9;
 					if (change_level < exit_2nd && gen > 1)// 3rd iteration at least
 					{
 						fprintf(outlog, "Go out %d iteration\n", iter + 1);						
@@ -3884,35 +3947,32 @@ int main(int argc, char* argv[])
 					strcat(file_base, name);
 					strcat(file_base, "_");	
 					for (j = 0; j < CELL; j++)
-					{													
-						memset(filemap, '\0', sizeof(filemap));
-						memset(filemat, '\0', sizeof(filemat));
-						char buf1[5];
-						strcpy(filemap, file_base);
-						strcpy(filemat, file_base);
-						memset(buf1, '\0', sizeof(buf1));
-						sprintf(buf1, "%d", iter + 1);
-						strcat(filemap, buf1);
-						strcat(filemat, buf1);
-						strcat(filemap, "_");
-						strcat(filemat, "_");
-						char buf2[5];
-						memset(buf2, '\0', sizeof(buf2));
-						sprintf(buf2, "%d", size0[j]);
-						strcat(filemap, buf2);
-						strcat(filemat, buf2);
-						strcat(filemap, extmap);
-						strcat(filemat, extmat);
-						EvalMahControl(&pop[iter][j][0], nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, &tp_sco[j][cnt_count[j]], &fp_rate[j][cnt_count[j]], &fp_count[j][cnt_count[j]], seq_real, seq_back, olen, len, lenb, dav, dcv, filemap, filemat, outlog);
-					//	pop[iter][j][0].fprint_allfi_mat(file_base, extmat, name, olen, sga_min, sga_raz, buf, iter);
-					//	pop[iter][j][0].fprint_seq(file_base, extmap, olen, n_cntrl[iter] , peak_real, tp_sco[j], len, xportj, cnt_count[j]);
-						fprintf(outlog, "External Size %d\n", size0[j]);
-						for (k = 0; k < n_cntrl[iter]; k+=100)
+					{			
+						for (i = 0; i < MEGE; i++)
 						{
-							int kk = cnt_count[j] + k;
-							fprintf(outlog, "ERR %f Count %d FPsites %f FPpeak %f TPpeak %f\n", tp_sco[j][kk], k + 1, fp_rate[j][kk], fp_count[j][kk], (double)(k + 1) / n_cntrl[iter]);
+							memset(filemap, '\0', sizeof(filemap));							
+							char buf1[5], buf2[5], buf3[5]; 
+							memset(buf1, '\0', sizeof(buf1));
+							sprintf(buf1, "%d", iter + 1);
+							memset(buf2, '\0', sizeof(buf2));
+							sprintf(buf2, "%d", size0[j]);
+							memset(buf3, '\0', sizeof(buf3));
+							sprintf(buf3, "%d", i + 1);
+							memset(filemat, '\0', sizeof(filemat));
+							strcpy(filemap, file_base);
+							strcat(filemap, buf1);
+							strcat(filemap, "_");
+							strcat(filemap, buf2);
+							strcat(filemap, extmap);							
+							strcat(filemap, buf3);
+							strcpy(filemat, file_base);
+							strcat(filemat, buf1);
+							strcat(filemat, "_");
+							strcat(filemat, buf2);
+							strcat(filemat, extmat);
+							strcat(filemat, buf3);
+							EvalMahControl(&pop[iter][j][i], nseq, nseqb, n_train[iter], n_cntrl[iter], xporti, xportj, seq_real, seq_back, olen, len, lenb, dav, dcv, filemap, filemat, outlog, out_roc, out_prc, file_for, fp2,iter,i);
 						}
-						cnt_count[j] += n_cntrl[iter];
 					}
 				}								
 				big_exit1 = 1;
@@ -3926,134 +3986,19 @@ int main(int argc, char* argv[])
 					exit(1);
 				}
 			}
-			int n_cnt_tot1 = n_cnt_tot - 1;
-			fprintf(outlog, "Control peaks %d\nBefore sort\n", n_cnt_tot);
-			for (j = 0; j < CELL; j++)
+			for (i = 0; i < MEGE; i++)
 			{
-				fprintf(outlog, "Size %d Sco %f FPRate %f FPSite %f\t",size0[j],tp_sco[j][0], fp_rate[j][0],fp_count[j][0]);
-				fprintf(outlog, "Sco %f FPRate %f FPSite %f\n", tp_sco[j][n_cnt_tot1], fp_rate[j][n_cnt_tot1], fp_count[j][n_cnt_tot1]);
-			}
-			for (j = 0; j < CELL; j++)qsort(fp_rate[j], n_cnt_tot, sizeof(double), compare_qq);
-			for (j = 0; j < CELL; j++)qsort(fp_count[j], n_cnt_tot, sizeof(double), compare_qq);
-			for (j = 0; j < CELL; j++)qsort(tp_sco[j], n_cnt_tot, sizeof(double), compare_qq2);
-			fprintf(outlog, "After sort\n");
-			for (j = 0; j < CELL; j++)
-			{
-				fprintf(outlog, "Size %d Sco %f FPRate %f FPSite %f\t", size0[j], tp_sco[j][0], fp_rate[j][0], fp_count[j][0]);
-				fprintf(outlog, "Sco %f FPRate %f FPSite %f\n", tp_sco[j][n_cnt_tot1], fp_rate[j][n_cnt_tot1], fp_count[j][n_cnt_tot1]);
-			}
-			{
-				int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
-					path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
-				if (testar != 0)
+				for (j = 0; j < CELL; j++)
 				{
-					printf("TestArgv Before AUC %d: %s argument %d error\n", iter + 1, argv[testar], testar);
-					exit(1);
+					fprintf(out_auc, "%s\t%d\t%d\t%d\t%g\t%g\t%g\t%g\n", file_for, olen, pop[0][j][i].size, i + 1, pop[0][j][i].aucroc, pop[1][j][i].aucroc, pop[0][j][i].auprc, pop[1][j][i].auprc);
 				}
-			}
-			double auc_roc[CELL], auc_pr[CELL];
-			for (j = 0; j < CELL; j++)auc_roc[j] = auc_pr[j] = 0;
-			for (j = 0; j < CELL; j++)
-			{
-				fprintf(outlog, "\nROC\n");
-				fprintf(out_roc, "\tROC_%d_%d\n", olen, size0[j]);
-				fprintf(out_roc, "0\t0\n");				
-				double tproc_pred = 0;
-				double fproc_pred = 0;								
-				for (n = 0; n < n_cnt_tot; n++)
-				{
-					if (fp_rate[j][n] > fproc_pred && (n == n_cnt_tot1 || fp_rate[j][n + 1] > fp_rate[j][n]))
-					{
-						double tproc_cur = (double)(n + 1) / n_cnt_tot;
-						double fproc_cur = fp_rate[j][n];
-						if (fproc_cur >= fp2)
-						{
-							double wei = (fp2 - fproc_pred) / (fproc_cur - fproc_pred);
-							tproc_cur = tproc_pred + (tproc_cur - tproc_pred) * wei;
-							fproc_cur = fp2;
-						}
-						double dauc = (tproc_cur + tproc_pred) * (fproc_cur - fproc_pred) / 2;
-						fprintf(out_roc, "%g\t%f\n", fproc_cur, tproc_cur);
-						auc_roc[j] += dauc;
-						if(fp_rate[j][n] >= fp2)break;
-						tproc_pred = tproc_cur;
-						fproc_pred = fproc_cur;
-					}
-				}
-				auc_roc[j] /= fp2;
-			}			
-			{
-				int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
-					path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
-				if (testar != 0)
-				{
-					printf("TestArgv After ROC Before AUCPR %d: %s argument %d error\n", iter + 1, argv[testar], testar);
-					exit(1);
-				}
-			}
-			for (j = 0; j < CELL; j++)
-			{
-				fprintf(out_prc, "\tPRC_%d_%d\n", olen, size0[j]);
-				double tpc, tpc_pred = 0;
-				double fpc, fpc_pred = 0;
-				double prec_pred = 1;
-				int prc_count = 1;
-				double fp_pred = 0;
-				double prec_exp = 0.5;
-				fprintf(out_prc, "0\t1\n");
-				int n_cnt_tot1 = n_cnt_tot - 1;
-				for (i = 0; i < n_cnt_tot; i++)
-				{
-					int i1 = i + 1;
-					if (i == n_cnt_tot1 || (fp_rate[j][i1] != fp_rate[j][i] || tp_sco[j][i1] != tp_sco[j][i]))
-					{
-						tpc = (double)(i1)/ n_cnt_tot;
-						fpc = fp_count[j][i];
-						if (fp_rate[j][i] >= fp2)
-						{
-							double dtpc = tpc - tpc_pred;
-							double dfpc = fpc - fpc_pred;
-							double wei = (fp2 - fp_pred) / (fp_rate[j][i] - fp_pred);
-							tpc = tpc_pred + wei * dtpc;
-							fpc = fpc_pred + wei * dfpc;
-						}
-						double prec_cur = tpc / (tpc + fpc);
-						double prec_av = (prec_pred + prec_cur) / 2;
-						double dauc = (prec_av - prec_exp) * (tpc - tpc_pred);
-						auc_pr[j] += dauc;
-						fprintf(out_prc, "%f\t%f\n", tpc, prec_cur);
-						tpc_pred = tpc;
-						fpc_pred = fpc;
-						fp_pred = fp_rate[j][i];
-						prec_pred = prec_cur;
-						prc_count++;
-						if (fp_rate[j][i] >= fp2)break;
-					}
-				}
-				auc_pr[j] *= 2;
 			}
 			fclose(out_prc);
-			for (j = 0; j < CELL; j++)fprintf(out_auc, "%s\t%d\t%d\t%g\t%g\n", file_for, olen, size0[j], auc_roc[j], auc_pr[j]);
 			fclose(out_roc);
 			fclose(out_auc);
-			{
-				int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
-					path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
-				if (testar != 0)
-				{
-					printf("TestArgv After ROC After AUCPR %d: %s argument %d error\n", iter + 1, argv[testar], testar);
-					exit(1);
-				}
-			}
 		}
 	}
 	fclose(outlog);
-	/*printf("PR %d\n",j+1);
-for (i = 0; i < n_cnt_tot; i+=50)
-{
-	printf("FPsites %g FPpeak %g TPpeak %g\n", fp_rate[j][i], fp_count[j][i], (double)(i+1)/nseq);
-}*/
-
 	for (iter = 0; iter < iteration; iter++)
 	{
 		for (j = 0; j < CELL; j++)for (i = 0; i < MEGE; i++)pop[iter][j][i].mem_out();
@@ -4120,15 +4065,6 @@ for (i = 0; i < n_cnt_tot; i+=50)
 		delete[] octa_prows[i];
 	}
 	delete[] octa_prows;
-	for (i = 0; i < CELL; i++)
-	{
-		delete[] fp_count[i];
-		delete[] tp_sco[i];
-		delete[] fp_rate[i];
-	}
-	delete[] fp_rate;
-	delete[] fp_count;
-	delete[] tp_sco;
 	delete[] octa_pro1p;
 	delete[] len;
 	delete[] lenb;
