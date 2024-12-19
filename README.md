@@ -3,7 +3,7 @@
 # Description
 SiteGA implements the algorithm of [Levitsky et al. (2007)](https://doi.org/10.1186/1471-2105-8-481) for *de novo* motif search in a single ChIP-seq dataset (ChIP-seq peaks) [(Tsukanov et al., 2022)](https://doi.org/10.3389/fpls.2022.938545). SiteGA applies a genetic algorithm that evaluates motifs as patterns of frequencies of interdependent locally located dinucleotides (LPDs). This approach models short- and long-range interactions of nucleotide context within transcription factor binding sites (TFBS). Thus, the SiteGA approach is quite different from that of the traditional position weight matrix (PWM) model, which estimates sites by sums of additive contributions of nucleotide frequencies from all positions. The PWM approach ignores any dependencies between different positions within the TFBS. 
 
-For a given set of N foreground sequences (peaks), the fitness function F(X) = D(X) * E(X) * I(X) estimates the alignment X = {x(1), x(2), ..., x(N)} of N best predicted sites in the the SiteGA model. The first factor D(X) reflects dependencies of positions within an alignment through the linear discriminant analysis approach [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481). The second factor E(X) implies the average enrichment of k-mers within the alignment of the predicted sites [(Tsukanov et al., 2022)](https://doi.org/10.3389/fpls.2022.938545). The program indexes all possible positions of sites in the foreground set with weights equal to the logarithms of the enrichment of their intrinsic k-mers when comparing foreground and background sequence sets. The third factor I(X) is the information content of the alignment of best scored sites in the peaks. This factor is computed by position-specific counts {Q(i,j)} of dinucleotides within the alignment X. The formula takes into account the expected frequencies of dinucleotides {pexp(j)} as described in [(Kulakovskiy et al., 2010)](https://doi.org/10.1093/bioinformatics/btq488). To avoid taking the logarithm from zero we use corrected dinucleotide frequncies for the alignment, they are computed as follows: q(i,j) = (Q(i,j) + pexp(j))/(N+1).
+For a given set of N foreground sequences (peaks), the fitness function F(X) = D(X) * E(X) * I(X) estimates the alignment X = {x(1), x(2), ..., x(N)} of N best predicted sites in the the SiteGA model. The first factor D(X) reflects dependencies of positions within an alignment through the linear discriminant analysis approach [(Levitsky et al. 2007)](https://doi.org/10.1186/1471-2105-8-481). The second factor E(X) implies the average enrichment of k-mers within the alignment of the predicted sites [(Tsukanov et al., 2022)](https://doi.org/10.3389/fpls.2022.938545). The program indexes all possible positions of sites in the foreground set with weights equal to the logarithms of the enrichment of their intrinsic k-mers when comparing foreground and background sequence sets. The third factor I(X) is the information content of the alignment of best scored sites in the peaks. This factor is computed by position-specific counts {Q(i,j)} of dinucleotides within the alignment X. The formula takes into account the expected frequencies of dinucleotides {pexp(j)} as described in [(Kulakovskiy et al., 2010)](https://doi.org/10.1093/bioinformatics/btq488). To avoid taking the logarithm from zero we use corrected dinucleotide frequncies for the alignment, they are computed as follows: q(i,j) = (Q(i,j) + pexp(j))/(N+1). The default option of the algorithm takes the fitness function F(X) as D(X) * E(X) * I(X); optionally,  the fitness function takes only the first two factors, F(X) = D(X) * E(X), this allows achieve better performance for the minor part of tested data.
 
 # Requirements
 SiteGA source code is written in C++ language. To compile exetubables from the source code you need:
@@ -82,9 +82,10 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 7. integer value, length of motif in nucleotides, the motif length from 8 to 12 nt is recommended. The computation time increases with the growth of motif length. 
 8. double value, Expected Recognition Rate - maximum frequency of motif in the background set. The value is used to restrict the X axes in ROC and PR curves to define partial areas under curves.
 9. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
-10. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
-11. integer value, maximal peak length (default value is 3000)
-12. output log file
+10. integer value 1 (default) or 0, take into account or disregard the information content in the fitness function F(X). It is defined as D(X) * E(X) * I(X) or D(X) * E(X), respectively.
+11. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
+12. integer value, maximal peak length (default value is 3000)
+13. output log file
     
 ## Train a model
 
@@ -96,9 +97,10 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 5. integer value, length of motif (this value is selected in the bootstrap cross-valiation test, [see above](https://github.com/parthian-sterlet/sitega/tree/master#set-parameters-of-a-model-through-accuracy-estimation))
 6. integer value, size, the number of LPDs (a value is selected in the bootstrap cross-valiation test, [see above](https://github.com/parthian-sterlet/sitega/tree/master#set-parameters-of-a-model-through-accuracy-estimation))
 7. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
-8. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
-9. integer value, maximal peak length (default value is 3000)
-10. output log file
+8. integer value 1 (default) or 0, take into account or disregard the information content in the fitness function F(X). It is defined as D(X) * E(X) * I(X) or D(X) * E(X), respectively.
+9. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
+10. integer value, maximal peak length (default value is 3000)
+11. output log file
 
 ## Set threshold for a model
 
