@@ -132,7 +132,7 @@ void town::init_zero(int reg_max)
 	odg[reg_max] = -1;
 	size = 0;
 	fit = mah = 0;
-	fpr = 1;
+	inf = fpr = 1;
 }
 int town::init_add(uno last)
 {
@@ -1214,8 +1214,7 @@ int EvalMahControl(town* a, int nseq, int nseqb, int n_train, int n_cntrl, int* 
 double EvalMahFIT(town* a, int n_train, int octa, int infc, int* xporti, int*** seq, int olen, double** dav, double** dcv, double** octa_prow, double *pexp, int* len, FILE* outlog)//double *hoxa_wei, qbs *qps, double **frp, double *octa_rat,
 {
 	int k, n, m, b;
-	double f1[POPSIZE], df[POPSIZE], f2[POPSIZE];
-	double pfm[MOTLEN][16];
+	double f1[POPSIZE], df[POPSIZE], f2[POPSIZE], pfm[MOTLEN][16];
 
 	int olen1 = olen - 1;
 	for (k = 0; k < olen1; k++)for (n = 0; n < 16; n++)pfm[k][n] = 0;	
@@ -1273,30 +1272,23 @@ double EvalMahFIT(town* a, int n_train, int octa, int infc, int* xporti, int*** 
 			}
 			f1[k] += fs[k];
 		}
-	}	
-	//exit(1);
+	}		
 	for (k = 0; k < olen1; k++)
 	{
-		int  n_train1 = n_train + 1;
 		for (n = 0; n < 16; n++)
 		{
-			pfm[k][n] += pexp[n];
-			/*if (pfm[k][n] == 1)
-			{
-				int yy = 0;
-			}*/
-			pfm[k][n] /= n_train1;
+			pfm[k][n] /= n_train;
 		}
 	}
 	if (infc == 0)a->inf = 1;
 	else
-	{
+	{		
 		a->inf = 0;
 		for (k = 0; k < olen1; k++)
 		{
 			for (n = 0; n < 16; n++)
-			{
-				a->inf += pfm[k][n] * log(pfm[k][n] / pexp[n]);
+			{			
+				if(pfm[k][n]>0)a->inf += pfm[k][n] * log(pfm[k][n] / pexp[n]);
 			}
 		}
 		if (a->inf < 1)a->inf = 1;
@@ -2573,7 +2565,7 @@ void ReadSeqBack(char* file, int nseq, int* len, int*** seq_back, int olen, int 
 		strcat(d, l);
 	}
 }
-int TestArgv(char* arg1, char* arg2, char* arg3, char* arg4, char* arg5, char* arg6, char* arg7, char* arg8, char* arg9, char* arg10, char* arg11, char* arg12,
+/*int TestArgv(char* arg1, char* arg2, char* arg3, char* arg4, char* arg5, char* arg6, char* arg7, char* arg8, char* arg9, char* arg10, char* arg11, char* arg12,
 	char* val1, char* val2, char* val3, int val4, int val5, int val6, int val7, double val8, int val9, char* val10, int val11, char* val12, FILE *out)
 {
 	int ret = 0;
@@ -2645,7 +2637,7 @@ int TestArgv(char* arg1, char* arg2, char* arg3, char* arg4, char* arg5, char* a
 		return 13;
 	}
 	return 0;
-}
+}*/
 int main(int argc, char* argv[])
 {
 	int* len, nseq, nseqb, * lenb, i, j, k, n, m;
@@ -2698,7 +2690,7 @@ int main(int argc, char* argv[])
 	time_t tnow = time(NULL);
 	fprintf(outlog, "%s", ctime(&tnow));
 	fprintf(outlog, "Start1\n");
-	{
+	/*{
 		int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
 			path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
 		if (testar != 0)
@@ -2706,7 +2698,7 @@ int main(int argc, char* argv[])
 			printf("TestArgv Start point: %s argument %d error\n", argv[testar],testar);
 			exit(1);
 		}
-	}
+	}*/
 	srand((unsigned)time(NULL));
 	dcv = new double* [reg_max];
 	if (dcv == NULL) return -1;
@@ -3046,7 +3038,7 @@ int main(int argc, char* argv[])
 		pair_d[m] = new int[2];
 		if (pair_d[m] == NULL) return -1;
 	}
-	{
+	/*{
 		int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
 			path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
 		if (testar != 0)
@@ -3054,7 +3046,7 @@ int main(int argc, char* argv[])
 			printf("TestArgv Enter Iterations: %s argument %d error\n", argv[testar], testar);
 			exit(1);
 		}
-	}
+	}*/
 	{
 		int len_tot = 0, len_wei = 0;
 		for (i = 0; i < nseq; i++)
@@ -3260,7 +3252,7 @@ int main(int argc, char* argv[])
 					//if(gen<=1)
 					{
 						fprintf(outlog, "Enter mutations Gen %d Iteration %d\n", gen + 1, iter + 1);
-						{
+						/*{
 							int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
 								path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
 							if (testar != 0)
@@ -3268,7 +3260,7 @@ int main(int argc, char* argv[])
 								printf("TestArgv Before Mut: %s argument %d error\n", argv[testar], testar);
 								exit(1);
 							}
-						}
+						}*/
 						int asuccess[NMUT], atry[NMUT];
 						for (k = 0; k < NMUT; k++)asuccess[k] = atry[k] = 0;
 						int success_mi[CELL][MEGE], try_mi[CELL][MEGE];
@@ -3533,7 +3525,7 @@ int main(int argc, char* argv[])
 							//sm0_rate = 0.001;
 						}
 					}
-					{
+					/*{
 						int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
 							path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
 						if (testar != 0)
@@ -3541,8 +3533,7 @@ int main(int argc, char* argv[])
 							printf("TestArgv After Mut: %s argument %d error\n", argv[testar], testar);
 							exit(1);
 						}
-					}					
-										
+					}*/										
 				//	if (gen == 0)success_m /= (step_max_tot / step_max);
 					if (gen <= 1)ratio_thr_r[0] = ratio_thr;		//OL								
 					else ratio_thr_r[0] = 1;
@@ -3601,7 +3592,7 @@ int main(int argc, char* argv[])
 						}
 					}
 					fprintf(outlog, "Total pairs %d Gen %d\tIter %d\n", pair_all, gen + 1,iter+1);					
-					{
+					/*{
 						int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
 							path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
 						if (testar != 0)
@@ -3609,7 +3600,7 @@ int main(int argc, char* argv[])
 							printf("TestArgv Before Rec: %s argument %d error\n", argv[testar], testar);
 							exit(1);
 						}
-					}
+					}*/
 					for (k = 0; k < pair_all; k++)pair_take[k] = k;
 					int n_rec_cycle, sr_step_cycle = sr_step;
 					if (gen <= 1) { n_rec_cycle = Min(n_mut_tot / 4, n_rec_cycle_max); }
@@ -3817,8 +3808,7 @@ int main(int argc, char* argv[])
 						}
 					} 
 					while (loc_rec >= 0);										
-										
-					{
+					/*{
 						int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
 							path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
 						if (testar != 0)
@@ -3826,7 +3816,7 @@ int main(int argc, char* argv[])
 							printf("TestArgv After Rec: %s argument %d error\n", argv[testar], testar);
 							exit(1);
 						}
-					}
+					}*/
 					for (i = 0; i < CELL; i++)
 					{
 						qsort((void*)(&pop[iter][i][0]), MEGE, sizeof(pop[iter][i][0]), compare_pop);
@@ -3850,7 +3840,7 @@ int main(int argc, char* argv[])
 					if (change_level < exit_2nd && gen > 1)// 3rd iteration at least
 					{
 						fprintf(outlog, "Go out %d iteration\n", iter + 1);						
-						{
+						/*{
 							int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
 								path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
 							if (testar != 0)
@@ -3858,13 +3848,13 @@ int main(int argc, char* argv[])
 								printf("TestArgv Go out %d iteration: %s argument %d error\n", iter+1, argv[testar], testar);
 								exit(1);
 							}
-						}
+						}*/
 						big_exit1 = 1;
 					}
 					else
 					{
 						fprintf(outlog, "Continue iteration %d\n", iter + 1);
-						{
+						/*{
 							int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
 								path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
 							if (testar != 0)
@@ -3872,7 +3862,7 @@ int main(int argc, char* argv[])
 								printf("TestArgv Continue %d iteration: %s argument %d error\n", iter + 1, argv[testar], testar);
 								exit(1);
 							}
-						}
+						}*/
 						/*
 						if (restart_half > 0 && change_level < exit_1st)
 						{
@@ -3955,7 +3945,7 @@ int main(int argc, char* argv[])
 					//	if (gen == 1)for (j = 0; j < CELL; j++)for (i = 0; i < MEGE; i++)stop_li[j][i] = stop_oi[j][i] = 1;
 					for (j = 0; j < CELL; j++)for (i = 0; i < MEGE; i++)stop_pi[j][i] = 0;
 				} while (big_exit1 == 0);
-				{
+				/*{
 					int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
 						path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
 					if (testar != 0)
@@ -3963,7 +3953,7 @@ int main(int argc, char* argv[])
 						printf("TestArgv Out iteration %d: %s argument %d error\n", iter + 1, argv[testar], testar);
 						exit(1);
 					}
-				}
+				}*/
 				{
 					int ic = 0;
 					for (k = 0; k < nseq; k++)
@@ -4020,7 +4010,7 @@ int main(int argc, char* argv[])
 				}								
 				big_exit1 = 1;
 			}	
-			{
+			/*{
 				int testar = TestArgv(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], argv[9], argv[10], argv[11], argv[12],
 					path_fasta, file_for, file_back, reg_max, size_start, size_dif, olen, fp2, octa, path_out, len_peak_max, file_log, outlog);
 				if (testar != 0)
@@ -4028,7 +4018,7 @@ int main(int argc, char* argv[])
 					printf("TestArgv Out EvalMahControl %d: %s argument %d error\n", iter + 1, argv[testar], testar);
 					exit(1);
 				}
-			}
+			}*/
 			for (i = 0; i < MEGE; i++)
 			{
 				for (j = 0; j < CELL; j++)
