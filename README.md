@@ -82,7 +82,7 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 7. integer value, length of motif in nucleotides, the motif length from 8 to 12 nt is recommended. The computation time increases with the growth of motif length. 
 8. double value, Expected Recognition Rate - maximum frequency of motif in the background set. The value is used to restrict the X axes in ROC and PR curves to define partial areas under curves.
 9. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
-10. integer value 1 (default) or 0, take into account or disregard the information content in the fitness function F(X). It is defined as D(X) * E(X) * I(X) or D(X) * E(X), respectively.
+10. integer value 1 (default) or 0, take into account or disregard the information content in the fitness function F(X). F(X) is defined as D(X) * E(X) * I(X) or D(X) * E(X), respectively.
 11. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 12. integer value, maximal peak length (default value is 3000)
 13. output log file
@@ -97,7 +97,7 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 5. integer value, length of motif (this value is selected in the bootstrap cross-valiation test, [see above](https://github.com/parthian-sterlet/sitega/tree/master#set-parameters-of-a-model-through-accuracy-estimation))
 6. integer value, size, the number of LPDs (a value is selected in the bootstrap cross-valiation test, [see above](https://github.com/parthian-sterlet/sitega/tree/master#set-parameters-of-a-model-through-accuracy-estimation))
 7. integer value, k-mer length to take into account the sequence bias between foreground and background sequences (default 6, i.e. hexamer frequencies are involved)
-8. integer value 1 (default) or 0, take into account or disregard the information content in the fitness function F(X). It is defined as D(X) * E(X) * I(X) or D(X) * E(X), respectively.
+8. integer value 1 (default) or 0, take into account or disregard the information content in the fitness function F(X). F(X) is defined as D(X) * E(X) * I(X) or D(X) * E(X), respectively.
 9. path to output files (the last symbol of path must be '/' and '\\' for Linux and Windows OS, respectively)
 10. integer value, maximal peak length (default value is 3000)
 11. output log file
