@@ -11,9 +11,9 @@
 #define Min(a,b) ((a)>(b))? (b):(a);
 #define Max(a,b) ((a)>(b))? (a):(b);
 #define SEQLEN 12000
-#define MOTLEN 12 //max LPD length
+#define LPDLEN 6 //max LPD length
+#define MOTLEN 20 //max motif len
 #define MEGE 100//population size 1st stage
-#define ELIT 100//population size 2nd stage
 #define NMUT 3
 #define NREC 6
 #define POPSIZE 120
@@ -76,12 +76,13 @@ struct town {
 	int* ori;// DNA strand 0,1
 	double mah;
 	double fpr;
+	double inf;
 	double fit;
 	int sm;
 	int tm;
 	int sr;
 	int tr;
-	int odg[MOTLEN + 2];
+	int odg[LPDLEN + 2];
 	void get_copy(town* a, int nseq, int reg_max);
 	//void init_rand(int nseq, int *len, int oln, int rsize, int reg_max);
 	void init_rand_hoxa(int nseq, int oln, int rsize, int reg_max, int* len_octa, int* len, int** octa_prowb, int** octa_prows);
@@ -130,7 +131,7 @@ void town::init_zero(int reg_max)
 	odg[reg_max] = -1;
 	size = 0;
 	fit = mah = 0;
-	fpr = 1;
+	fpr = inf = 1;
 }
 int town::init_add(uno last)
 {
@@ -190,7 +191,7 @@ void town::sort_all(void)
 int town::check(int min, int max, FILE* out)
 {
 	int i, j;
-	int ods[MOTLEN];
+	int ods[LPDLEN];
 	int max1 = max - 1;
 	for (i = 0; i < max1; i++)ods[i] = 0;
 	for (i = 0; i < size; i++)
@@ -322,6 +323,7 @@ void town::get_copy(town* a, int nseq, int reg_max)
 	a->fit = fit;
 	a->mah = mah;
 	a->fpr = fpr;
+	a->inf = inf;
 	for (i = 0; i < size; i++)tot[i].get_copy(&a->tot[i]);
 	for (i = 0; i < 16; i++)a->deg[i] = deg[i];
 	i = 0;
@@ -949,11 +951,13 @@ printf("%c",d[k]);
 printf("\n");
 }
 */
-double EvalMahFIT(town* a, int n_train, int octa, int*** seq, int olen, double** dav, double** dcv, double** octa_prow, int* len, FILE* outlog)//double *hoxa_wei, qbs *qps, double **frp, double *octa_rat,
+double EvalMahFIT(town* a, int n_train, int octa, int infc, int*** seq, int olen, double** dav, double** dcv, double** octa_prow, double* pexp, int* len, FILE* outlog)//double *hoxa_wei, qbs *qps, double **frp, double *octa_rat,
 {
 	int k, n, m;
-	double f1[POPSIZE], df[POPSIZE], f2[POPSIZE];
-	//	int olen1 = olen - 1;
+	double f1[POPSIZE], df[POPSIZE], f2[POPSIZE], pfm[MOTLEN][16];
+
+	int olen1 = olen - 1;
+	for (k = 0; k < olen1; k++)for (n = 0; n < 16; n++)pfm[k][n] = 0;
 
 	//printf("Enter Fit1 %d\n",n_train);
 	//exit(1);
@@ -972,6 +976,11 @@ double EvalMahFIT(town* a, int n_train, int octa, int*** seq, int olen, double**
 		//if (len[m] < olen)continue;
 		int ori = a->ori[m];
 		int pos = a->pos[m];
+		for (k = 0; k < olen1; k++)
+		{
+			int let = seq[ori][m][k + pos];
+			if (let != -1)pfm[k][let]++;
+		}
 		double fs[POPSIZE];
 		//printf("Seq %d\t",b);
 		for (k = 0; k < a->size; k++)
@@ -1003,7 +1012,27 @@ double EvalMahFIT(town* a, int n_train, int octa, int*** seq, int olen, double**
 			f1[k] += fs[k];
 		}
 	}
-	//exit(1);
+	for (k = 0; k < olen1; k++)
+	{
+		for (n = 0; n < 16; n++)
+		{
+			pfm[k][n] /= n_train;
+		}
+	}
+	if (infc == 0)a->inf = 1;
+	else
+	{
+		a->inf = 0;
+		for (k = 0; k < olen1; k++)
+		{
+			for (n = 0; n < 16; n++)
+			{
+				if (pfm[k][n] > 0)a->inf += pfm[k][n] * log(pfm[k][n] / pexp[n]);
+			}
+		}
+		if (a->inf < 1)a->inf = 1;
+		else a->inf = 1 + log10(a->inf);
+	}
 	for (k = 0; k < a->size; k++)for (n = 0; n < a->size; n++)uw[k][n] /= n_train;
 	for (k = 0; k < a->size; k++)f1[k] /= n_train;
 	for (k = 0; k < a->size; k++)
@@ -2425,11 +2454,11 @@ void ReadSeq(char* file, int nseq, int* len, int*** seq_real, int olen, double* 
 		strcat(d[0], l);
 	}
 }
-void ReadSeqBack(char* file, int nseq, int* len, int olen, int reg_max, double** dav, double** dcv, double* octaf, int* octa1, int octa, int octa_size, int len_max, int len_peak_max, FILE* outlog)
+void ReadSeqBack(char* file, int nseq, int* len, int olen, int reg_max, double** dav, double** dcv, double* octaf, double * pexp, int* octa1, int octa, int octa_size, int len_max, int len_peak_max, FILE* outlog)
 {
 	char l[SEQLEN], d[SEQLEN], head[400];
 	int m, i, j, k, v, fl = 0;
-	int n_backr[MOTLEN];
+	int n_backr[LPDLEN];
 	double freq[16];
 	FILE* in;
 
@@ -2445,6 +2474,7 @@ void ReadSeqBack(char* file, int nseq, int* len, int olen, int reg_max, double**
 	rewind(in);
 	for (j = 0; j < reg_max; j++)n_backr[j] = 0;
 	int nn = 0, n = 0;
+	int all_pos = 0;
 	while (n >= 0)
 	{
 		if (fgets(l, sizeof(l), in) == NULL) fl = -1;
@@ -2493,7 +2523,12 @@ void ReadSeqBack(char* file, int nseq, int* len, int olen, int reg_max, double**
 									gom = -1;
 									break;
 								}
-								else freq[sb]++;
+								else
+								{
+									freq[sb]++;
+									pexp[sb]++;
+									all_pos++;
+								}
 							}
 							if (gom == 1)
 							{
@@ -2550,6 +2585,7 @@ void ReadSeqBack(char* file, int nseq, int* len, int olen, int reg_max, double**
 					sumf += octaf[i];
 				}
 				for (i = 0; i < octa_size; i++)octaf[i] /= sumf;
+				for (k = 0; k < 16; k++)pexp[k] /= all_pos;
 				break;
 			}
 		}
@@ -2589,12 +2625,14 @@ int main(int argc, char* argv[])
 	//	double **frp;//LPD frequencies
 	double* qp;//train scores	
 	int** octa_prowb, * len_octa, ** octa_prows;// octa position lists, octa position counts
-	double** octa_pro1, ** octa_prow, * thr_octa;// , *hoxa_wei;	
+	double** octa_pro1, ** octa_prow, * thr_octa;
+	double pexp[16];
+
 	FILE* outlog;
 
-	if (argc != 11)
+	if (argc != 12)
 	{
-		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 5int motif_len 6int size 7int olig_background 8path_out 9int max_peak_len 10file output log");//  5<pop_size>
+		puts("Sintax: 1path_both_fasta 2file_forground 3file_background 4int max_LPD_length 5int motif_len 6int size 7int olig_background 8int infc(0no,1yes) 9path_out 10int max_peak_len 11file output log");//  5<pop_size>
 		exit(1);
 	}
 	strcpy(path_fasta, argv[1]);
@@ -2608,10 +2646,11 @@ int main(int argc, char* argv[])
 	int olen = atoi(argv[5]);// dlina motiva
 	int size = atoi(argv[6]);
 	int octa = atoi(argv[7]);
-	strcpy(path_out, argv[8]);
-	int len_peak_max = atoi(argv[9]); //2500;
+	int infc = atoi(argv[8]); // information content in GA fitness
+	strcpy(path_out, argv[9]);
+	int len_peak_max = atoi(argv[10]); //2500;
 	strcpy(file_log, path_out);
-	strcat(file_log, argv[10]);
+	strcat(file_log, argv[11]);
 	if ((outlog = fopen(file_log, "wt")) == NULL)
 	{
 		fprintf(outlog, "Input file %s can't be opened!\n", file_log);
@@ -2707,7 +2746,8 @@ int main(int argc, char* argv[])
 	for (i = 0; i < octa_size; i++)octa_rat[i] = log10(octa_av[i]);
 	for (i = 0; i < octa_size; i++)octa_av[i] = 0;
 	for (i = 0; i < octa_size; i++)octa1[i] = 0;
-	ReadSeqBack(pfile_back, nseqb, lenb, olen, reg_max, dav, dcv, octa_av, octa1, octa, octa_size, len_max, len_peak_max, outlog);
+	for (i = 0; i < 16; i++)pexp[i] = 0;
+	ReadSeqBack(pfile_back, nseqb, lenb, olen, reg_max, dav, dcv, octa_av, pexp, octa1, octa, octa_size, len_max, len_peak_max, outlog);
 	for (i = 0; i < octa_size; i++)octa_rat[i] -= log10(octa_av[i]);
 	/*fprintf(outlog,"Octa_rat");
 	for (i = 0; i < octa_size; i++)
@@ -2824,7 +2864,7 @@ int main(int argc, char* argv[])
 	int cnt_count = 0;
 	//Test(peak_real[0],len,0,2);		
 	fprintf(outlog, "\n%s\tTrain\tFractHoxa %f\t", file_for, (double)len_wei / len_tot);
-	fprintf(outlog, "Ndi %d\tDeg %d\tEli %d BE1 %d\n", size, MEGE, ELIT, big_exit1);
+	fprintf(outlog, "Ndi %d\tDeg %d\tEli %d BE1 %d\n", size, MEGE, MEGE, big_exit1);
 	//initiation		
 	int gen = 0;
 	int check_lpd = 1;
@@ -2913,7 +2953,7 @@ int main(int argc, char* argv[])
 					if (gom != -1)
 					{
 						//							fprintf(outlog,"Poo Ini2 %d\n", i);
-						EvalMahFIT(&det1, nseq, octa, seq_real, olen, dav, dcv, octa_prow, len, outlog);//hoxa_wei,qps, frp, octa_rat,
+						EvalMahFIT(&det1, nseq, octa, infc, seq_real, olen, dav, dcv, octa_prow, pexp, len, outlog);//hoxa_wei,qps, frp, octa_rat,
 						det1.print_sta(reg_max, outlog);
 						det1.get_copy(&pop[i], nseq, reg_max);
 						//						fprintf(outlog,"Poo Ini3 %d\n", i);
@@ -2951,7 +2991,7 @@ int main(int argc, char* argv[])
 			jwei = jwei0[0];
 			step = 2000;
 			step_max = 20 * knseq; //20000 if nseq = 1000			
-			elit_rec = ELIT / 5;			
+			elit_rec = MEGE / 5;			
 			mege_h = MEGE;
 			ratio_rec_cycle = 0.0025;
 			sr_step = 400 * knseq;
@@ -2963,8 +3003,8 @@ int main(int argc, char* argv[])
 				jwei = jwei0[1];
 				step = 4000;
 				step_max = 200 * knseq;//500000 if nseq = 500				
-				elit_rec = ELIT / 5;
-				mege_h = ELIT;
+				elit_rec = MEGE / 5;
+				mege_h = MEGE;
 				ratio_rec_cycle = 0.001;
 				sr_step = 1000 * knseq;
 			}
@@ -2973,8 +3013,8 @@ int main(int argc, char* argv[])
 				jwei = jwei0[2];
 				step = 5000;
 				step_max = 200 * knseq;//100000 if nseq = 500				
-				elit_rec = ELIT/5;				
-				mege_h = ELIT;
+				elit_rec = MEGE/5;				
+				mege_h = MEGE;
 				ratio_rec_cycle = 0.001;
 				sr_step = 1000 * knseq;
 			}
@@ -3092,7 +3132,7 @@ int main(int argc, char* argv[])
 						if (gom != -1)
 						{
 							n_mut_here++;
-							ret = EvalMahFIT(&det1, nseq, octa, seq_real, olen, dav, dcv, octa_prow, len, outlog);
+							ret = EvalMahFIT(&det1, nseq, octa, infc, seq_real, olen, dav, dcv, octa_prow, pexp, len, outlog);
 							if (ret > 0)
 							{
 								step_try[sm]++;
@@ -3409,7 +3449,7 @@ int main(int argc, char* argv[])
 				{
 					for (m = 0; m < 2; m++)
 					{
-						det2[m].fit = EvalMahFIT(&det2[m], nseq, octa, seq_real, olen, dav, dcv, octa_prow, len, outlog);
+						det2[m].fit = EvalMahFIT(&det2[m], nseq, octa, infc, seq_real, olen, dav, dcv, octa_prow, pexp, len, outlog);
 					}
 					step_rtry[r_cy]++;
 					for (m = 0; m < 2; m++)pop[kk[m]].tr++;
@@ -3574,12 +3614,25 @@ int main(int argc, char* argv[])
 		if (file_for[i] == '\0') { name[i] = '\0'; break; }
 		name[i] = file_for[i];
 	}
-	char extmat[] = "_mat";
-	char extmap[] = "_loc";
+	char extmat0[] = "_mat";
+	char extmap0[] = "_loc";
+	char extmat[6], extmap[6];
 	char file_base[500];
 	strcpy(file_base, path_out);
 	strcat(file_base, name);
-	EvalMahFITTrain(&pop[0], nseq, seq_real, file_for, olen, reg_max, len, dav, dcv, outlog, file_base, extmap, extmat,name);
+	for (i = 0; i < MEGE; i++)
+	{
+		char bufi[5];
+		memset(bufi, '\0', sizeof(bufi));
+		sprintf(bufi, "%d", i + 1);
+		memset(extmat, '\0', sizeof(extmat));
+		memset(extmap, '\0', sizeof(extmap));
+		strcpy(extmat, extmat0);
+		strcpy(extmap, extmap0);
+		strcat(extmat, bufi);
+		strcat(extmap, bufi);
+		EvalMahFITTrain(&pop[i], nseq, seq_real, file_for, olen, reg_max, len, dav, dcv, outlog, file_base, extmap, extmat, name);
+	}
 	fprintf(outlog, "Go out big cycle ");
 	big_exit1 = 1;
 	fclose(outlog);
@@ -3635,3 +3688,4 @@ int main(int argc, char* argv[])
 	delete[] octa_pro1p;
 	return 0;
 }
+
