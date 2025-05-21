@@ -112,6 +112,7 @@ Use [background_genome_mono.cpp](https://github.com/parthian-sterlet/antinoise/b
 5. output file, binary mode, [SiteGA model](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat) as a matrix and [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2_sga.dist), table SiteGA model threshold vs. ERR)
 6. double pvalue_large = maximal ERR, default value 0.001, value below 0.01 is recomended
 7. double dpvalue = granulation value for ERR compaction in [Table Threshold_vs_ERR](https://github.com/parthian-sterlet/sitega/blob/master/examples/PEAKS035427_ATOH1_P48985_MACS2.mat), the default value 0.0000005 implies a moderate compaction
+8. char* binary_mode, value wb OR ab denotes mode for opening binary output file: (a) ab mode opens a binary file for appending data. If the file exists, new data is written at the end of the existing content. If the file doesn't exist, it is created; (b) wb mode opens a binary file for writing data. If the file exists, its contents are overwritten. If the file doesn't exist, it is created.
 
 ## Scan test sequences with a model
 
