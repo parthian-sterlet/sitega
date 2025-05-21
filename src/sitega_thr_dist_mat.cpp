@@ -19,7 +19,7 @@
 char *TransStr(char *d)
 {
 	int i, c, lens;
-	lens = strlen(d);
+	lens = (int)strlen(d);
 	for (i = 0; i < lens; i++)
 	{
 		c = int(d[i]);
@@ -31,7 +31,7 @@ char *TransStr(char *d)
 char *TransStrBack(char *d)//a->A
 {
 	int i, c, lens;
-	lens = strlen(d);
+	lens = (int)strlen(d);
 	for (i = 0; i < lens; i++)
 	{
 		c = int(d[i]);
@@ -45,7 +45,7 @@ void DelChar(char *str, char c)
 	int i, lens, size;
 
 	size = 0;
-	lens = strlen(str);
+	lens = (int)strlen(str);
 	for (i = 0; i < lens; i++)
 	{
 		if (str[i] != c)str[size++] = str[i];
@@ -88,7 +88,7 @@ int ComplStr(char *d)
 {
 	char *d1;
 	int i, len;
-	len = strlen(d);
+	len = (int)strlen(d);
 	d1 = new char[len + 1];
 	if (d1 == NULL) return 0;
 	strcpy(d1, d);
@@ -117,7 +117,7 @@ int CheckStr(char *d)
 {
 	int i, len, ret, size;
 	ret = size = 0;
-	len = strlen(d);
+	len = (int)strlen(d);
 	for (i = 0; i < len; i++)
 	{
 		if (strchr("atgcn", (int)d[i]) != NULL) { continue; }
@@ -220,7 +220,7 @@ int ReadSeq(char *file, int &n, int &len1, int &all_pos)
 }
 void ReplaceChar(char *str, char c1, char c2)
 {
-	int i, len = strlen(str);
+	int i, len = (int)strlen(str);
 	for (i = 0; i < len; i++)
 	{
 		if (str[i] == c1) str[i] = c2;
@@ -228,7 +228,7 @@ void ReplaceChar(char *str, char c1, char c2)
 }
 int StrNStr(char *str, char c, int n)
 {
-	int i, len = strlen(str);
+	int i, len = (int)strlen(str);
 	int k = 1;
 	for (i = 0; i < len; i++)
 	{
@@ -249,7 +249,7 @@ double UnderStol(char *str, int nstol, char razd)
 	int p2 = StrNStr(str, razd, nstol + 1);
 	if (p2 == -1)
 	{
-		p2 = strlen(str);
+		p2 = (int)strlen(str);
 	}
 	if (p1 == -1 || p2 == -1) return -1;
 	int len = p2 - p1 - 1;
@@ -264,7 +264,7 @@ int UnderStolStr(char *str, int nstol, char *ret, size_t size, char sep)
 	if (nstol == 0)
 	{
 		p2 = StrNStr(str, sep, 1);
-		if (p2 == -1)p2 = strlen(str);
+		if (p2 == -1)p2 = (int)strlen(str);
 		strncpy(ret, str, p2);
 		ret[p2] = '\0';
 		return 1;
@@ -275,7 +275,7 @@ int UnderStolStr(char *str, int nstol, char *ret, size_t size, char sep)
 		p2 = StrNStr(str, sep, nstol + 1);
 		if (p2 == -1)
 		{
-			p2 = strlen(str);
+			p2 = (int)strlen(str);
 		}
 		if (p1 == -1 || p2 == -1) return -1;
 		len = p2 - p1 - 1;
@@ -395,12 +395,13 @@ void city::sort_all(void)
 int main(int argc, char *argv[])
 {
 	int i, j, k, n, m;
-	char head[1000], file_out_distt[300], file_out_distb[300], file_sitega[300], path_fasta[300], file_fasta[300];
-	FILE *in, *out_distt, * out_distb;
+	char head[1000], binary_mode[3], file_out_distt[300], file_out_distb[300], file_sitega[300], path_fasta[300], file_fasta[300];
+	FILE* in, * out_distt, * out_distb;
 
-	if (argc != 8)
+	if (argc != 9)
 	{
-		printf("%s 1path_fasta 2sitega_matrix_file 3file_profile_fasta 4file out_dist_txt 5file out_dist_binary 6double pvalue_large 7double dpvalue", argv[0]);//5file out_cpp_arr 
+		printf("Argc = %d %s 1path_fasta 2sitega_matrix_file 3file_profile_fasta 4file out_dist_txt 5file out_dist_binary 6double pvalue_large 7double dpvalue 8char wb OR ab mode for output binary\n", argc, argv[0]);//5file out_cpp_arr 
+		for (j = 0; j < argc; j++)printf("%s\n", argv[j]);
 		return -1;
 	}
 	char letter[] = "acgt";
@@ -415,6 +416,14 @@ int main(int argc, char *argv[])
 	//double thr_bot = atof(argv[7]);
 	double bin = atof(argv[7]);
 
+	int check_mode = 0;
+	if (strcmp(binary_mode, "ab") == 0)check_mode = 1;
+	else if (strcmp(binary_mode, "wb") == 0)check_mode = 1;
+	if (check_mode == 0)
+	{
+		printf("Binary file %s mode is wrong!\t ab OR wb is allowed\n", file_out_distb);
+		return -1;
+	}
 	int nseq_pro = 0, len_pro = 0;
 	int all_pos = 0;
 	ReadSeq(file_fasta, nseq_pro, len_pro, all_pos);
@@ -459,20 +468,19 @@ int main(int argc, char *argv[])
 	for (j = 0; j < sta.size; j++)rlen[j] = (sta.tot[j].end - sta.tot[j].sta + 1);
 	for (n = 0; n < nseq_pro; n++)
 	{
-		if (n % 50 == 0)
+		/*if (n % 500 == 0)
 		{			
 			int di = nthr_max / 10;
 			printf("%d\t", n + 1);
 			for (i = 0; i < nthr_max; i += di)printf("%d %f ", i+1, thr[i]);
-			printf("\n");
-			//printf("%5d %f\n", n, thr[nthr_max]);
-		}
+			printf("\n");			
+		}*/
 		fgets(head, sizeof(head), in);
-		memset(dp[0], 0, len_pro + 1);
+		memset(dp[0], '\0', len_pro + 1);
 		fgets(dp[0], len_pro + 1, in);
 		DelChar(dp[0], '\n');
 		TransStr(dp[0]);
-		int len_pro1 = strlen(dp[0]);
+		int len_pro1 = (int)strlen(dp[0]);
 		strcpy(dp[1], dp[0]);
 		ComplStr(dp[1]);
 		int len1 = len_pro1 - 1;
@@ -605,7 +613,7 @@ int main(int argc, char *argv[])
 	}
 	for (j = 0; j < count; j++)fprintf(out_distt, "%.18f\t%.18g\n", thr_dist[j], fpr_dist[j]);
 	fclose(out_distt);
-	if ((out_distb = fopen(file_out_distb, "wb")) == NULL)
+	if ((out_distb = fopen(file_out_distb, binary_mode)) == NULL)
 	{
 		printf("Out file %s can't be opened!\n", file_out_distb);
 		return -1;
@@ -615,7 +623,7 @@ int main(int argc, char *argv[])
 	fwrite(thr_dist, sizeof(double), count, out_distb);
 	fwrite(fpr_dist, sizeof(double), count, out_distb);
 	fclose(out_distb);
-	FILE *out_sta;
+	/*FILE *out_sta;
 	char file_sta[500];
 	strcpy(file_sta,file_sitega); 
 	strcat(file_sta,"_sta");
@@ -626,7 +634,7 @@ int main(int argc, char *argv[])
 	}
 	fprintf(out_sta, "%s\t%d\t", file_out_distt, nthr_dist);
 	fprintf(out_sta, "%.18f\t%.18g\n", thr_dist[count-1], fpr_dist[count-1]);
-	fclose(out_sta);
+	fclose(out_sta);*/
 	delete[] thr_dist;
 	delete[] fpr_dist;
 	delete[] thr;
