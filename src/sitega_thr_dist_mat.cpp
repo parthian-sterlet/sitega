@@ -411,10 +411,9 @@ int main(int argc, char *argv[])
 	strcpy(file_sitega, argv[2]);
 	strcpy(file_out_distt, argv[4]);
 	strcpy(file_out_distb, argv[5]);
-	double pvalue_large = atof(argv[6]);
-	//strcpy(file_out_cpp_arr, argv[5]);
-	//double thr_bot = atof(argv[7]);
+	double pvalue_large = atof(argv[6]);		
 	double bin = atof(argv[7]);
+	strcpy(binary_mode, argv[8]);
 
 	int check_mode = 0;
 	if (strcmp(binary_mode, "ab") == 0)check_mode = 1;
