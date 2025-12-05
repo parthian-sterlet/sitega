@@ -1,1 +1,1 @@
-./sitega_thr_dist_mat.exe ../genomes/mm10/ ../examples/PEAKS035427_ATOH1_P48985_MACS2.mat ups2kb_mm10.seq ../examples/PEAKS035427_ATOH1_P48985_MACS2.dist ../examples/PEAKS035427_ATOH1_P48985_MACS2.bin 0.001 0.0000005 wb
+./sitega_thr_dist_mat.exe ../genomes/mm10/ ../examples/PEAKS035427_ATOH1_P48985_MACS2.mat ups2kb_mm10.seq ../examples/PEAKS035427_ATOH1_P48985_MACS2.dist ../examples/PEAKS035427_ATOH1_P48985_MACS2.bin 0.001 0.0000005 ../examples/sga_log wb
