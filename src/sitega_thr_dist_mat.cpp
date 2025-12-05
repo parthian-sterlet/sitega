@@ -395,12 +395,12 @@ void city::sort_all(void)
 int main(int argc, char *argv[])
 {
 	int i, j, k, n, m;
-	char head[1000], binary_mode[3], file_out_distt[300], file_out_distb[300], file_sitega[300], path_fasta[300], file_fasta[300];
+	char head[1000], binary_mode[3], file_out_distt[300], file_out_distb[300], file_sitega[300], path_fasta[300], file_fasta[300], file_sta[300];
 	FILE* in, * out_distt, * out_distb;
 
-	if (argc != 9)
+	if (argc != 10)
 	{
-		printf("Argc = %d %s 1path_fasta 2sitega_matrix_file 3file_profile_fasta 4file out_dist_txt 5file out_dist_binary 6double pvalue_large 7double dpvalue 8char wb OR ab mode for output binary\n", argc, argv[0]);//5file out_cpp_arr 
+		printf("Argc = %d %s 1path_fasta 2sitega_matrix_file 3file_profile_fasta 4file out_dist_txt 5file out_dist_binary 6double pvalue_large 7double dpvalue 8char file_sta 9char wb OR ab mode for output binary\n", argc, argv[0]);//5file out_cpp_arr 
 		for (j = 0; j < argc; j++)printf("%s\n", argv[j]);
 		return -1;
 	}
@@ -413,7 +413,8 @@ int main(int argc, char *argv[])
 	strcpy(file_out_distb, argv[5]);
 	double pvalue_large = atof(argv[6]);		
 	double bin = atof(argv[7]);
-	strcpy(binary_mode, argv[8]);
+	strcpy(file_sta, argv[8]);
+	strcpy(binary_mode, argv[9]);
 
 	int check_mode = 0;
 	if (strcmp(binary_mode, "ab") == 0)check_mode = 1;
@@ -622,18 +623,15 @@ int main(int argc, char *argv[])
 	fwrite(thr_dist, sizeof(double), count, out_distb);
 	fwrite(fpr_dist, sizeof(double), count, out_distb);
 	fclose(out_distb);
-	/*FILE *out_sta;
-	char file_sta[500];
-	strcpy(file_sta,file_sitega); 
-	strcat(file_sta,"_sta");
-	if ((out_sta = fopen(file_sta, "wt")) == NULL)
+	FILE *out_sta;	
+	if ((out_sta = fopen(file_sta, "at")) == NULL)
 	{
 		printf("Out file %s can't be opened!\n", file_sta);
 		return -1;
 	}
 	fprintf(out_sta, "%s\t%d\t", file_out_distt, nthr_dist);
 	fprintf(out_sta, "%.18f\t%.18g\n", thr_dist[count-1], fpr_dist[count-1]);
-	fclose(out_sta);*/
+	fclose(out_sta);
 	delete[] thr_dist;
 	delete[] fpr_dist;
 	delete[] thr;
